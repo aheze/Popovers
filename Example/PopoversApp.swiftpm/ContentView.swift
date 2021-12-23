@@ -17,9 +17,9 @@ struct ContentView: View {
                     columns: [GridItem(.adaptive(minimum: 300))],
                     spacing: 16
                 ) {
-                    PlaygroundSection()
-                    ShowroomSection()
-                    UIKitSection()
+                    Playground()
+                    Showroom()
+                    UIKit()
                     Color.clear.frame(height: 100)
                 }
                 .padding()

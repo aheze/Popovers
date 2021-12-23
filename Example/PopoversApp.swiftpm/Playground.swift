@@ -1,7 +1,7 @@
 import SwiftUI
 import Popovers
 
-struct PlaygroundSection: View {
+struct Playground: View {
     var body: some View {
         Section(
             header:
