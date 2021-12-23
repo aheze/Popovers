@@ -9,18 +9,27 @@
 import SwiftUI
 import Combine
 
+/**
+ A view that is placed over other views.
+ */
 public struct Popover: Identifiable {
     
-    /// everything about the popover is stored here
+    /// Stores information about the popover.
+    ///
+    /// This includes the attributes, frame, and acts like a view model. If using SwiftUI, access it using `PopoverReader`.
     public var context: Context
     
-    /// the content view
+    /// The view that the popover presents.
     public var view: AnyView
     
-    /// background
+    /// A view that goes behind the popover.
     public var background: AnyView
     
-    /// normal init
+    /**
+     A popover.
+     - parameter attributes: Customize the popover.
+     - parameter view: The view to present.
+     */
     public init<Content: View>(
         attributes: Attributes = .init(),
         @ViewBuilder view: @escaping () -> Content
@@ -32,7 +41,12 @@ public struct Popover: Identifiable {
         self.background = AnyView(Color.clear)
     }
     
-    /// for a background view
+    /**
+     A popover with a background.
+     - parameter attributes: Customize the popover.
+     - parameter view: The view to present.
+     - parameter background: The view to present in the background.
+     */
     public init<MainContent: View, BackgroundContent: View>(
         attributes: Attributes = .init(),
         @ViewBuilder view: @escaping () -> MainContent,
@@ -45,35 +59,53 @@ public struct Popover: Identifiable {
         self.background = AnyView(background().environmentObject(context))
     }
     
+    /**
+     Properties to customize the popover.
+     */
     public struct Attributes {
-        /// for identifying the popover later
+        
+        /// Add a tag to reference the popover from anywhere.
         public var tag: String?
         
+        /// The frame that the popover attaches to. Automatically provided if you're using SwiftUI.
         public var sourceFrame: (() -> CGRect) = { .zero }
-        public var sourceFrameIgnoresSafeArea = true
+        
+        /// Inset the source frame by this.
         public var sourceFrameInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        
+        /// The popover's position.
         public var position = Position.absolute(originAnchor: .bottom, popoverAnchor: .top)
         
-        /// popover will never go past the screen edges if this is not nil
+        /// Padding to prevent the popover from overflowing off the screen.
         public var screenEdgePadding = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
+        
+        /// Stores popover animation and transition values for presentation.
         public var presentation = Presentation()
+        
+        /// Stores popover animation and transition values for dismissal.
         public var dismissal = Dismissal()
         
-        /// how the popover will "rubber-band" when dragged
+        /// The axes that the popover will "rubber-band" on when dragged
         public var rubberBandingMode: RubberBandingMode = [.xAxis, .yAxis]
         
-        /// prevent anything else in the background to be pressed
+        /// Prevent views underneath the popover from being pressed.
         public var blocksBackgroundTouches = false
         
+        /// Called when the user taps outside the popover.
         public var onTapOutside: (() -> Void)?
+        
+        /// Called when the popover is dismissed.
         public var onDismiss: (() -> Void)?
+        
+        /// Called when the context changes.
         public var onContextChange: ((Context) -> Void)?
         
-        
+        /**
+         Create the default attributes for a popover.
+         */
         public init(
             tag: String? = nil,
             sourceFrame: @escaping (() -> CGRect) = { .zero },
-            sourceFrameIgnoresSafeArea: Bool = true,
             sourceFrameInset: UIEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0),
             position: Popover.Attributes.Position = Position.absolute(originAnchor: .bottom, popoverAnchor: .top),
             screenEdgePadding: UIEdgeInsets = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16),
@@ -87,7 +119,6 @@ public struct Popover: Identifiable {
         ) {
             self.tag = tag
             self.sourceFrame = sourceFrame
-            self.sourceFrameIgnoresSafeArea = sourceFrameIgnoresSafeArea
             self.sourceFrameInset = sourceFrameInset
             self.position = position
             self.screenEdgePadding = screenEdgePadding
@@ -100,22 +131,35 @@ public struct Popover: Identifiable {
             self.onContextChange = onContextChange
         }
         
+        /**
+         The "rubber-banding" behavior of the popover when it is dragged.
+         */
         public struct RubberBandingMode: OptionSet {
             public let rawValue: Int
             public init(rawValue: Int) {
                 self.rawValue = rawValue
             }
             
+            /// Enable rubber banding on the x-axis.
             public static let xAxis = RubberBandingMode(rawValue: 1 << 0) // 1
+            
+            /// Enable rubber banding on the y-axis.
             public static let yAxis = RubberBandingMode(rawValue: 1 << 1) // 2
+            
+            /// Disable rubber banding.
             public static let none = RubberBandingMode([])
         }
         
+        /// The popover's presentation animation and transition.
         public struct Presentation {
+            
+            /// The animation timing used when the popover is presented.
             public var animation: Animation? = .default
+            
+            /// The transition used when the popover is presented.
             public var transition: AnyTransition? = .opacity
             
-            
+            /// Create the default animation and transition for the popover.
             public init(
                 animation: Animation? = .default,
                 transition: AnyTransition? = .opacity
@@ -125,27 +169,48 @@ public struct Popover: Identifiable {
             }
         }
         
+        /// The popover's dismissal animation, transition, and other behavior.
         public struct Dismissal {
             
+            /// The animation timing used when the popover is dismissed.
             public var animation: Animation? = .default
+            
+            /// The transition used when the popover is dismissed.
             public var transition: AnyTransition? = .opacity
             
+            /**
+             The dismissal behavior of the popover.
+             - `.tapOutside` - dismiss the popover when the user taps outside.
+             - `.dragDown` - dismiss the popover when the user drags it down.
+             - `.dragUp` - dismiss the popover when the user drags it up.
+             - `.none` - don't automatically dismiss the popover.
+             */
             
             public var mode = Mode.tapOutside
             
-            /// only applies when `mode` is .whenTappedOutside
+            /// Don't dismiss the popover when the user taps on these frames. Only applies when `mode` is `.tapOutside`.
             public var excludedFrames: (() -> [CGRect]) = { [] }
             
-            /// to move the popover off the screen or not
+            /// Move the popover off the screen if a `.dragDown` or `.dragUp` happens.
             public var dragMovesPopoverOffScreen = true
             
-            /// in terms of a percent of the screen height
-            /// only applies when `mode` is .dragDown or .dragUp
-            /// 0.25 * screen height is where the popover will be dismissed
+            /// The point on the screen until the popover can be dismissed. Only applies when `mode` is `.dragDown` or `.dragUp`. See diagram for details.
+            /**
+          
+         ┌────────────────┐
+         |░░░░░░░░░░░░░░░░|    ░ = if the popover is dragged
+         |░░░░░░░░░░░░░░░░|        to this area, it will be dismissed.
+         |░░░░░░░░░░░░░░░░|
+         |░░░░░░░░░░░░░░░░|        the height of this area is 0.25 * screen height.
+         |                |
+         |                |
+         |                |
+              
+             */
             public var dragDismissalProximity = CGFloat(0.25)
             
             
-            public  init(
+            public init(
                 animation: Animation? = .default,
                 transition: AnyTransition? = .opacity,
                 mode: Popover.Attributes.Dismissal.Mode = Mode.tapOutside,
