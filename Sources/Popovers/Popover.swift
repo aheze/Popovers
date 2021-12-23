@@ -67,7 +67,7 @@ public struct Popover: Identifiable {
         /// Add a tag to reference the popover from anywhere.
         public var tag: String?
         
-        /// The frame that the popover attaches to. Automatically provided if you're using SwiftUI.
+        /// The frame that the popover attaches to or is placed within (configure in `position`). Automatically provided if you're using SwiftUI.
         public var sourceFrame: (() -> CGRect) = { .zero }
         
         /// Inset the source frame by this.
@@ -179,13 +179,12 @@ public struct Popover: Identifiable {
             public var transition: AnyTransition? = .opacity
             
             /**
-             The dismissal behavior of the popover.
+             The auto-dismissal behavior of the popover.
              - `.tapOutside` - dismiss the popover when the user taps outside.
              - `.dragDown` - dismiss the popover when the user drags it down.
              - `.dragUp` - dismiss the popover when the user drags it up.
              - `.none` - don't automatically dismiss the popover.
              */
-            
             public var mode = Mode.tapOutside
             
             /// Don't dismiss the popover when the user taps on these frames. Only applies when `mode` is `.tapOutside`.
@@ -210,6 +209,7 @@ public struct Popover: Identifiable {
             public var dragDismissalProximity = CGFloat(0.25)
             
             
+            /// Create the default dismissal behavior for the popover.
             public init(
                 animation: Animation? = .default,
                 transition: AnyTransition? = .opacity,
@@ -226,65 +226,134 @@ public struct Popover: Identifiable {
                 self.dragDismissalProximity = dragDismissalProximity
             }
             
+            /**
+             The auto-dismissal behavior of the popover.
+             - `.tapOutside` - dismiss the popover when the user taps outside.
+             - `.dragDown` - dismiss the popover when the user drags it down.
+             - `.dragUp` - dismiss the popover when the user drags it up.
+             - `.none` - don't automatically dismiss the popover.
+             */
             public struct Mode: OptionSet {
                 public let rawValue: Int
                 public init(rawValue: Int) {
                     self.rawValue = rawValue
                 }
                 
+                /// Dismiss the popover when the user taps outside.
                 public static let tapOutside = Mode(rawValue: 1 << 0) // 1
+                
+                /// Dismiss the popover when the user drags it down.
                 public static let dragDown = Mode(rawValue: 1 << 1) // 2
+                
+                /// Dismiss the popover when the user drags it up.
                 public static let dragUp = Mode(rawValue: 1 << 2) // 4
+                
+                /// Don't automatically dismiss the popover.
                 public static let none = Mode([])
             }
         }
         
+        /**
+         The position of the popover.
+         - `absolute` - attach the popover to a source view.
+         - `relative` - place the popover within a container view.
+         */
         public enum Position {
+            
+            /**
+             Attach the popover to a source view (supplied by the attributes' `sourceFrame` property).
+             - parameter originAnchor: The corner of the source view used as the attaching point.
+             - parameter popoverAnchor: The corner of the popover that attaches to the source view.
+             */
             case absolute(originAnchor: Anchor, popoverAnchor: Anchor)
+            
+            /**
+             Place the popover within a container view (supplied by the attributes' `sourceFrame` property).
+             - parameter popoverAnchors: The corners of the container view that the popover can be placed. Supply multiple to get a picture-in-picture behavior..
+             */
             case relative(popoverAnchors: [Anchor])
             
+            
+            /// The edges and corners of a rectangle.
+            /**
+          
+         topLeft              top              topRight
+                X──────────────X──────────────X
+                |                             |
+                |                             |
+         left   X            center           X   right
+                |                             |
+                |                             |
+                X──────────────X──────────────X
+         bottomLeft          bottom         bottomRight
+             
+              
+             */
             public enum Anchor {
+                
+                /// The point at the **top-left** of a rectangle.
                 case topLeft
+                
+                /// The point at the **top** of a rectangle.
                 case top
+                
+                /// The point at the **top-right** of a rectangle.
                 case topRight
+                
+                /// The point at the **right** of a rectangle.
                 case right
+                
+                /// The point at the **bottom-right** of a rectangle.
                 case bottomRight
+                
+                /// The point at the **bottom** of a rectangle.
                 case bottom
+                
+                /// The point at the **bottom-left** of a rectangle.
                 case bottomLeft
+                
+                /// The point at the **left** of a rectangle.
                 case left
+                
+                /// The point at the **center** of a rectangle.
                 case center
             }
         }
     }
     
+    /**
+     The popover's view model (stores attributes, frame, and other visible traits)
+     */
     public class Context: Identifiable, ObservableObject {
         
-        /// id of the popover
+        /// The popover's ID. Must be unique, unless replacing an existing popover.
         public var id = UUID()
         
+        /// The popover's customizable properties.
         public var attributes = Attributes()
         
-        /// calculated from SwiftUI. If this is `nil`, the popover is not yet ready.
+        /// The popover's dynamic size, calculated from SwiftUI. If this is `nil`, the popover is not yet ready to be displayed.
         @Published public var size: CGSize?
         
-        /// frame of the popover, without gestures applied
+        /// The frame of the popover, without drag gesture offset applied.
         @Published public var staticFrame = CGRect.zero
         
-        /// visual frame of the popover shown to the user
+        /// The current frame of the popover.
         @Published public var frame = CGRect.zero
         
-        /// for relative positioning
+        /// The currently selected anchor, if the popover has a `.relative` position.
         @Published public var selectedAnchor: Popover.Attributes.Position.Anchor?
         
-        /// for animations
+        /// For animation syncing. If this is not nil, the popover is in the middle of a frame refresh.
         public var transaction: Transaction?
         
-        /// for SwiftUI - set `$present` to false in the view modifier
-        internal var dismissed: (() -> Void)?
-        
-        /// notify when context changed
+        /// Notify when context changed.
         public var changeSink: AnyCancellable?
         
+        /// For the SwiftUI `.popover` view modifier - set `$present` to false when this is called.
+        internal var dismissed: (() -> Void)?
+        
+        /// Create a context for the popover. You shouldn't need to use this - it's done automatically when you create a new popover.
         public init() {
             changeSink = objectWillChange.sink { [weak self] in
                 guard let self = self else { return }
@@ -295,7 +364,10 @@ public struct Popover: Identifiable {
 }
 
 public extension Popover {
-    
+
+    /**
+     Convenience accessor for the popover's ID.
+     */
     var id: UUID {
         get {
             context.id
@@ -304,6 +376,7 @@ public extension Popover {
         }
     }
     
+    /// Convenience accessor for the popover's attributes.
     var attributes: Attributes {
         get {
             context.attributes
@@ -312,6 +385,7 @@ public extension Popover {
         }
     }
     
+    /// Set the popover's size from SwiftUI. Also update the frame.
     func setSize(_ size: CGSize?) {
         context.size = size
         let frame = getFrame(from: size)
@@ -319,6 +393,7 @@ public extension Popover {
         context.frame = frame
     }
     
+    /// Calculate the popover's frame based on it's size and position.
     func getFrame(from size: CGSize?) -> CGRect {
         switch attributes.position {
         case .absolute(let originAnchor, let popoverAnchor):
@@ -333,7 +408,7 @@ public extension Popover {
             let maxX = Popovers.safeWindowFrame.maxX - screenEdgePadding.right
             let maxY = Popovers.safeWindowFrame.maxY - screenEdgePadding.bottom
             
-            /// popover overflows on left/top side
+            /// Popover overflows on left/top side.
             if popoverFrame.origin.x < screenEdgePadding.left {
                 popoverFrame.origin.x = screenEdgePadding.left
             }
@@ -341,7 +416,7 @@ public extension Popover {
                 popoverFrame.origin.y = screenEdgePadding.top
             }
             
-            /// popover overflows on the right/bottom side
+            /// Popover overflows on the right/bottom side.
             if popoverFrame.maxX > maxX {
                 let difference = popoverFrame.maxX - maxX
                 popoverFrame.origin.x -= difference
@@ -354,7 +429,7 @@ public extension Popover {
             return popoverFrame
         case .relative(let popoverAnchors):
             
-            /// set the selected anchor to the first one
+            /// Set the selected anchor to the first one.
             if context.selectedAnchor == nil {
                 context.selectedAnchor = popoverAnchors.first
             }
@@ -368,6 +443,7 @@ public extension Popover {
         }
     }
     
+    /// Calculate if the popover should be dismissed via drag **or** animated to another position (if using `.relative` positioning with multiple anchors). Called when the user stops dragging the popover.
     func positionChanged(to point: CGPoint) {
         if
             attributes.dismissal.mode.contains(.dragDown),
@@ -421,7 +497,7 @@ public extension Popover {
 
 extension Popover: Equatable {
     
-    /// conform to equatable
+    /// Conform to equatable.
     public static func == (lhs: Popover, rhs: Popover) -> Bool {
         return lhs.id == rhs.id
     }

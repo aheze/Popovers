@@ -158,8 +158,8 @@ struct PopoverContainerView: View {
     /// make dragging offset a bit smaller
     func getRubberBanding(translation: CGSize) -> CGSize {
         var offset = CGSize.zero
-        offset.width = pow(abs(translation.width), PopoverConstants.rubberBandingPower) * (translation.width > 0 ? 1 : -1)
-        offset.height = pow(abs(translation.height), PopoverConstants.rubberBandingPower) * (translation.height > 0 ? 1 : -1)
+        offset.width = pow(abs(translation.width), 0.7) * (translation.width > 0 ? 1 : -1)
+        offset.height = pow(abs(translation.height), 0.7) * (translation.height > 0 ? 1 : -1)
         return offset
     }
     
