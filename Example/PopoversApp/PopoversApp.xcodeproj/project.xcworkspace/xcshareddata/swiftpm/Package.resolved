@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "Popovers",
+        "repositoryURL": "https://github.com/aheze/Popovers",
+        "state": {
+          "branch": "main",
+          "revision": "c70f51eb1b992ce69f6fed29b109ce35132730e8",
+          "version": null
+        }
+      }
+    ]
+  },
+  "version": 1
+}

@@ -11,7 +11,7 @@ import SwiftUI
 import Combine
 
 public extension View {
-    public func frameReader(rect: @escaping (CGRect) -> Void) -> some View {
+    func frameReader(rect: @escaping (CGRect) -> Void) -> some View {
         return self
             .background(
                 GeometryReader { geometry in
@@ -34,7 +34,7 @@ struct ContentSizeReaderPreferenceKey: PreferenceKey {
 }
 
 public extension UIColor {
-    public convenience init(hex: UInt, alpha: CGFloat = 1) {
+    convenience init(hex: UInt, alpha: CGFloat = 1) {
         self.init(
             red: CGFloat((hex & 0xFF0000) >> 16) / 255.0,
             green: CGFloat((hex & 0x00FF00) >> 8) / 255.0,
@@ -63,7 +63,7 @@ public extension View {
 /// convert to popover coordinates
 public extension UIView {
     /// frame in the global window
-    public func windowFrame() -> CGRect {
+    func windowFrame() -> CGRect {
         return self.convert(bounds, to: nil)
     }
 }

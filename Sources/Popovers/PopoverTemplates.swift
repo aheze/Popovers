@@ -67,7 +67,7 @@ public struct PopoverTemplates {
                         model.active = nil
                     }
             )
-            .onChange(of: model.selected) { _ in
+            .onDataChange(of: model.selected) { (_, _) in
                 if 
                     let selected = model.selected,
                     selected == menuID.id
@@ -216,7 +216,6 @@ public struct PopoverTemplates {
                 )
         }
     }
-    
     
     /// the side of the popover that the arrow should be placed on
     public enum ArrowSide {
