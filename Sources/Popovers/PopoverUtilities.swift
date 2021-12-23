@@ -135,40 +135,40 @@ public extension UIEdgeInsets {
     }
 }
 
-/// from https://stackoverflow.com/a/29179878
-public extension BinaryInteger {
-    var degreesToRadians: CGFloat { CGFloat(self) * .pi / 180 }
-}
-
-public extension FloatingPoint {
-    var degreesToRadians: Self { self * .pi / 180 }
-    var radiansToDegrees: Self { self * 180 / .pi }
-}
-
-/// from https://stackoverflow.com/a/67243688/14351818
-/// used for the Menu template
-public extension TupleView {
-    var getViews: [AnyView] {
-        makeArray(from: value)
+/// Detect changes in bindings (fallback of `.onChange` for iOS 13+). From https://stackoverflow.com/a/64402663/14351818
+struct ChangeObserver<Content: View, Value: Equatable>: View {
+    let content: Content
+    let value: Value
+    let action: (Value, Value) -> Void
+    
+    init(value: Value, action: @escaping (Value, Value) -> Void, content: @escaping () -> Content) {
+        self.value = value
+        self.action = action
+        self.content = content()
+        _oldValue = State(initialValue: value)
     }
     
-    private struct GenericView {
-        let body: Any
-        
-        var anyView: AnyView? {
-            AnyView(_fromValue: body)
-        }
-    }
+    @State private var oldValue: Value
     
-    private func makeArray<Tuple>(from tuple: Tuple) -> [AnyView] {
-        func convert(child: Mirror.Child) -> AnyView? {
-            withUnsafeBytes(of: child.value) { ptr -> AnyView? in
-                let binded = ptr.bindMemory(to: GenericView.self)
-                return binded.first?.anyView
+    var body: some View {
+        if oldValue != value {
+            DispatchQueue.main.async {
+                self.action(oldValue, value)
+                oldValue = value
             }
         }
-        
-        let tupleMirror = Mirror(reflecting: tuple)
-        return tupleMirror.children.compactMap(convert)
+        return content
+    }
+}
+
+extension View {
+    /// Detect changes in bindings (fallback of `.onChange` for iOS 13+).
+    public func onDataChange<Value: Equatable>(
+        of value: Value,
+        perform action: @escaping (_ oldValue: Value, _ newValue: Value) -> Void
+    ) -> some View {
+        ChangeObserver(value: value, action: action) {
+            self
+        }
     }
 }

@@ -430,6 +430,34 @@ public struct PopoverTemplates {
     }
 }
 
+/// From https://stackoverflow.com/a/67243688/14351818
+/// Used for the Menu template
+public extension TupleView {
+    var getViews: [AnyView] {
+        makeArray(from: value)
+    }
+    
+    private struct GenericView {
+        let body: Any
+        
+        var anyView: AnyView? {
+            AnyView(_fromValue: body)
+        }
+    }
+    
+    private func makeArray<Tuple>(from tuple: Tuple) -> [AnyView] {
+        func convert(child: Mirror.Child) -> AnyView? {
+            withUnsafeBytes(of: child.value) { ptr -> AnyView? in
+                let binded = ptr.bindMemory(to: GenericView.self)
+                return binded.first?.anyView
+            }
+        }
+        
+        let tupleMirror = Mirror(reflecting: tuple)
+        return tupleMirror.children.compactMap(convert)
+    }
+}
+
 
 public extension Popover.Attributes.Position {
     
@@ -570,3 +598,12 @@ public extension Popover.Attributes.Position {
 }
 
 
+/// From https://stackoverflow.com/a/29179878
+public extension BinaryInteger {
+    var degreesToRadians: CGFloat { CGFloat(self) * .pi / 180 }
+}
+
+public extension FloatingPoint {
+    var degreesToRadians: Self { self * .pi / 180 }
+    var radiansToDegrees: Self { self * 180 / .pi }
+}

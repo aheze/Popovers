@@ -24,10 +24,26 @@ public struct Popovers {
         return safeAreaFrame
     }
     
-    static var model: PopoverModel = {
+    public static var model: PopoverModel = {
         let model = PopoverModel()
         return model
     }()
+    
+    public static var current: [Popover] {
+        get {
+            model.popovers
+        } set {
+            model.popovers = newValue
+        }
+    }
+    
+    public static var draggingEnabled: Bool {
+        get {
+            Popovers.model.popoversDraggable
+        } set {
+            Popovers.model.popoversDraggable = newValue
+        }
+    }
     
     public static func getWindow() -> PopoverContainerWindow {
         if let currentScene = UIApplication.shared.currentWindowScene {
@@ -107,14 +123,6 @@ public struct Popovers {
         }
     }
     
-    public static var current: [Popover] {
-        get {
-            model.popovers
-        } set {
-            model.popovers = newValue
-        }
-    }
-    
     /// optional refresh
     public static func refresh(with transaction: Transaction? = nil) {
         for popover in current {
@@ -140,18 +148,11 @@ public struct Popovers {
         }
         model.refresh()
     }
+    
     public static func popover(tagged tag: String) -> Popover? {
         return current.first(where: { $0.attributes.tag == tag })
     }
     public static func index(of popover: Popover) -> Int? {
         return current.indices.first(where: { current[$0] == popover })
-    }
-    
-    public static var draggingEnabled: Bool {
-        get {
-            Popovers.model.popoversDraggable
-        } set {
-            Popovers.model.popoversDraggable = newValue
-        }
     }
 }
