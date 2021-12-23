@@ -10,6 +10,8 @@ import Combine
 import SwiftUI
 
 public class PopoverModel: ObservableObject {
+    
+    /// The currently-presented popovers. The oldest are in front, the newest at the end..
     @Published var popovers = [Popover]()
     
     /// must be published so that the `PopoverContainerView` re-renders

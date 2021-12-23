@@ -180,12 +180,15 @@ public struct Popover: Identifiable {
             
             /**
              The auto-dismissal behavior of the popover.
-             - `.tapOutside` - dismiss the popover when the user taps outside.
+             - `.tapOutside` - dismiss the popover when the user taps outside the popover.
              - `.dragDown` - dismiss the popover when the user drags it down.
              - `.dragUp` - dismiss the popover when the user drags it up.
              - `.none` - don't automatically dismiss the popover.
              */
             public var mode = Mode.tapOutside
+            
+            /// Dismiss the popover when the user taps outside, **even when another presented popover is what's tapped**. Only applies when `mode` is `.tapOutside`.
+            public var dismissWhenTappedOtherPopover = false
             
             /// Don't dismiss the popover when the user taps on these frames. Only applies when `mode` is `.tapOutside`.
             public var excludedFrames: (() -> [CGRect]) = { [] }
@@ -214,6 +217,7 @@ public struct Popover: Identifiable {
                 animation: Animation? = .default,
                 transition: AnyTransition? = .opacity,
                 mode: Popover.Attributes.Dismissal.Mode = Mode.tapOutside,
+                dismissWhenTappedOtherPopover: Bool = false,
                 excludedFrames: @escaping (() -> [CGRect]) = { [] },
                 dragMovesPopoverOffScreen: Bool = true,
                 dragDismissalProximity: CGFloat = CGFloat(0.25)
@@ -221,6 +225,7 @@ public struct Popover: Identifiable {
                 self.animation = animation
                 self.transition = transition
                 self.mode = mode
+                self.dismissWhenTappedOtherPopover = dismissWhenTappedOtherPopover
                 self.excludedFrames = excludedFrames
                 self.dragMovesPopoverOffScreen = dragMovesPopoverOffScreen
                 self.dragDismissalProximity = dragDismissalProximity

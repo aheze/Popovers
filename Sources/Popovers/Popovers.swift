@@ -51,6 +51,7 @@ public struct Popovers {
     }
     
     public static func present(_ popover: Popover) {
+
         _ = model
         
         _ = getWindow()

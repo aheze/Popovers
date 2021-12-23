@@ -59,11 +59,36 @@ public class PopoverContainerWindow: UIWindow {
         /// Make sure the hit event was actually a touch and not a cursor hover or something else.
         guard event.map({ $0.type == .touches }) ?? true else { return nil }
         
+        /// The current popovers' frames
+        let popoverFrames = popoverModel.popovers.map { $0.context.frame }
+        
+        /// Dismiss a popover, knowing that its frame does not contain the touch.
+        func dismissPopoverIfNecessary(popoverToDismiss: Popover) {
+            if
+                popoverToDismiss.attributes.dismissal.mode.contains(.tapOutside), /// The popover can be automatically dismissed when tapped outside.
+                popoverToDismiss.attributes.dismissal.dismissWhenTappedOtherPopover || /// The popover can be dismissed even if the touch hit another popover, **or...**
+                !popoverFrames.contains(where: { $0.contains(point) }) /// ... no other popover frame contains the point (the touch landed outside)
+            {
+                Popovers.dismiss(popoverToDismiss)
+            }
+        }
+        
         /// Loop through the popovers and see if the touch hit it.
-        for popover in popoverModel.popovers {
+        /// `reversed` to start from the most recently presented popovers, working backwards.
+        for popover in popoverModel.popovers.reversed() {
             
             /// Check it the popover was hit.
             if popover.context.frame.contains(point) {
+                
+                /// Dismiss other popovers if they have `dismissWhenTappedOtherPopover` set to true.
+                for popoverToDismiss in popoverModel.popovers {
+                    if
+                        popoverToDismiss != popover,
+                        !popoverToDismiss.context.frame.contains(point) /// The popover's frame doesn't contain the touch point.
+                    {
+                        dismissPopoverIfNecessary(popoverToDismiss: popoverToDismiss)
+                    }
+                }
                 
                 /// Receive the touch and block it from going through.
                 return super.hitTest(point, with: event)
@@ -79,7 +104,7 @@ public class PopoverContainerWindow: UIWindow {
                 return super.hitTest(point, with: event)
             }
             
-            /// Check if the touch hit an excluded view. In this case, don't dismiss it.
+            /// Check if the touch hit an excluded view. If so, don't dismiss it.
             if popover.attributes.dismissal.mode.contains(.tapOutside) {
                 let excludedFrames = popover.attributes.dismissal.excludedFrames()
                 if excludedFrames.contains(where: { $0.contains(point) }) {
@@ -89,23 +114,16 @@ public class PopoverContainerWindow: UIWindow {
                 }
             }
             
-            /// If all checks did not pass, dismiss the popover if necessary.
-            if popover.attributes.dismissal.mode.contains(.tapOutside) {
-                Popovers.dismiss(popover)
-            }
+            /// All checks did not pass, which means the touch landed outside the popover. So, dismiss it if necessary.
+            dismissPopoverIfNecessary(popoverToDismiss: popover)
         }
         
-        /// the touch didn't land in any popover, so dismiss them
-//        for popover in popoverModel.popovers.reversed() {
-//            if popover.attributes.dismissal.mode.contains(.tapOutside) {
-//                Popovers.dismiss(popover)
-//            }
-//        }
+        /// The touch did not hit any popover, so pass it through.
         return nil
     }
 }
 
-/// from https://stackoverflow.com/a/58673530/14351818
+/// Get the current window scene. From https://stackoverflow.com/a/58673530/14351818
 extension UIApplication {
     var currentWindowScene: UIWindowScene? {
         connectedScenes

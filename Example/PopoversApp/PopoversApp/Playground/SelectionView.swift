@@ -57,7 +57,10 @@ struct SelectionViewButton: View {
         } label: {
             ExampleImage("\(tag).circle.fill", color: 0x413FFF)
         }
-        .popover(selection: $selection, tag: tag) { 
+        .popover(
+            selection: $selection,
+            tag: tag
+        ) {
             HStack {
                 ForEach(0..<(1 + (Int(tag) ?? 0)), id: \.self) { index in
                     Color.blue
