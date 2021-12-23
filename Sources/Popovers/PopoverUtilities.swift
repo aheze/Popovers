@@ -70,23 +70,23 @@ public extension UIView {
 
 /// for easier multiplying in `ShutterShapeAttributes`
 public extension CGPoint {
-    public static func * (left: CGPoint, scalar: CGFloat) -> CGPoint {
+    static func * (left: CGPoint, scalar: CGFloat) -> CGPoint {
         return CGPoint(x: left.x * scalar, y: left.y * scalar)
     }
     
-    public static func * (scalar: CGFloat, right: CGPoint) -> CGPoint {
+    static func * (scalar: CGFloat, right: CGPoint) -> CGPoint {
         return CGPoint(x: right.x * scalar, y: right.y * scalar)
     }
     
-    public static func + (left: CGPoint, right: CGPoint) -> CGPoint {
+    static func + (left: CGPoint, right: CGPoint) -> CGPoint {
         return CGPoint(x: left.x + right.x, y: left.y + right.y)
     }
     
-    public static func - (left: CGPoint, right: CGPoint) -> CGPoint {
+    static func - (left: CGPoint, right: CGPoint) -> CGPoint {
         return CGPoint(x: left.x - right.x, y: left.y - right.y)
     }
     
-    public func distance(from p: CGPoint) -> CGFloat {
+    func distance(from p: CGPoint) -> CGFloat {
         return sqrt( ((x - p.x) * (x - p.x)) + ((y - p.y) * (y - p.y)) )
     }
 }
@@ -97,7 +97,7 @@ public func CGPointDistanceSquared(from: CGPoint, to: CGPoint) -> CGFloat {
 
 /// https://www.hackingwithswift.com/quick-start/swiftui/how-to-fill-and-stroke-shapes-at-the-same-time
 public extension Shape {
-    public func fill<Fill: ShapeStyle, Stroke: ShapeStyle>(_ fillStyle: Fill, strokeBorder strokeStyle: Stroke, lineWidth: CGFloat = 1) -> some View {
+    func fill<Fill: ShapeStyle, Stroke: ShapeStyle>(_ fillStyle: Fill, strokeBorder strokeStyle: Stroke, lineWidth: CGFloat = 1) -> some View {
         self
             .stroke(strokeStyle, lineWidth: lineWidth)
             .background(self.fill(fillStyle))
@@ -105,7 +105,7 @@ public extension Shape {
 }
 
 public extension InsettableShape {
-    public func fill<Fill: ShapeStyle, Stroke: ShapeStyle>(_ fillStyle: Fill, strokeBorder strokeStyle: Stroke, lineWidth: CGFloat = 1) -> some View {
+    func fill<Fill: ShapeStyle, Stroke: ShapeStyle>(_ fillStyle: Fill, strokeBorder strokeStyle: Stroke, lineWidth: CGFloat = 1) -> some View {
         self
             .strokeBorder(strokeStyle, lineWidth: lineWidth)
             .background(self.fill(fillStyle))

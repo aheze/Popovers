@@ -21,11 +21,19 @@ public struct PopoverTemplates {
         }
     }
     public struct MenuButton: View {
+        
         public var title: String
         public var image: String
         public var action: (() -> Void)
+        
         @EnvironmentObject var model: MenuModel
         @EnvironmentObject var menuID: MenuID
+        
+        public init(title: String, image: String, action: @escaping (() -> Void)) {
+            self.title = title
+            self.image = image
+            self.action = action
+        }
         
         public var body: some View {
             HStack(spacing: 8) {
@@ -167,6 +175,7 @@ public struct PopoverTemplates {
     }
     
     public struct AlertButtonStyle: ButtonStyle {
+        public init() {}
         public func makeBody(configuration: Configuration) -> some View {
             configuration.label
                 .frame(maxWidth: .infinity)
@@ -225,12 +234,30 @@ public struct PopoverTemplates {
     }
     
     public struct Container<Content: View>: View {
+        
         public var arrowSide: ArrowSide?
         public var arrowAlignment: ArrowAlignment?
         
         public var cornerRadius = CGFloat(12)
         public var backgroundColor = Color(.systemBackground)
         public var padding = CGFloat(16)
+        
+        
+        public init(
+            arrowSide: PopoverTemplates.ArrowSide? = nil,
+            arrowAlignment: PopoverTemplates.ArrowAlignment? = nil,
+            cornerRadius: CGFloat = CGFloat(12),
+            backgroundColor: Color = Color(.systemBackground),
+            padding: CGFloat = CGFloat(16),
+            view: Content
+        ) {
+            self.arrowSide = arrowSide
+            self.arrowAlignment = arrowAlignment
+            self.cornerRadius = cornerRadius
+            self.backgroundColor = backgroundColor
+            self.padding = padding
+            self.view = view
+        }
         
         @ViewBuilder public var view: Content
         
@@ -256,19 +283,19 @@ public struct PopoverTemplates {
         }
     }
     
-    struct BackgroundWithArrow: Shape {
-        var arrowSide: ArrowSide
-        var arrowAlignment: ArrowAlignment
-        var cornerRadius: CGFloat
+    public struct BackgroundWithArrow: Shape {
+        public var arrowSide: ArrowSide
+        public var arrowAlignment: ArrowAlignment
+        public var cornerRadius: CGFloat
         
         /// you can customize these
-        static var width = CGFloat(48)
-        static var height = CGFloat(12)
-        static var tipCornerRadius = CGFloat(4)
-        static var edgeCornerRadius = CGFloat(10)
-        static var triangleSidePadding = CGFloat(28)
+        public static var width = CGFloat(48)
+        public static var height = CGFloat(12)
+        public static var tipCornerRadius = CGFloat(4)
+        public static var edgeCornerRadius = CGFloat(10)
+        public static var triangleSidePadding = CGFloat(28)
         
-        func trianglePath() -> Path {
+        public func trianglePath() -> Path {
             let triangleHalfWidth = (BackgroundWithArrow.width / 2) * 0.6
             
             let trianglePath = Path { path in
@@ -294,7 +321,7 @@ public struct PopoverTemplates {
             }
             return trianglePath
         }
-        func path(in rect: CGRect) -> Path {
+        public func path(in rect: CGRect) -> Path {
             
             var trianglePath = trianglePath()
             trianglePath = trianglePath.applying(
@@ -348,24 +375,38 @@ public struct PopoverTemplates {
         }
     }
     
-    struct CurveConnector: Shape {
-        var start: CGPoint
-        var end: CGPoint
-        var steepness = CGFloat(0.3) 
-        var direction = Direction.vertical
+    public struct CurveConnector: Shape {
         
-        enum Direction {
+        public var start: CGPoint
+        public var end: CGPoint
+        public var steepness = CGFloat(0.3)
+        public var direction = Direction.vertical
+        
+        
+        public init(
+            start: CGPoint,
+            end: CGPoint,
+            steepness: CGFloat = CGFloat(0.3),
+            direction: PopoverTemplates.CurveConnector.Direction = Direction.vertical
+        ) {
+            self.start = start
+            self.end = end
+            self.steepness = steepness
+            self.direction = direction
+        }
+        
+        public enum Direction {
             case horizontal
             case vertical
         }
         
         /// from https://www.objc.io/blog/2020/03/10/swiftui-path-animations/
-        var animatableData: AnimatablePair<CGPoint.AnimatableData, CGPoint.AnimatableData> {
+        public var animatableData: AnimatablePair<CGPoint.AnimatableData, CGPoint.AnimatableData> {
             get { AnimatablePair(start.animatableData, end.animatableData) }
             set { (start.animatableData, end.animatableData) = (newValue.first, newValue.second) }
         }
         
-        func path(in rect: CGRect) -> Path {
+        public func path(in rect: CGRect) -> Path {
             
             let startControlPoint: CGPoint
             let endControlPoint: CGPoint
@@ -389,7 +430,6 @@ public struct PopoverTemplates {
             return path
         }
     }
-    
 }
 
 
