@@ -9,7 +9,7 @@
 import SwiftUI
 
 /**
- The container view that shows the popovers.
+ The container view that shows the popovers. This is automatically managed.
  */
 struct PopoverContainerView: View {
     

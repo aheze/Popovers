@@ -8,10 +8,17 @@
 
 import SwiftUI
 
+/**
+ The View Controller that hosts `PopoverContainerView`. This is automatically managed.
+ */
 public class PopoverContainerViewController: UIViewController {
     
+    /// The popover model to pass down to `PopoverContainerView`.
     public var popoverModel: PopoverModel
     
+    /**
+     Create a new `PopoverContainerViewController`. This is automatically managed.
+     */
     public init(popoverModel: PopoverModel) {
         self.popoverModel = popoverModel
         super.init(nibName: nil, bundle: nil)
@@ -24,7 +31,7 @@ public class PopoverContainerViewController: UIViewController {
     public override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        /// orientation changed, update popover frames
+        /// Orientation or screen bounds changed. Update popover frames.
         Popovers.updateFrames()
     }
     
@@ -36,16 +43,15 @@ public class PopoverContainerViewController: UIViewController {
         view = UIView()
         view.backgroundColor = .clear
         
+        /// Embed `PopoverContainerView` in a view controller.
         let popoverContainerView = PopoverContainerView(popoverModel: popoverModel)
-        
         let hostingController = UIHostingController(rootView: popoverContainerView)
-        
-        self.addChild(hostingController)
-        view.addSubview(hostingController.view)
         hostingController.view.frame = view.bounds
         hostingController.view.backgroundColor = .clear
         hostingController.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        hostingController.didMove(toParent: self)
         
+        addChild(hostingController)
+        view.addSubview(hostingController.view)
+        hostingController.didMove(toParent: self)
     }
 }
