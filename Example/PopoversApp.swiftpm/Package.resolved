@@ -5,9 +5,9 @@
         "package": "Popovers",
         "repositoryURL": "https://github.com/aheze/Popovers",
         "state": {
-          "branch": "main",
-          "revision": "20936ae55297fcf8d799a2b3c937af6b41cdda3f",
-          "version": null
+          "branch": null,
+          "revision": "4e85f8dfaa3238bb07e6de65fa0318d1f10bdf95",
+          "version": "0.0.1"
         }
       }
     ]

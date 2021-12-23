@@ -35,7 +35,7 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/aheze/Popovers", .branch("main"))
+        .package(url: "https://github.com/aheze/Popovers", "0.0.1"..<"1.0.0")
     ],
     targets: [
         .executableTarget(
