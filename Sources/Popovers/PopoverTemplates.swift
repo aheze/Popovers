@@ -1,34 +1,62 @@
 import SwiftUI
 
-public extension View {
-    func popoverContainerShadow() -> some View {
-        self.modifier(PopoverTemplates.ContainerShadow())
-    }
-}
-
+/**
+ Some templates to get started with Popovers.
+ */
 public struct PopoverTemplates {
+    
+    /// Highlight color for the alert and menu buttons.
     public static var buttonHighlightColor = Color.secondary.opacity(0.2)
     
+    // MARK: - Menu
+    
+    /// View model for the menu.
     public class MenuModel: ObservableObject {
+        
+        /// The active (hovering) button.
         @Published var active: Int?
+        
+        /// The selected button.
         @Published var selected: Int?
+        
+        /// Array of buttons.
         @Published var destinations: [Int: CGRect] = [:]
     }
+    
+    /// Class for injecting an ID into a `MenuButton`.
     class MenuID: ObservableObject {
         @Published var id: Int
         init(_ id: Int) {
             self.id = id
         }
     }
+    
+    /**
+     A button for use in a `PopoverTemplates.Menu`.
+     */
     public struct MenuButton: View {
         
+        /// The button's title.
         public var title: String
+        
+        /// The button's image (system icon).
         public var image: String
+        
+        /// The action to be executed when the button is pressed.
         public var action: (() -> Void)
         
+        /// The Menu view model.
         @EnvironmentObject var model: MenuModel
+        
+        /// The button's ID in a wrapper class.
         @EnvironmentObject var menuID: MenuID
         
+        /**
+         A button for use in a `PopoverTemplates.Menu`.
+         - parameter title: The button's title.
+         - parameter image: The button's image (system icon).
+         - parameter action: The action to be executed when the button is pressed.
+         */
         public init(title: String, image: String, action: @escaping (() -> Void)) {
             self.title = title
             self.image = image
@@ -52,10 +80,10 @@ public struct PopoverTemplates {
                 DragGesture(minimumDistance: 0, coordinateSpace: .global)
                     .onChanged { value in
                         
-                        /// first set to nil (out of bounds)
+                        /// First set to nil (out of bounds).
                         model.active = nil
                         
-                        /// then check if the point is inside another button
+                        /// Then check if the point is inside another button.
                         for (id, destination) in model.destinations {
                             if destination.contains(value.location) {
                                 model.active = id
@@ -72,6 +100,7 @@ public struct PopoverTemplates {
                     let selected = model.selected,
                     selected == menuID.id
                 {
+                    /// Call the action if the selected button is this button.
                     action()
                 }
             }
@@ -79,12 +108,23 @@ public struct PopoverTemplates {
         }
     }
     
+    /**
+     A built-from-scratch version of the system menu.
+     */
     public struct Menu: View {
+        
+        /// View model for the child buttons.
         @StateObject var model = MenuModel()
+        
+        /// If the menu is shrunk down and not visible (for transitions).
         @State var shrunk = true
         
+        /// The menu buttons.
         public let content: [AnyView]
         
+        /**
+         Create a custom menu.
+         */
         public init<Views>(@ViewBuilder content: @escaping () -> TupleView<Views>) {
             self.content = content().getViews
         }
@@ -94,8 +134,8 @@ public struct PopoverTemplates {
                 VStack(spacing: 0) {
                     ForEach(content.indices) { index in
                         content[index]
-                            .environmentObject(MenuID(index)) /// pass down the index
-                            .environmentObject(model) /// pass down the model
+                            .environmentObject(MenuID(index)) /// Pass down the index.
+                            .environmentObject(model) /// Pass down the model.
                     }
                     .border(
                         Color(.secondaryLabel.withAlphaComponent(0.25)),
@@ -108,11 +148,11 @@ public struct PopoverTemplates {
                     }
                 }
                 .fixedSize()
-                .padding(-1)
+                .padding(-1) /// To hide the border's horizontal edges.
                 .background(VisualEffectView(.regular))
                 .cornerRadius(12)
                 .popoverContainerShadow()
-                .scaleEffect(
+                .scaleEffect( /// Add a scale effect to shrink down the popover at first.
                     shrunk ? 0.2 : 1,
                     anchor: .topTrailing
                 )
@@ -130,6 +170,7 @@ public struct PopoverTemplates {
             }
         }
         
+        /// Get the point to scale from.
         func getScaleAnchor(attributes: Popover.Attributes) -> UnitPoint {
             if case let .absolute(_, popoverAnchor) = attributes.position {
                 return popoverAnchor.unitPoint
@@ -140,7 +181,7 @@ public struct PopoverTemplates {
     }
     
     
-    /// from https://stackoverflow.com/a/58901508/14351818
+    /// Allow dragging between buttons. From https://stackoverflow.com/a/58901508/14351818
     struct DestinationDataKey: PreferenceKey {
         typealias Value = [DestinationData]
         static var defaultValue: [DestinationData] = []
@@ -174,7 +215,12 @@ public struct PopoverTemplates {
         }
     }
     
+    // MARK: - Alert
+    
+    /// A button style to resemble that of a system alert.
     public struct AlertButtonStyle: ButtonStyle {
+        
+        /// A button style to resemble that of a system alert.
         public init() {}
         public func makeBody(configuration: Configuration) -> some View {
             configuration.label
@@ -187,8 +233,15 @@ public struct PopoverTemplates {
         }
     }
     
+    // MARK: - Blur
+    
+    /// Use UIKit blurs in SwiftUI.
     public struct VisualEffectView: UIViewRepresentable {
+        
+        /// The blur's style.
         public var style: UIBlurEffect.Style
+        
+        /// Use UIKit blurs in SwiftUI.
         public init(_ style: UIBlurEffect.Style) {
             self.style = style
         }
@@ -200,10 +253,23 @@ public struct PopoverTemplates {
         }
     }
     
+    // MARK: - Shadow
+    
+    /**
+     A convenient way to apply shadows. Access using the `.popoverContainerShadow()` modifier.
+     */
     public struct ContainerShadow: ViewModifier {
+        
+        /// The shadow color.
         public static var color = Color(.label.withAlphaComponent(0.25))
+        
+        /// The shadow radius.
         public static var radius = CGFloat(40)
+        
+        /// The shadow's x offset.
         public static var x = CGFloat(0)
+        
+        /// The shadow's y offset.
         public static var y = CGFloat(4)
         
         public func body(content: Content) -> some View {
@@ -217,48 +283,83 @@ public struct PopoverTemplates {
         }
     }
     
-    /// the side of the popover that the arrow should be placed on
+    // MARK: - Container
+    
+    /// The side of the popover that the arrow should be placed on.
+    /**
+     
+                          top
+            X──────────────X──────────────X
+            |                             |
+            |                             |
+      left  X                             X  right
+            |                             |
+            |                             |
+            X──────────────X──────────────X
+                         bottom
+     */
     public enum ArrowSide {
-        case top
-        case right
-        case bottom
-        case left
+        case top(ArrowAlignment)
+        case right(ArrowAlignment)
+        case bottom(ArrowAlignment)
+        case left(ArrowAlignment)
+        
+        /// Place the arrow on the left, middle, or right on a side.
+        /**
+               
+            mostCounterClockwise    centered          mostClockwise
+            ────X──────────────────────X──────────────────────X────
+            |                                                     |
+                        * diagram is for `ArrowSide.top`
+         */
+        public enum ArrowAlignment {
+            case mostCounterClockwise
+            case centered
+            case mostClockwise
+        }
     }
     
-    /// place the arrow on the left, middle, or right on the side
-    public enum ArrowAlignment {
-        case mostCounterClockwise
-        case centered
-        case mostClockwise
-    }
-    
+    /**
+     A standard container for popovers, complete with arrow.
+     */
     public struct Container<Content: View>: View {
         
+        /// Which side to place the arrow on.
         public var arrowSide: ArrowSide?
-        public var arrowAlignment: ArrowAlignment?
         
+        /// The container's corner radius.
         public var cornerRadius = CGFloat(12)
+        
+        /// The container's background/fill color.
         public var backgroundColor = Color(.systemBackground)
+        
+        /// The padding around the content view.
         public var padding = CGFloat(16)
         
+        /// The content view.
+        @ViewBuilder public var view: Content
         
+        /**
+         A standard container for popovers, complete with arrow.
+         - parameter arrowSide: Which side to place the arrow on.
+         - parameter cornerRadius: The container's corner radius.
+         - parameter backgroundColor: The container's background/fill color.
+         - parameter padding: The padding around the content view.
+         - parameter view: The content view.
+         */
         public init(
             arrowSide: PopoverTemplates.ArrowSide? = nil,
-            arrowAlignment: PopoverTemplates.ArrowAlignment? = nil,
             cornerRadius: CGFloat = CGFloat(12),
             backgroundColor: Color = Color(.systemBackground),
             padding: CGFloat = CGFloat(16),
             @ViewBuilder view: () -> Content
         ) {
             self.arrowSide = arrowSide
-            self.arrowAlignment = arrowAlignment
             self.cornerRadius = cornerRadius
             self.backgroundColor = backgroundColor
             self.padding = padding
             self.view = view()
         }
-        
-        @ViewBuilder public var view: Content
         
         public var body: some View {
             PopoverReader { context in
@@ -266,8 +367,7 @@ public struct PopoverTemplates {
                     .padding(padding)
                     .background(
                         BackgroundWithArrow(
-                            arrowSide: arrowSide ?? context.attributes.position.getArrowPosition().0,
-                            arrowAlignment: arrowAlignment ?? context.attributes.position.getArrowPosition().1,
+                            arrowSide: arrowSide ?? context.attributes.position.getArrowPosition(),
                             cornerRadius: cornerRadius
                         )
                             .fill(backgroundColor)
@@ -282,97 +382,132 @@ public struct PopoverTemplates {
         }
     }
     
+    // MARK: - Background With Arrow
+    
+    /**
+     A shape that has an arrow protruding.
+     */
     public struct BackgroundWithArrow: Shape {
+        
+        /// The side of the rectangle to have the arrow
         public var arrowSide: ArrowSide
-        public var arrowAlignment: ArrowAlignment
+        
+        /// The shape's corner radius
         public var cornerRadius: CGFloat
         
-        /// you can customize these
+        /// The rectangle's width.
         public static var width = CGFloat(48)
-        public static var height = CGFloat(12)
-        public static var tipCornerRadius = CGFloat(4)
-        public static var edgeCornerRadius = CGFloat(10)
-        public static var triangleSidePadding = CGFloat(28)
         
-        public func trianglePath() -> Path {
-            let triangleHalfWidth = (BackgroundWithArrow.width / 2) * 0.6
+        /// The rectangle's height.
+        public static var height = CGFloat(12)
+        
+        /// The corner radius for the arrow's tip.
+        public static var tipCornerRadius = CGFloat(4)
+        
+        /// The inverse corner radius for the arrow's base.
+        public static var edgeCornerRadius = CGFloat(10)
+        
+        /// Offset the arrow from the sides - otherwise it will overflow out of the corner radius.
+        /**
+         
+                      /\
+                     /_ \
+            ----------     <---- Avoid this gap.
+                        \
+             rectangle  |
+         */
+        public static var arrowSidePadding = CGFloat(28)
+        
+        /// Path for the triangular arrow.
+        public func arrowPath() -> Path {
+            let arrowHalfWidth = (BackgroundWithArrow.width / 2) * 0.6
             
-            let trianglePath = Path { path in
-                let triangleRect = CGRect(x: 0, y: 0, width: BackgroundWithArrow.width, height: BackgroundWithArrow.height)
+            let arrowPath = Path { path in
+                let arrowRect = CGRect(x: 0, y: 0, width: BackgroundWithArrow.width, height: BackgroundWithArrow.height)
                 
-                path.move(to: CGPoint(x: triangleRect.minX, y: triangleRect.maxY))
+                path.move(to: CGPoint(x: arrowRect.minX, y: arrowRect.maxY))
                 path.addArc(
-                    tangent1End: CGPoint(x: triangleRect.midX - triangleHalfWidth, y: triangleRect.maxY),
-                    tangent2End: CGPoint(x: triangleRect.midX, y: triangleRect.minX),
+                    tangent1End: CGPoint(x: arrowRect.midX - arrowHalfWidth, y: arrowRect.maxY),
+                    tangent2End: CGPoint(x: arrowRect.midX, y: arrowRect.minX),
                     radius: BackgroundWithArrow.edgeCornerRadius
                 )
                 path.addArc(
-                    tangent1End: CGPoint(x: triangleRect.midX, y: triangleRect.minX),
-                    tangent2End: CGPoint(x: triangleRect.midX + triangleHalfWidth, y: triangleRect.maxY),
+                    tangent1End: CGPoint(x: arrowRect.midX, y: arrowRect.minX),
+                    tangent2End: CGPoint(x: arrowRect.midX + arrowHalfWidth, y: arrowRect.maxY),
                     radius: BackgroundWithArrow.tipCornerRadius
                 )
                 path.addArc(
-                    tangent1End: CGPoint(x: triangleRect.midX + triangleHalfWidth, y: triangleRect.maxY),
-                    tangent2End: CGPoint(x: triangleRect.maxX, y: triangleRect.maxY),
+                    tangent1End: CGPoint(x: arrowRect.midX + arrowHalfWidth, y: arrowRect.maxY),
+                    tangent2End: CGPoint(x: arrowRect.maxX, y: arrowRect.maxY),
                     radius: BackgroundWithArrow.edgeCornerRadius
                 )
-                path.addLine(to: CGPoint(x: triangleRect.maxX, y: triangleRect.maxY))
+                path.addLine(to: CGPoint(x: arrowRect.maxX, y: arrowRect.maxY))
             }
-            return trianglePath
+            return arrowPath
         }
+        
+        /// Draw the shape.
         public func path(in rect: CGRect) -> Path {
             
-            var trianglePath = trianglePath()
-            trianglePath = trianglePath.applying(
+            var arrowPath = arrowPath()
+            arrowPath = arrowPath.applying(
                 .init(translationX: -(BackgroundWithArrow.width / 2), y: -(BackgroundWithArrow.height))
             )
             
             var path = Path()
             path.addRoundedRect(in: rect, cornerSize: CGSize(width: cornerRadius, height: cornerRadius))
             
-            /// rotation transform to make the triangle hit a different side
-            let triangleTransform: CGAffineTransform
+            /// Rotation transform to make the arrow hit a different side.
+            let arrowTransform: CGAffineTransform
             
-            /// half of the rectangle's smallest side length, for the triangle's alignment
+            /// Half of the rectangle's smallest side length, used for the arrow's alignment.
             let popoverRadius: CGFloat
             
+            let alignment: ArrowSide.ArrowAlignment
             switch arrowSide {
-            case .top:
-                triangleTransform = .init(translationX: rect.midX, y: 0)
-                popoverRadius = (rect.width / 2) - BackgroundWithArrow.triangleSidePadding
-            case .right:
-                triangleTransform = .init(rotationAngle: 90.degreesToRadians)
+            case .top(let arrowAlignment):
+                alignment = arrowAlignment
+                arrowTransform = .init(translationX: rect.midX, y: 0)
+                popoverRadius = (rect.width / 2) - BackgroundWithArrow.arrowSidePadding
+            case .right(let arrowAlignment):
+                alignment = arrowAlignment
+                arrowTransform = .init(rotationAngle: 90.degreesToRadians)
                     .translatedBy(x: rect.midY, y: -rect.maxX)
-                popoverRadius = (rect.height / 2) - BackgroundWithArrow.triangleSidePadding
-            case .bottom:           
-                triangleTransform = .init(rotationAngle: 180.degreesToRadians)
+                popoverRadius = (rect.height / 2) - BackgroundWithArrow.arrowSidePadding
+            case .bottom(let arrowAlignment):
+                alignment = arrowAlignment
+                arrowTransform = .init(rotationAngle: 180.degreesToRadians)
                     .translatedBy(x: -rect.midX, y: -rect.maxY)
-                popoverRadius = (rect.width / 2) - BackgroundWithArrow.triangleSidePadding
-            case .left:
-                triangleTransform = .init(rotationAngle: 270.degreesToRadians)
+                popoverRadius = (rect.width / 2) - BackgroundWithArrow.arrowSidePadding
+            case .left(let arrowAlignment):
+                alignment = arrowAlignment
+                arrowTransform = .init(rotationAngle: 270.degreesToRadians)
                     .translatedBy(x: -rect.midY, y: 0)
-                popoverRadius = (rect.height / 2) - BackgroundWithArrow.triangleSidePadding
+                popoverRadius = (rect.height / 2) - BackgroundWithArrow.arrowSidePadding
             }
             
-            switch arrowAlignment {
+            switch alignment {
             case .mostCounterClockwise:
-                trianglePath = trianglePath.applying(
+                arrowPath = arrowPath.applying(
                     .init(translationX: -popoverRadius, y: 0)
                 )
             case .centered:
                 break
             case .mostClockwise:
-                trianglePath = trianglePath.applying(
+                arrowPath = arrowPath.applying(
                     .init(translationX: popoverRadius, y: 0)
                 )
             }
 
-            path.addPath(trianglePath, transform: triangleTransform)
+            path.addPath(arrowPath, transform: arrowTransform)
             
             return path
             
         }
     }
+    
+    
+    // MARK: - Curve Connector
     
     public struct CurveConnector: Shape {
         
@@ -462,128 +597,128 @@ public extension TupleView {
 public extension Popover.Attributes.Position {
     
     /// which side of the popover should the arrow be on
-    func getArrowPosition() -> (PopoverTemplates.ArrowSide, PopoverTemplates.ArrowAlignment) {
+    func getArrowPosition() -> PopoverTemplates.ArrowSide {
         if case let .absolute(originAnchor, popoverAnchor) = self {
             
             /// X = popover
             switch originAnchor {
             case .topLeft:
-                /// X ------------
-                /// | source frame
-                /// |
+                // X ------------
+                // | source frame
+                // |
                 switch popoverAnchor {
                 case .topRight:
-                    return (.right, .mostCounterClockwise)
+                    return .right(.mostCounterClockwise)
                 case .right:
-                    return (.right, .centered)
+                    return .right(.centered)
                 case .bottomLeft:
-                    return (.bottom, .mostClockwise)
+                    return .bottom(.mostClockwise)
                 case .bottom:
-                    return (.bottom, .centered)
+                    return .bottom(.centered)
                 default:
                     break
                 }
             case .top:
-                ///   ------X------
-                /// | source frame  |
-                /// |               |
+                //  -------X-------
+                // | source frame  |
+                // |               |
                 switch popoverAnchor {
                 case .bottomRight:
-                    return (.bottom, .mostCounterClockwise)
+                    return .bottom(.mostCounterClockwise)
                 case .bottom:
-                    return (.bottom, .centered)
+                    return .bottom(.centered)
                 case .bottomLeft:
-                    return (.bottom, .mostClockwise)
+                    return .bottom(.mostClockwise)
                 default:
                     break
                 }
             case .topRight:
-                ///  ------------- X
-                ///   source frame |
-                ///                |
+                //  ------------- X
+                //   source frame |
+                //                |
                 switch popoverAnchor {
                 case .bottomRight:
-                    return (.bottom, .mostCounterClockwise)
+                    return .bottom(.mostCounterClockwise)
                 case .bottom:
-                    return (.bottom, .centered)
+                    return .bottom(.centered)
                 case .left:
-                    return (.left, .centered)
+                    return .left(.centered)
                 case .topLeft:
-                    return (.left, .mostClockwise)
+                    return .left(.mostClockwise)
                 default:
                     break
                 }
             case .right:
-                ///  ------------- |
-                ///  source frame  X
-                ///  ______________|
+                //  ------------- |
+                //  source frame  X
+                //  ______________|
                 switch popoverAnchor {
                 case .bottomLeft:
-                    return (.left, .mostCounterClockwise)
+                    return .left(.mostCounterClockwise)
                 case .left:
-                    return (.left, .centered)
+                    return .left(.centered)
                 case .topLeft:
-                    return (.left, .mostClockwise)
+                    return .left(.mostClockwise)
                 default:
                     break
                 }
             case .bottomRight:
-                ///                 |
-                ///  source frame   |
-                ///  ______________ X
+                //                 |
+                //  source frame   |
+                //  ______________ X
                 switch popoverAnchor {
                 case .bottomLeft:
-                    return (.left, .mostCounterClockwise)
+                    return .left(.mostCounterClockwise)
                 case .left:
-                    return (.left, .centered)
+                    return .left(.centered)
                 case .top:
-                    return (.top, .centered)
+                    return .top(.centered)
                 case .topRight:
-                    return (.top, .mostClockwise)
+                    return .top(.mostClockwise)
                 default:
                     break
                 }
             case .bottom:
-                ///  |               |
-                ///  |  source frame |
-                ///  |_______X_______|
+                //  |                |
+                //  |  source frame  |
+                //  |_______X________|
                 switch popoverAnchor {
                 case .topRight:
-                    return (.top, .mostCounterClockwise)
+                    return .top(.mostCounterClockwise)
                 case .top:
-                    return (.top, .centered)
+                    return .top(.centered)
                 case .topLeft:
-                    return (.top, .mostClockwise)
+                    return .top(.mostClockwise)
                 default:
                     break
                 }
             case .bottomLeft:
-                ///  |
-                ///  | source frame
-                ///  X ______________
+                //  |
+                //  | source frame
+                //  X ______________
                 switch popoverAnchor {
                 case .topLeft:
-                    return (.top, .mostCounterClockwise)
+                    return .top(.mostCounterClockwise)
                 case .top:
-                    return (.top, .centered)
+                    return .top(.centered)
                 case .right:
-                    return (.right, .centered)
+                    return .right(.centered)
                 case .bottomRight:
-                    return (.top, .mostClockwise)
+                    return .top(.mostClockwise)
                 default:
                     break
                 }
             case .left:
-                ///  |--------------
-                ///  X  source frame
-                ///  |______________
+                //  |--------------
+                //  X  source frame
+                //  |______________
                 switch popoverAnchor {
                 case .topRight:
-                    return (.right, .mostCounterClockwise)
+                    return .right(.mostCounterClockwise)
                 case .right:
-                    return (.right, .centered)
+                    return .right(.centered)
                 case .bottomRight:
-                    return (.right, .mostClockwise)
+                    return .right(.mostClockwise)
                 default:
                     break
                 }
@@ -592,8 +727,8 @@ public extension Popover.Attributes.Position {
             }
         }
         
-        /// no arrow
-        return (.top, .centered)
+        /// No preferred arrow. Just go with a top-centered one.
+        return .top(.centered)
     }
 }
 
@@ -606,4 +741,10 @@ public extension BinaryInteger {
 public extension FloatingPoint {
     var degreesToRadians: Self { self * .pi / 180 }
     var radiansToDegrees: Self { self * 180 / .pi }
+}
+
+public extension View {
+    func popoverContainerShadow() -> some View {
+        self.modifier(PopoverTemplates.ContainerShadow())
+    }
 }

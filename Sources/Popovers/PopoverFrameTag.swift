@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// store a view's frame for later use
+/// Store a view's frame for later use.
 struct FrameTagModifier: ViewModifier {
     let tag: String
     
@@ -12,15 +12,25 @@ struct FrameTagModifier: ViewModifier {
     }
 }
 
-/// tag a view and store its frame
 public extension View {
+    
+    /**
+     Tag a view and store its frame. Access using `Popovers.frameTagged(_:)`.
+     
+     You can use this for supplying source frames or excluded frames. **Do not** use it anywhere else, due to State re-rendering issues.
+     */
     func frameTag(_ tag: String) -> some View {
         return self.modifier(FrameTagModifier(tag: tag))
     }
 }
 
-/// get the frame of a tagged view
 public extension Popovers {
+    
+    /**
+     Get the saved frame of a frame-tagged view. You must first set the frame using `.frameTag(_:)`.
+     
+     - Returns: The frame of a frame-tagged view, or `nil` if no view with the tag exists.
+     */
     static func frameTagged(_ tag: String) -> CGRect {
         let frame = model.frameTags[tag]
         return frame ?? .zero
