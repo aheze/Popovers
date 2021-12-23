@@ -8,212 +8,6 @@ public struct PopoverTemplates {
     /// Highlight color for the alert and menu buttons.
     public static var buttonHighlightColor = Color.secondary.opacity(0.2)
     
-    // MARK: - Menu
-    
-    /// View model for the menu.
-    public class MenuModel: ObservableObject {
-        
-        /// The active (hovering) button.
-        @Published var active: Int?
-        
-        /// The selected button.
-        @Published var selected: Int?
-        
-        /// Array of buttons.
-        @Published var destinations: [Int: CGRect] = [:]
-    }
-    
-    /// Class for injecting an ID into a `MenuButton`.
-    class MenuID: ObservableObject {
-        @Published var id: Int
-        init(_ id: Int) {
-            self.id = id
-        }
-    }
-    
-    /**
-     A button for use in a `PopoverTemplates.Menu`.
-     */
-    public struct MenuButton: View {
-        
-        /// The button's title.
-        public var title: String
-        
-        /// The button's image (system icon).
-        public var image: String
-        
-        /// The action to be executed when the button is pressed.
-        public var action: (() -> Void)
-        
-        /// The Menu view model.
-        @EnvironmentObject var model: MenuModel
-        
-        /// The button's ID in a wrapper class.
-        @EnvironmentObject var menuID: MenuID
-        
-        /**
-         A button for use in a `PopoverTemplates.Menu`.
-         - parameter title: The button's title.
-         - parameter image: The button's image (system icon).
-         - parameter action: The action to be executed when the button is pressed.
-         */
-        public init(title: String, image: String, action: @escaping (() -> Void)) {
-            self.title = title
-            self.image = image
-            self.action = action
-        }
-        
-        public var body: some View {
-            HStack(spacing: 8) {
-                Text(title)
-                
-                Spacer()
-                
-                Image(systemName: image)
-            }
-            .contentShape(Rectangle())
-            .frame(maxWidth: .infinity)
-            .padding(EdgeInsets(top: 14, leading: 20, bottom: 14, trailing: 20))
-            .background(model.active == menuID.id ? PopoverTemplates.buttonHighlightColor : .clear)
-            .foregroundColor(.primary)
-            .simultaneousGesture(
-                DragGesture(minimumDistance: 0, coordinateSpace: .global)
-                    .onChanged { value in
-                        
-                        /// First set to nil (out of bounds).
-                        model.active = nil
-                        
-                        /// Then check if the point is inside another button.
-                        for (id, destination) in model.destinations {
-                            if destination.contains(value.location) {
-                                model.active = id
-                            }
-                        }
-                    }
-                    .onEnded { value in
-                        model.selected = model.active
-                        model.active = nil
-                    }
-            )
-            .onDataChange(of: model.selected) { (_, _) in
-                if 
-                    let selected = model.selected,
-                    selected == menuID.id
-                {
-                    /// Call the action if the selected button is this button.
-                    action()
-                }
-            }
-            .background(DestinationDataSetter(destination: menuID.id))
-        }
-    }
-    
-    /**
-     A built-from-scratch version of the system menu.
-     */
-    public struct Menu: View {
-        
-        /// View model for the child buttons.
-        @StateObject var model = MenuModel()
-        
-        /// If the menu is shrunk down and not visible (for transitions).
-        @State var shrunk = true
-        
-        /// The menu buttons.
-        public let content: [AnyView]
-        
-        /**
-         Create a custom menu.
-         */
-        public init<Views>(@ViewBuilder content: @escaping () -> TupleView<Views>) {
-            self.content = content().getViews
-        }
-        
-        public var body: some View {
-            PopoverReader { context in
-                VStack(spacing: 0) {
-                    ForEach(content.indices) { index in
-                        content[index]
-                            .environmentObject(MenuID(index)) /// Pass down the index.
-                            .environmentObject(model) /// Pass down the model.
-                    }
-                    .border(
-                        Color(.secondaryLabel.withAlphaComponent(0.25)),
-                        width: 0.3
-                    )
-                }
-                .onPreferenceChange(DestinationDataKey.self) { preferences in
-                    for p in preferences {
-                        self.model.destinations[p.destination] = p.frame
-                    }
-                }
-                .fixedSize()
-                .padding(-1) /// To hide the border's horizontal edges.
-                .background(VisualEffectView(.regular))
-                .cornerRadius(12)
-                .popoverContainerShadow()
-                .scaleEffect( /// Add a scale effect to shrink down the popover at first.
-                    shrunk ? 0.2 : 1,
-                    anchor: .topTrailing
-                )
-            }
-            .onAppear { 
-                withAnimation(
-                    .spring(
-                        response: 0.4, 
-                        dampingFraction: 0.8,
-                        blendDuration: 1
-                    )
-                ) {
-                    shrunk = false
-                }
-            }
-        }
-        
-        /// Get the point to scale from.
-        func getScaleAnchor(attributes: Popover.Attributes) -> UnitPoint {
-            if case let .absolute(_, popoverAnchor) = attributes.position {
-                return popoverAnchor.unitPoint
-            }
-            
-            return .center
-        }
-    }
-    
-    
-    /// Allow dragging between buttons. From https://stackoverflow.com/a/58901508/14351818
-    struct DestinationDataKey: PreferenceKey {
-        typealias Value = [DestinationData]
-        static var defaultValue: [DestinationData] = []
-        static func reduce(value: inout [DestinationData], nextValue: () -> [DestinationData]) {
-            value.append(contentsOf: nextValue())
-        }
-    }
-    
-    struct DestinationData: Equatable {
-        let destination: Int
-        let frame: CGRect
-    }
-    
-    struct DestinationDataSetter: View {
-        let destination: Int
-        
-        var body: some View {
-            GeometryReader { geometry in
-                Rectangle()
-                    .fill(Color.clear)
-                    .preference(
-                        key: DestinationDataKey.self,
-                        value: [
-                            DestinationData(
-                                destination: self.destination,
-                                frame: geometry.frame(in: .global)
-                            )
-                        ]
-                    )
-            }
-        }
-    }
     
     // MARK: - Alert
     
@@ -253,7 +47,7 @@ public struct PopoverTemplates {
         }
     }
     
-    // MARK: - Shadow
+    // MARK: - Shadow Modifier
     
     /**
      A convenient way to apply shadows. Access using the `.popoverContainerShadow()` modifier.
@@ -509,13 +303,30 @@ public struct PopoverTemplates {
     
     // MARK: - Curve Connector
     
+    /**
+     A curved line between 2 points.
+     */
     public struct CurveConnector: Shape {
         
+        /// The start point.
         public var start: CGPoint
+        
+        /// The end point.
         public var end: CGPoint
+        
+        /// The curve's steepness.
         public var steepness = CGFloat(0.3)
+        
+        /// The curve's direction.
         public var direction = Direction.vertical
         
+        /**
+         A curved line between 2 points.
+         - parameter start: The start point.
+         - parameter end: The end point.
+         - parameter steepness: The curve's steepness.
+         - parameter direction: The curve's direction.
+         */
         public init(
             start: CGPoint,
             end: CGPoint,
@@ -528,17 +339,21 @@ public struct PopoverTemplates {
             self.direction = direction
         }
         
+        /**
+         Horizontal or Vertical line.
+         */
         public enum Direction {
             case horizontal
             case vertical
         }
         
-        /// from https://www.objc.io/blog/2020/03/10/swiftui-path-animations/
+        /// Allow animations. From https://www.objc.io/blog/2020/03/10/swiftui-path-animations/
         public var animatableData: AnimatablePair<CGPoint.AnimatableData, CGPoint.AnimatableData> {
             get { AnimatablePair(start.animatableData, end.animatableData) }
             set { (start.animatableData, end.animatableData) = (newValue.first, newValue.second) }
         }
         
+        /// Draw the curve.
         public func path(in rect: CGRect) -> Path {
             
             let startControlPoint: CGPoint
@@ -563,41 +378,224 @@ public struct PopoverTemplates {
             return path
         }
     }
-}
-
-/// From https://stackoverflow.com/a/67243688/14351818
-/// Used for the Menu template
-public extension TupleView {
-    var getViews: [AnyView] {
-        makeArray(from: value)
+    
+    // MARK: - Menu
+    
+    /// View model for the menu.
+    public class MenuModel: ObservableObject {
+        
+        /// The active (hovering) button.
+        @Published var active: Int?
+        
+        /// The selected button.
+        @Published var selected: Int?
+        
+        /// Array of buttons.
+        @Published var destinations: [Int: CGRect] = [:]
     }
     
-    private struct GenericView {
-        let body: Any
-        
-        var anyView: AnyView? {
-            AnyView(_fromValue: body)
+    /// Class for injecting an ID into a `MenuButton`.
+    class MenuID: ObservableObject {
+        @Published var id: Int
+        init(_ id: Int) {
+            self.id = id
         }
     }
     
-    private func makeArray<Tuple>(from tuple: Tuple) -> [AnyView] {
-        func convert(child: Mirror.Child) -> AnyView? {
-            withUnsafeBytes(of: child.value) { ptr -> AnyView? in
-                let binded = ptr.bindMemory(to: GenericView.self)
-                return binded.first?.anyView
+    /**
+     A button for use in a `PopoverTemplates.Menu`.
+     */
+    public struct MenuButton: View {
+        
+        /// The button's title.
+        public var title: String
+        
+        /// The button's image (system icon).
+        public var image: String
+        
+        /// The action to be executed when the button is pressed.
+        public var action: (() -> Void)
+        
+        /// The Menu view model.
+        @EnvironmentObject var model: MenuModel
+        
+        /// The button's ID in a wrapper class.
+        @EnvironmentObject var menuID: MenuID
+        
+        /**
+         A button for use in a `PopoverTemplates.Menu`.
+         - parameter title: The button's title.
+         - parameter image: The button's image (system icon).
+         - parameter action: The action to be executed when the button is pressed.
+         */
+        public init(title: String, image: String, action: @escaping (() -> Void)) {
+            self.title = title
+            self.image = image
+            self.action = action
+        }
+        
+        public var body: some View {
+            HStack(spacing: 8) {
+                Text(title)
+                
+                Spacer()
+                
+                Image(systemName: image)
+            }
+            .contentShape(Rectangle())
+            .frame(maxWidth: .infinity)
+            .padding(EdgeInsets(top: 14, leading: 20, bottom: 14, trailing: 20))
+            .background(model.active == menuID.id ? PopoverTemplates.buttonHighlightColor : .clear)
+            .foregroundColor(.primary)
+            .simultaneousGesture(
+                DragGesture(minimumDistance: 0, coordinateSpace: .global)
+                    .onChanged { value in
+                        
+                        /// First set to nil (out of bounds).
+                        model.active = nil
+                        
+                        /// Then check if the point is inside another button.
+                        for (id, destination) in model.destinations {
+                            if destination.contains(value.location) {
+                                model.active = id
+                            }
+                        }
+                    }
+                    .onEnded { value in
+                        model.selected = model.active
+                        model.active = nil
+                    }
+            )
+            .onDataChange(of: model.selected) { (_, _) in
+                if
+                    let selected = model.selected,
+                    selected == menuID.id
+                {
+                    /// Call the action if the selected button is this button.
+                    action()
+                }
+            }
+            .background(DestinationDataSetter(destination: menuID.id))
+        }
+    }
+    
+    /**
+     A built-from-scratch version of the system menu.
+     */
+    public struct Menu: View {
+        
+        /// View model for the child buttons.
+        @StateObject var model = MenuModel()
+        
+        /// If the menu is shrunk down and not visible (for transitions).
+        @State var shrunk = true
+        
+        /// The menu buttons.
+        public let content: [AnyView]
+        
+        /**
+         Create a custom menu.
+         */
+        public init<Views>(@ViewBuilder content: @escaping () -> TupleView<Views>) {
+            self.content = content().getViews
+        }
+        
+        public var body: some View {
+            PopoverReader { context in
+                VStack(spacing: 0) {
+                    ForEach(content.indices) { index in
+                        content[index]
+                            .environmentObject(MenuID(index)) /// Pass down the index.
+                            .environmentObject(model) /// Pass down the model.
+                    }
+                    .border(
+                        Color(.secondaryLabel.withAlphaComponent(0.25)),
+                        width: 0.3
+                    )
+                }
+                .onPreferenceChange(DestinationDataKey.self) { preferences in
+                    for p in preferences {
+                        self.model.destinations[p.destination] = p.frame
+                    }
+                }
+                .fixedSize()
+                .padding(-1) /// To hide the border's horizontal edges.
+                .background(VisualEffectView(.regular))
+                .cornerRadius(12)
+                .popoverContainerShadow()
+                .scaleEffect( /// Add a scale effect to shrink down the popover at first.
+                    shrunk ? 0.2 : 1,
+                    anchor: .topTrailing
+                )
+            }
+            .onAppear {
+                withAnimation(
+                    .spring(
+                        response: 0.4,
+                        dampingFraction: 0.8,
+                        blendDuration: 1
+                    )
+                ) {
+                    shrunk = false
+                }
             }
         }
         
-        let tupleMirror = Mirror(reflecting: tuple)
-        return tupleMirror.children.compactMap(convert)
+        /// Get the point to scale from.
+        func getScaleAnchor(attributes: Popover.Attributes) -> UnitPoint {
+            if case let .absolute(_, popoverAnchor) = attributes.position {
+                return popoverAnchor.unitPoint
+            }
+            
+            return .center
+        }
+    }
+    
+    
+    /// Allow dragging between buttons. From https://stackoverflow.com/a/58901508/14351818
+    struct DestinationDataKey: PreferenceKey {
+        typealias Value = [DestinationData]
+        static var defaultValue: [DestinationData] = []
+        static func reduce(value: inout [DestinationData], nextValue: () -> [DestinationData]) {
+            value.append(contentsOf: nextValue())
+        }
+    }
+    
+    struct DestinationData: Equatable {
+        let destination: Int
+        let frame: CGRect
+    }
+    
+    struct DestinationDataSetter: View {
+        let destination: Int
+        
+        var body: some View {
+            GeometryReader { geometry in
+                Rectangle()
+                    .fill(Color.clear)
+                    .preference(
+                        key: DestinationDataKey.self,
+                        value: [
+                            DestinationData(
+                                destination: self.destination,
+                                frame: geometry.frame(in: .global)
+                            )
+                        ]
+                    )
+            }
+        }
     }
 }
 
 
+// MARK: - Arrow Position
+
 public extension Popover.Attributes.Position {
     
-    /// which side of the popover should the arrow be on
+    /// Determine which side an arrow is best placed.
     func getArrowPosition() -> PopoverTemplates.ArrowSide {
+        
+        /// This only applied when the position is `.absolute`.
         if case let .absolute(originAnchor, popoverAnchor) = self {
             
             /// X = popover
@@ -732,8 +730,18 @@ public extension Popover.Attributes.Position {
     }
 }
 
+// MARK: - Shadow
+public extension View {
+    
+    /// Apply a system-like shadow.
+    func popoverContainerShadow() -> some View {
+        self.modifier(PopoverTemplates.ContainerShadow())
+    }
+}
 
-/// From https://stackoverflow.com/a/29179878
+// MARK: - Utilities
+
+/// Convert degrees to radians and back. From https://stackoverflow.com/a/29179878
 public extension BinaryInteger {
     var degreesToRadians: CGFloat { CGFloat(self) * .pi / 180 }
 }
@@ -743,8 +751,31 @@ public extension FloatingPoint {
     var radiansToDegrees: Self { self * 180 / .pi }
 }
 
-public extension View {
-    func popoverContainerShadow() -> some View {
-        self.modifier(PopoverTemplates.ContainerShadow())
+
+/// Get an array of views from `@ViewBuilder`. From https://stackoverflow.com/a/67243688/14351818
+/// Used for the Menu template.
+public extension TupleView {
+    var getViews: [AnyView] {
+        makeArray(from: value)
+    }
+    
+    private struct GenericView {
+        let body: Any
+        
+        var anyView: AnyView? {
+            AnyView(_fromValue: body)
+        }
+    }
+    
+    private func makeArray<Tuple>(from tuple: Tuple) -> [AnyView] {
+        func convert(child: Mirror.Child) -> AnyView? {
+            withUnsafeBytes(of: child.value) { ptr -> AnyView? in
+                let binded = ptr.bindMemory(to: GenericView.self)
+                return binded.first?.anyView
+            }
+        }
+        
+        let tupleMirror = Mirror(reflecting: tuple)
+        return tupleMirror.children.compactMap(convert)
     }
 }
