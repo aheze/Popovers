@@ -440,9 +440,9 @@ public extension Popover {
             }
             
             let popoverFrame = attributes.position.relativeFrame(
+                selectedAnchor: context.selectedAnchor ?? popoverAnchors.first ?? .bottom,
                 containerFrame: attributes.sourceFrame().inset(by: attributes.sourceFrameInset),
-                popoverSize: size ?? .zero,
-                selectedAnchor: context.selectedAnchor ?? popoverAnchors.first ?? .bottom
+                popoverSize: size ?? .zero
             )
             return popoverFrame
         }
@@ -488,9 +488,9 @@ public extension Popover {
                 targetPoint: point
             )
             let popoverFrame = attributes.position.relativeFrame(
+                selectedAnchor: closestAnchor,
                 containerFrame: frame,
-                popoverSize: size,
-                selectedAnchor: closestAnchor
+                popoverSize: size
             )
             
             context.selectedAnchor = closestAnchor
