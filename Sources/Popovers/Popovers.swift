@@ -8,28 +8,28 @@
 
 import SwiftUI
 
-struct Popovers {
+public struct Popovers {
     
     /// there might be multiple scenes on iPad, so make a window for each one
-    static var windows: [UIWindowScene: PopoverContainerWindow] = [:]
+    public static var windows: [UIWindowScene: PopoverContainerWindow] = [:]
     
-    static var windowBounds: CGRect {
+    public static var windowBounds: CGRect {
         return getWindow().bounds
     }
     
     /// window bounds with safe area
-    static var safeWindowFrame: CGRect {
+    public static var safeWindowFrame: CGRect {
         let window = getWindow()
         let safeAreaFrame = window.safeAreaLayoutGuide.layoutFrame
         return safeAreaFrame
     }
     
-    static internal var model: PopoverModel = {
+    static var model: PopoverModel = {
         let model = PopoverModel()
         return model
     }()
     
-    static func getWindow() -> PopoverContainerWindow {
+    public static func getWindow() -> PopoverContainerWindow {
         if let currentScene = UIApplication.shared.currentWindowScene {
             if let window = windows[currentScene] {
                 return window
@@ -50,7 +50,7 @@ struct Popovers {
         }
     }
     
-    static func present(_ popover: Popover) {
+    public static func present(_ popover: Popover) {
         _ = model
         
         _ = getWindow()
@@ -66,7 +66,7 @@ struct Popovers {
         }
     }
     
-    static func dismiss(_ popover: Popover, transaction: Transaction? = nil) {
+    public static func dismiss(_ popover: Popover, transaction: Transaction? = nil) {
         if let popoverIndex = index(of: popover) {
             popover.context.dismissed?()
             popover.attributes.onDismiss?()
@@ -78,13 +78,13 @@ struct Popovers {
         }
     }
     
-    static func dismissAll() {
+    public static func dismissAll() {
         for popover in current.reversed() {
             dismiss(popover)
         }
     }
     
-    static func replace(_ oldPopover: Popover, with newPopover: Popover) {
+    public static func replace(_ oldPopover: Popover, with newPopover: Popover) {
         _ = getWindow()
         
         if let oldPopoverIndex = index(of: oldPopover) {
@@ -106,7 +106,7 @@ struct Popovers {
         }
     }
     
-    static var current: [Popover] {
+    public static var current: [Popover] {
         get {
             model.popovers
         } set {
@@ -115,13 +115,13 @@ struct Popovers {
     }
     
     /// optional refresh
-    static func refresh(with transaction: Transaction? = nil) {
+    public static func refresh(with transaction: Transaction? = nil) {
         for popover in current {
             popover.context.transaction = transaction
         }
         model.refresh()
     }
-    static func updateFrames() {
+    public static func updateFrames() {
         for popover in current {
             if 
                 case .relative(let popoverAnchors) = popover.attributes.position,
@@ -139,14 +139,14 @@ struct Popovers {
         }
         model.refresh()
     }
-    static func popover(tagged tag: String) -> Popover? {
+    public static func popover(tagged tag: String) -> Popover? {
         return current.first(where: { $0.attributes.tag == tag })
     }
-    static func index(of popover: Popover) -> Int? {
+    public static func index(of popover: Popover) -> Int? {
         return current.indices.first(where: { current[$0] == popover })
     }
     
-    static var draggingEnabled: Bool {
+    public static var draggingEnabled: Bool {
         get {
             Popovers.model.popoversDraggable
         } set {

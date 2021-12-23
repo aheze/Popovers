@@ -9,19 +9,19 @@
 import SwiftUI
 import Combine
 
-struct Popover: Identifiable {
+public struct Popover: Identifiable {
     
     /// everything about the popover is stored here
-    var context: Context
+    public var context: Context
     
     /// the content view
-    var view: AnyView
+    public var view: AnyView
     
     /// background
-    var background: AnyView
+    public var background: AnyView
     
     /// normal init
-    init<Content: View>(
+    public init<Content: View>(
         attributes: Attributes = .init(),
         @ViewBuilder view: @escaping () -> Content
     ) {
@@ -33,7 +33,7 @@ struct Popover: Identifiable {
     }
     
     /// for a background view
-    init<MainContent: View, BackgroundContent: View>(
+    public init<MainContent: View, BackgroundContent: View>(
         attributes: Attributes = .init(),
         @ViewBuilder view: @escaping () -> MainContent,
         @ViewBuilder background: @escaping () -> BackgroundContent
@@ -45,61 +45,128 @@ struct Popover: Identifiable {
         self.background = AnyView(background().environmentObject(context))
     }
     
-    struct Attributes {
-        var sourceFrame: (() -> CGRect) = { .zero }
-        var sourceFrameIgnoresSafeArea = true
-        var sourceFrameInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-        var position = Position.absolute(originAnchor: .bottom, popoverAnchor: .top)
+    public struct Attributes {
+        /// for identifying the popover later
+        public var tag: String?
+        
+        public var sourceFrame: (() -> CGRect) = { .zero }
+        public var sourceFrameIgnoresSafeArea = true
+        public var sourceFrameInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        public var position = Position.absolute(originAnchor: .bottom, popoverAnchor: .top)
         
         /// popover will never go past the screen edges if this is not nil
-        var screenEdgePadding = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
-        var presentation = Presentation()
-        var dismissal = Dismissal()
+        public var screenEdgePadding = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
+        public var presentation = Presentation()
+        public var dismissal = Dismissal()
         
         /// how the popover will "rubber-band" when dragged
-        var rubberBandingMode: RubberBandingMode = [.xAxis, .yAxis]
+        public var rubberBandingMode: RubberBandingMode = [.xAxis, .yAxis]
         
         /// prevent anything else in the background to be pressed
-        var blocksBackgroundTouches = false
+        public var blocksBackgroundTouches = false
         
-        var onTapOutside: (() -> Void)?
-        var onDismiss: (() -> Void)?
-        var onContextChange: ((Context) -> Void)?
+        public var onTapOutside: (() -> Void)?
+        public var onDismiss: (() -> Void)?
+        public var onContextChange: ((Context) -> Void)?
         
-        /// for identifying the popover later. Optional.
-        var tag: String?
         
-        struct RubberBandingMode: OptionSet {
-            let rawValue: Int
+        public init(
+            tag: String? = nil,
+            sourceFrame: @escaping (() -> CGRect) = { .zero },
+            sourceFrameIgnoresSafeArea: Bool = true,
+            sourceFrameInset: UIEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0),
+            position: Popover.Attributes.Position = Position.absolute(originAnchor: .bottom, popoverAnchor: .top),
+            screenEdgePadding: UIEdgeInsets = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16),
+            presentation: Popover.Attributes.Presentation = Presentation(),
+            dismissal: Popover.Attributes.Dismissal = Dismissal(),
+            rubberBandingMode: Popover.Attributes.RubberBandingMode = [.xAxis, .yAxis],
+            blocksBackgroundTouches: Bool = false,
+            onTapOutside: (() -> Void)? = nil,
+            onDismiss: (() -> Void)? = nil,
+            onContextChange: ((Popover.Context) -> Void)? = nil
+        ) {
+            self.tag = tag
+            self.sourceFrame = sourceFrame
+            self.sourceFrameIgnoresSafeArea = sourceFrameIgnoresSafeArea
+            self.sourceFrameInset = sourceFrameInset
+            self.position = position
+            self.screenEdgePadding = screenEdgePadding
+            self.presentation = presentation
+            self.dismissal = dismissal
+            self.rubberBandingMode = rubberBandingMode
+            self.blocksBackgroundTouches = blocksBackgroundTouches
+            self.onTapOutside = onTapOutside
+            self.onDismiss = onDismiss
+            self.onContextChange = onContextChange
+        }
+        
+        public struct RubberBandingMode: OptionSet {
+            public let rawValue: Int
+            public init(rawValue: Int) {
+                self.rawValue = rawValue
+            }
+            
             public static let xAxis = RubberBandingMode(rawValue: 1 << 0) // 1
             public static let yAxis = RubberBandingMode(rawValue: 1 << 1) // 2
             public static let none = RubberBandingMode([])
         }
         
-        struct Presentation {
-            var animation: Animation? = .default
-            var transition: AnyTransition? = .opacity
+        public struct Presentation {
+            public var animation: Animation? = .default
+            public var transition: AnyTransition? = .opacity
+            
+            
+            public init(
+                animation: Animation? = .default,
+                transition: AnyTransition? = .opacity
+            ) {
+                self.animation = animation
+                self.transition = transition
+            }
         }
         
-        struct Dismissal {
-            var animation: Animation? = .default
-            var transition: AnyTransition? = .opacity
+        public struct Dismissal {
             
-            /// to move the popover off the screen or not
-            var dragMovesPopoverOffScreen = true
+            public var animation: Animation? = .default
+            public var transition: AnyTransition? = .opacity
             
-            var mode = Mode.tapOutside
+            
+            public var mode = Mode.tapOutside
             
             /// only applies when `mode` is .whenTappedOutside
-            var excludedFrames: (() -> [CGRect]) = { [] }
+            public var excludedFrames: (() -> [CGRect]) = { [] }
+            
+            /// to move the popover off the screen or not
+            public var dragMovesPopoverOffScreen = true
             
             /// in terms of a percent of the screen height
-            /// only applies when `mode` is .dragDown or .dragUp   
+            /// only applies when `mode` is .dragDown or .dragUp
             /// 0.25 * screen height is where the popover will be dismissed
-            var dragDismissalProximity = CGFloat(0.25)
+            public var dragDismissalProximity = CGFloat(0.25)
             
-            struct Mode: OptionSet {
-                let rawValue: Int
+            
+            public  init(
+                animation: Animation? = .default,
+                transition: AnyTransition? = .opacity,
+                mode: Popover.Attributes.Dismissal.Mode = Mode.tapOutside,
+                excludedFrames: @escaping (() -> [CGRect]) = { [] },
+                dragMovesPopoverOffScreen: Bool = true,
+                dragDismissalProximity: CGFloat = CGFloat(0.25)
+            ) {
+                self.animation = animation
+                self.transition = transition
+                self.mode = mode
+                self.excludedFrames = excludedFrames
+                self.dragMovesPopoverOffScreen = dragMovesPopoverOffScreen
+                self.dragDismissalProximity = dragDismissalProximity
+            }
+            
+            public struct Mode: OptionSet {
+                public let rawValue: Int
+                public init(rawValue: Int) {
+                    self.rawValue = rawValue
+                }
+                
                 public static let tapOutside = Mode(rawValue: 1 << 0) // 1
                 public static let dragDown = Mode(rawValue: 1 << 1) // 2
                 public static let dragUp = Mode(rawValue: 1 << 2) // 4
@@ -107,32 +174,11 @@ struct Popover: Identifiable {
             }
         }
         
-        enum Position {
+        public enum Position {
             case absolute(originAnchor: Anchor, popoverAnchor: Anchor)
             case relative(popoverAnchors: [Anchor])
             
-            struct Absolute {
-                
-                /// the side of the origin view which the popover is attached to
-                var originAnchor = Anchor.bottomLeft
-                
-                /// the side of the popover that gets attached to the origin
-                var popoverAnchor = Anchor.topLeft
-            }
-            
-            struct Relative {
-                var popoverAnchors: [Anchor]
-                
-                init(popoverAnchor: Anchor = .bottomLeft) {
-                    self.popoverAnchors = [popoverAnchor]
-                }
-                
-                init(popoverAnchors: [Anchor] = [.bottomLeft]) {
-                    self.popoverAnchors = popoverAnchors
-                }
-            }
-            
-            enum Anchor {
+            public enum Anchor {
                 case topLeft
                 case top
                 case topRight
@@ -146,35 +192,35 @@ struct Popover: Identifiable {
         }
     }
     
-    class Context: Identifiable, ObservableObject {
+    public class Context: Identifiable, ObservableObject {
         
         /// id of the popover
-        var id = UUID()
+        public var id = UUID()
         
-        var attributes = Attributes()
+        public var attributes = Attributes()
         
         /// calculated from SwiftUI. If this is `nil`, the popover is not yet ready.
-        @Published var size: CGSize?
+        @Published public var size: CGSize?
         
         /// frame of the popover, without gestures applied
-        @Published var staticFrame = CGRect.zero
+        @Published public var staticFrame = CGRect.zero
         
         /// visual frame of the popover shown to the user
-        @Published var frame = CGRect.zero
+        @Published public var frame = CGRect.zero
         
         /// for relative positioning
-        @Published var selectedAnchor: Popover.Attributes.Position.Anchor?
+        @Published public var selectedAnchor: Popover.Attributes.Position.Anchor?
         
         /// for animations
-        var transaction: Transaction?
+        public var transaction: Transaction?
         
         /// for SwiftUI - set `$present` to false in the view modifier
         internal var dismissed: (() -> Void)?
         
-        /// notify when context changed 
-        var changeSink: AnyCancellable?
+        /// notify when context changed
+        public var changeSink: AnyCancellable?
         
-        init() {
+        public init() {
             changeSink = objectWillChange.sink { [weak self] in
                 guard let self = self else { return }
                 self.attributes.onContextChange?(self)
@@ -183,7 +229,7 @@ struct Popover: Identifiable {
     }
 }
 
-extension Popover {
+public extension Popover {
     
     var id: UUID {
         get {
@@ -232,11 +278,11 @@ extension Popover {
             
             /// popover overflows on the right/bottom side
             if popoverFrame.maxX > maxX {
-                let difference = popoverFrame.maxX - maxX 
+                let difference = popoverFrame.maxX - maxX
                 popoverFrame.origin.x -= difference
             }
             if popoverFrame.maxY > maxY {
-                let difference = popoverFrame.maxY - maxY 
+                let difference = popoverFrame.maxY - maxY
                 popoverFrame.origin.y -= difference
             }
             
@@ -258,9 +304,9 @@ extension Popover {
     }
     
     func positionChanged(to point: CGPoint) {
-        if 
+        if
             attributes.dismissal.mode.contains(.dragDown),
-            point.y >= Popovers.windowBounds.height - Popovers.windowBounds.height * self.attributes.dismissal.dragDismissalProximity 
+            point.y >= Popovers.windowBounds.height - Popovers.windowBounds.height * self.attributes.dismissal.dragDismissalProximity
         {
             if attributes.dismissal.dragMovesPopoverOffScreen {
                 var newFrame = context.staticFrame
@@ -271,9 +317,9 @@ extension Popover {
             Popovers.dismiss(self)
             return
         }
-        if 
+        if
             attributes.dismissal.mode.contains(.dragUp),
-            point.y <= Popovers.windowBounds.height * self.attributes.dismissal.dragDismissalProximity 
+            point.y <= Popovers.windowBounds.height * self.attributes.dismissal.dragDismissalProximity
         {
             if attributes.dismissal.dragMovesPopoverOffScreen {
                 var newFrame = context.staticFrame
@@ -283,7 +329,7 @@ extension Popover {
             }
             Popovers.dismiss(self)
             return
-        } 
+        }
         
         if case .relative(let popoverAnchors) = attributes.position {
             let frame = attributes.sourceFrame().inset(by: attributes.sourceFrameInset)
@@ -311,7 +357,8 @@ extension Popover {
 extension Popover: Equatable {
     
     /// conform to equatable
-    static func == (lhs: Popover, rhs: Popover) -> Bool {
+    public static func == (lhs: Popover, rhs: Popover) -> Bool {
         return lhs.id == rhs.id
     }
 }
+

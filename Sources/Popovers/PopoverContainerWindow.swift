@@ -9,12 +9,12 @@
 import UIKit
 import SwiftUI
 
-class PopoverContainerWindow: UIWindow {
+public class PopoverContainerWindow: UIWindow {
     
-    var popoverModel: PopoverModel
-    var scene: UIWindowScene?
+    public var popoverModel: PopoverModel
+    public var scene: UIWindowScene?
     
-    init(popoverModel: PopoverModel, scene: UIWindowScene?) {
+    public init(popoverModel: PopoverModel, scene: UIWindowScene?) {
         self.popoverModel = popoverModel
         self.scene = scene
         
@@ -30,7 +30,7 @@ class PopoverContainerWindow: UIWindow {
         self.makeKeyAndVisible()
     }
     
-    lazy var popoverContainerViewController: PopoverContainerViewController = {
+    public lazy var popoverContainerViewController: PopoverContainerViewController = {
         let popoverContainerViewController = PopoverContainerViewController(popoverModel: popoverModel)
         return popoverContainerViewController
     }()
@@ -39,7 +39,7 @@ class PopoverContainerWindow: UIWindow {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+    public override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
         
         /// make sure the hit test was actually a touch - not a cursor hover or something else
         guard event.map({ $0.type == .touches }) ?? true else { return nil }

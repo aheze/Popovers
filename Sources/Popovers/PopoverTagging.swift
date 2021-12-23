@@ -13,14 +13,14 @@ struct FrameTagModifier: ViewModifier {
 }
 
 /// tag a view and store its frame
-extension View {
+public extension View {
     func frameTag(_ tag: String) -> some View {
         return self.modifier(FrameTagModifier(tag: tag))
     }
 }
 
 /// get the frame of a tagged view
-extension Popovers {
+public extension Popovers {
     static func frameTagged(_ tag: String) -> CGRect {
         let frame = model.frameTags[tag]
         return frame ?? .zero

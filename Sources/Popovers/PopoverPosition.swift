@@ -1,6 +1,6 @@
 import SwiftUI
 
-extension CGRect {
+public extension CGRect {
     func point(at anchor: Popover.Attributes.Position.Anchor) -> CGPoint {
         switch anchor {
         case .topLeft:
@@ -48,8 +48,8 @@ extension CGRect {
         }
     }
 }
-extension Popover.Attributes.Position {
 
+public extension Popover.Attributes.Position {
     func absoluteFrame(
         originAnchor: Anchor,
         popoverAnchor: Anchor,
@@ -201,7 +201,7 @@ extension Popover.Attributes.Position {
     }
 }
 
-extension Popover.Attributes.Position.Anchor {
+public extension Popover.Attributes.Position.Anchor {
     var unitPoint: UnitPoint {
         switch self {
         case .topLeft:

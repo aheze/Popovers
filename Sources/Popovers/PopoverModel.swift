@@ -9,11 +9,11 @@
 import Combine
 import SwiftUI
 
-class PopoverModel: ObservableObject {
+public class PopoverModel: ObservableObject {
     @Published var popovers = [Popover]()
     
     /// must be published so that the `PopoverContainerView` re-renders
-    @Published internal var popoversDraggable = true
+    @Published var popoversDraggable = true
     
     /// store the frames of views (for excluding popover dismissal)
     @Published var frameTags: [String: CGRect] = [:]
@@ -24,15 +24,5 @@ class PopoverModel: ObservableObject {
     /// force container view to update
     func refresh() {
         objectWillChange.send()
-    }
-}
-
-struct PopoverModelReader<Content: View>: View {
-    
-    @ViewBuilder var content: (PopoverModel) -> Content
-    @EnvironmentObject var model: PopoverModel
-    
-    var body: some View {
-        content(model)
     }
 }

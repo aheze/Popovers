@@ -8,9 +8,9 @@
 
 import SwiftUI
 
-struct PopoverConstants {
+public struct PopoverConstants {
     
     /// for dragging
-    static var rubberBandingPower = CGFloat(0.7)
+    public static var rubberBandingPower = CGFloat(0.7)
     
 }

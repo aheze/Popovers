@@ -8,11 +8,11 @@
 
 import SwiftUI
 
-class PopoverContainerViewController: UIViewController {
+public class PopoverContainerViewController: UIViewController {
     
-    var popoverModel: PopoverModel
+    public var popoverModel: PopoverModel
     
-    init(popoverModel: PopoverModel) {
+    public init(popoverModel: PopoverModel) {
         self.popoverModel = popoverModel
         super.init(nibName: nil, bundle: nil)
     }
@@ -21,14 +21,14 @@ class PopoverContainerViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func viewDidLayoutSubviews() {
+    public override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
         /// orientation changed, update popover frames
         Popovers.updateFrames()
     }
     
-    override func loadView() {
+    public override func loadView() {
     
         /**
          Instantiate the base `view`.

@@ -1,15 +1,15 @@
 import SwiftUI
 
-extension View {
+public extension View {
     func popoverContainerShadow() -> some View {
         self.modifier(PopoverTemplates.ContainerShadow())
     }
 }
 
-struct PopoverTemplates {
-    static var buttonHighlightColor = Color.secondary.opacity(0.2)
+public struct PopoverTemplates {
+    public static var buttonHighlightColor = Color.secondary.opacity(0.2)
     
-    class MenuModel: ObservableObject {
+    public class MenuModel: ObservableObject {
         @Published var active: Int?
         @Published var selected: Int?
         @Published var destinations: [Int: CGRect] = [:]
@@ -20,14 +20,14 @@ struct PopoverTemplates {
             self.id = id
         }
     }
-    struct MenuButton: View {
-        var title: String
-        var image: String
-        var action: (() -> Void)
+    public struct MenuButton: View {
+        public var title: String
+        public var image: String
+        public var action: (() -> Void)
         @EnvironmentObject var model: MenuModel
         @EnvironmentObject var menuID: MenuID
         
-        var body: some View {
+        public var body: some View {
             HStack(spacing: 8) {
                 Text(title)
                 
@@ -71,17 +71,17 @@ struct PopoverTemplates {
         }
     }
     
-    struct Menu: View {
+    public struct Menu: View {
         @StateObject var model = MenuModel()
         @State var shrunk = true
         
-        let content: [AnyView]
+        public let content: [AnyView]
         
-        init<Views>(@ViewBuilder content: @escaping () -> TupleView<Views>) {
+        public init<Views>(@ViewBuilder content: @escaping () -> TupleView<Views>) {
             self.content = content().getViews
         }
         
-        var body: some View {
+        public var body: some View {
             PopoverReader { context in
                 VStack(spacing: 0) {
                     ForEach(content.indices) { index in
@@ -90,9 +90,7 @@ struct PopoverTemplates {
                             .environmentObject(model) /// pass down the model
                     }
                     .border(
-                        Color(
-                            uiColor: .secondaryLabel.withAlphaComponent(0.25)
-                        ), 
+                        Color(.secondaryLabel.withAlphaComponent(0.25)),
                         width: 0.3
                     )
                 }
@@ -103,7 +101,7 @@ struct PopoverTemplates {
                 }
                 .fixedSize()
                 .padding(-1)
-                .background(.regularMaterial)
+                .background(VisualEffectView(.regular))
                 .cornerRadius(12)
                 .popoverContainerShadow()
                 .scaleEffect(
@@ -168,60 +166,38 @@ struct PopoverTemplates {
         }
     }
     
-    struct AlertButtonStyle: ButtonStyle {
-        func makeBody(configuration: Configuration) -> some View {
+    public struct AlertButtonStyle: ButtonStyle {
+        public func makeBody(configuration: Configuration) -> some View {
             configuration.label
                 .frame(maxWidth: .infinity)
                 .contentShape(Rectangle())
                 .padding()
-                .background {
+                .background(
                     configuration.isPressed ? PopoverTemplates.buttonHighlightColor : Color.clear
-                }
-        }
-    }
-    
-    struct VisualScaleEffect: GeometryEffect {
-        var scale: CGFloat
-        
-        var animatableData: CGFloat {
-            get { scale }
-            set { scale = newValue }
-        }
-        
-        func effectValue(size: CGSize) -> ProjectionTransform {
-            let scaledWidth = size.width * scale
-            let scaledHeight = size.height * scale
-            
-            return ProjectionTransform(
-                CGAffineTransform(
-                    translationX: -(scaledWidth - size.width) / 2,
-                    y: -(scaledHeight - size.height) / 2
                 )
-                    .scaledBy(x: scale, y: scale)
-            )
         }
     }
     
-    struct VisualEffectView: UIViewRepresentable {
-        var style: UIBlurEffect.Style
-        init(_ style: UIBlurEffect.Style) {
+    public struct VisualEffectView: UIViewRepresentable {
+        public var style: UIBlurEffect.Style
+        public init(_ style: UIBlurEffect.Style) {
             self.style = style
         }
-        func makeUIView(context: UIViewRepresentableContext<Self>) -> UIVisualEffectView {
+        public func makeUIView(context: UIViewRepresentableContext<Self>) -> UIVisualEffectView {
             UIVisualEffectView()
         }
-        func updateUIView(_ uiView: UIVisualEffectView, context: UIViewRepresentableContext<Self>) { 
+        public func updateUIView(_ uiView: UIVisualEffectView, context: UIViewRepresentableContext<Self>) {
             uiView.effect = UIBlurEffect(style: style)
         }
     }
     
-    struct ContainerShadow: ViewModifier {
-        static var color = Color(uiColor: .label.withAlphaComponent(0.25))
-        static var radius = CGFloat(40)
-        static var x = CGFloat(0)
-        static var y = CGFloat(4)
+    public struct ContainerShadow: ViewModifier {
+        public static var color = Color(.label.withAlphaComponent(0.25))
+        public static var radius = CGFloat(40)
+        public static var x = CGFloat(0)
+        public static var y = CGFloat(4)
         
-        func body(content: Content) -> some View {
+        public func body(content: Content) -> some View {
             content
                 .shadow(
                     color: ContainerShadow.color,
@@ -234,7 +210,7 @@ struct PopoverTemplates {
     
     
     /// the side of the popover that the arrow should be placed on
-    enum ArrowSide {
+    public enum ArrowSide {
         case top
         case right
         case bottom
@@ -242,35 +218,35 @@ struct PopoverTemplates {
     }
     
     /// place the arrow on the left, middle, or right on the side
-    enum ArrowAlignment {
+    public enum ArrowAlignment {
         case mostCounterClockwise
         case centered
         case mostClockwise
     }
     
-    struct Container<Content: View>: View {
-        var arrowSide: ArrowSide?
-        var arrowAlignment: ArrowAlignment?
+    public struct Container<Content: View>: View {
+        public var arrowSide: ArrowSide?
+        public var arrowAlignment: ArrowAlignment?
         
-        var cornerRadius = CGFloat(12)
-        var backgroundColor = Color(uiColor: .systemBackground) 
-        var padding = CGFloat(16)
+        public var cornerRadius = CGFloat(12)
+        public var backgroundColor = Color(.systemBackground)
+        public var padding = CGFloat(16)
         
-        @ViewBuilder var view: Content
+        @ViewBuilder public var view: Content
         
-        var body: some View {
+        public var body: some View {
             PopoverReader { context in
                 view
                     .padding(padding)
                     .background(
                         BackgroundWithArrow(
-                            arrowSide: arrowSide ?? getArrowPosition(attributes: context.attributes).0,
-                            arrowAlignment: arrowAlignment ?? getArrowPosition(attributes: context.attributes).1,
+                            arrowSide: arrowSide ?? context.attributes.position.getArrowPosition().0,
+                            arrowAlignment: arrowAlignment ?? context.attributes.position.getArrowPosition().1,
                             cornerRadius: cornerRadius
                         )
                             .fill(backgroundColor)
                             .shadow(
-                                color: Color(uiColor: .label.withAlphaComponent(0.25)),
+                                color: Color(.label.withAlphaComponent(0.25)),
                                 radius: 40,
                                 x: 0,
                                 y: 4
@@ -278,142 +254,6 @@ struct PopoverTemplates {
                     )
             }
         }
-        
-        /// which side of the popover should the arrow be on
-        func getArrowPosition(attributes: Popover.Attributes) -> (ArrowSide, ArrowAlignment) {
-            if case let .absolute(originAnchor, popoverAnchor) = attributes.position {
-                
-                /// X = popover
-                switch originAnchor {
-                case .topLeft:
-                    /// X ------------
-                    /// | source frame
-                    /// | 
-                    switch popoverAnchor {
-                    case .topRight:
-                        return (.right, .mostCounterClockwise)
-                    case .right:
-                        return (.right, .centered)
-                    case .bottomLeft:
-                        return (.bottom, .mostClockwise)
-                    case .bottom:
-                        return (.bottom, .centered)
-                    default:
-                        break
-                    }
-                case .top:
-                    ///   ------X------
-                    /// | source frame  |
-                    /// |               |
-                    switch popoverAnchor {
-                    case .bottomRight:
-                        return (.bottom, .mostCounterClockwise)
-                    case .bottom:
-                        return (.bottom, .centered)
-                    case .bottomLeft:
-                        return (.bottom, .mostClockwise)
-                    default:
-                        break
-                    }
-                case .topRight:
-                    ///  ------------- X
-                    ///   source frame |
-                    ///                |  
-                    switch popoverAnchor {
-                    case .bottomRight:
-                        return (.bottom, .mostCounterClockwise)
-                    case .bottom:
-                        return (.bottom, .centered)
-                    case .left:
-                        return (.left, .centered)
-                    case .topLeft:
-                        return (.left, .mostClockwise)
-                    default:
-                        break
-                    }
-                case .right:
-                    ///  ------------- |
-                    ///  source frame  X
-                    ///  ______________|
-                    switch popoverAnchor {
-                    case .bottomLeft:
-                        return (.left, .mostCounterClockwise)
-                    case .left:
-                        return (.left, .centered)
-                    case .topLeft:
-                        return (.left, .mostClockwise)
-                    default:
-                        break
-                    }
-                case .bottomRight:
-                    ///                 |
-                    ///  source frame   |
-                    ///  ______________ X  
-                    switch popoverAnchor {
-                    case .bottomLeft:
-                        return (.left, .mostCounterClockwise)
-                    case .left:
-                        return (.left, .centered)
-                    case .top:
-                        return (.top, .centered)
-                    case .topRight:
-                        return (.top, .mostClockwise)
-                    default:
-                        break
-                    }
-                case .bottom:
-                    ///  |               |
-                    ///  |  source frame |
-                    ///  |_______X_______|   
-                    switch popoverAnchor {
-                    case .topRight:
-                        return (.top, .mostCounterClockwise)
-                    case .top:
-                        return (.top, .centered)
-                    case .topLeft:
-                        return (.top, .mostClockwise)
-                    default:
-                        break
-                    }
-                case .bottomLeft:
-                    ///  |              
-                    ///  | source frame 
-                    ///  X ______________  
-                    switch popoverAnchor {
-                    case .topLeft:
-                        return (.top, .mostCounterClockwise)
-                    case .top:
-                        return (.top, .centered)
-                    case .right:
-                        return (.right, .centered)
-                    case .bottomRight:
-                        return (.top, .mostClockwise)
-                    default:
-                        break
-                    }
-                case .left:
-                    ///  |--------------
-                    ///  X  source frame  
-                    ///  |______________ 
-                    switch popoverAnchor {
-                    case .topRight:
-                        return (.right, .mostCounterClockwise)
-                    case .right:
-                        return (.right, .centered)
-                    case .bottomRight:
-                        return (.right, .mostClockwise)
-                    default:
-                        break
-                    }
-                case .center:
-                    break
-                }
-            }
-            
-            /// no arrow
-            return (.top, .centered)
-        }
-        
     }
     
     struct BackgroundWithArrow: Shape {
@@ -552,5 +392,143 @@ struct PopoverTemplates {
     
 }
 
+
+public extension Popover.Attributes.Position {
+    
+    /// which side of the popover should the arrow be on
+    func getArrowPosition() -> (PopoverTemplates.ArrowSide, PopoverTemplates.ArrowAlignment) {
+        if case let .absolute(originAnchor, popoverAnchor) = self {
+            
+            /// X = popover
+            switch originAnchor {
+            case .topLeft:
+                /// X ------------
+                /// | source frame
+                /// |
+                switch popoverAnchor {
+                case .topRight:
+                    return (.right, .mostCounterClockwise)
+                case .right:
+                    return (.right, .centered)
+                case .bottomLeft:
+                    return (.bottom, .mostClockwise)
+                case .bottom:
+                    return (.bottom, .centered)
+                default:
+                    break
+                }
+            case .top:
+                ///   ------X------
+                /// | source frame  |
+                /// |               |
+                switch popoverAnchor {
+                case .bottomRight:
+                    return (.bottom, .mostCounterClockwise)
+                case .bottom:
+                    return (.bottom, .centered)
+                case .bottomLeft:
+                    return (.bottom, .mostClockwise)
+                default:
+                    break
+                }
+            case .topRight:
+                ///  ------------- X
+                ///   source frame |
+                ///                |
+                switch popoverAnchor {
+                case .bottomRight:
+                    return (.bottom, .mostCounterClockwise)
+                case .bottom:
+                    return (.bottom, .centered)
+                case .left:
+                    return (.left, .centered)
+                case .topLeft:
+                    return (.left, .mostClockwise)
+                default:
+                    break
+                }
+            case .right:
+                ///  ------------- |
+                ///  source frame  X
+                ///  ______________|
+                switch popoverAnchor {
+                case .bottomLeft:
+                    return (.left, .mostCounterClockwise)
+                case .left:
+                    return (.left, .centered)
+                case .topLeft:
+                    return (.left, .mostClockwise)
+                default:
+                    break
+                }
+            case .bottomRight:
+                ///                 |
+                ///  source frame   |
+                ///  ______________ X
+                switch popoverAnchor {
+                case .bottomLeft:
+                    return (.left, .mostCounterClockwise)
+                case .left:
+                    return (.left, .centered)
+                case .top:
+                    return (.top, .centered)
+                case .topRight:
+                    return (.top, .mostClockwise)
+                default:
+                    break
+                }
+            case .bottom:
+                ///  |               |
+                ///  |  source frame |
+                ///  |_______X_______|
+                switch popoverAnchor {
+                case .topRight:
+                    return (.top, .mostCounterClockwise)
+                case .top:
+                    return (.top, .centered)
+                case .topLeft:
+                    return (.top, .mostClockwise)
+                default:
+                    break
+                }
+            case .bottomLeft:
+                ///  |
+                ///  | source frame
+                ///  X ______________
+                switch popoverAnchor {
+                case .topLeft:
+                    return (.top, .mostCounterClockwise)
+                case .top:
+                    return (.top, .centered)
+                case .right:
+                    return (.right, .centered)
+                case .bottomRight:
+                    return (.top, .mostClockwise)
+                default:
+                    break
+                }
+            case .left:
+                ///  |--------------
+                ///  X  source frame
+                ///  |______________
+                switch popoverAnchor {
+                case .topRight:
+                    return (.right, .mostCounterClockwise)
+                case .right:
+                    return (.right, .centered)
+                case .bottomRight:
+                    return (.right, .mostClockwise)
+                default:
+                    break
+                }
+            case .center:
+                break
+            }
+        }
+        
+        /// no arrow
+        return (.top, .centered)
+    }
+}
 
 
