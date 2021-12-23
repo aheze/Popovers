@@ -249,14 +249,14 @@ public struct PopoverTemplates {
             cornerRadius: CGFloat = CGFloat(12),
             backgroundColor: Color = Color(.systemBackground),
             padding: CGFloat = CGFloat(16),
-            view: Content
+            @ViewBuilder view: () -> Content
         ) {
             self.arrowSide = arrowSide
             self.arrowAlignment = arrowAlignment
             self.cornerRadius = cornerRadius
             self.backgroundColor = backgroundColor
             self.padding = padding
-            self.view = view
+            self.view = view()
         }
         
         @ViewBuilder public var view: Content
@@ -381,7 +381,6 @@ public struct PopoverTemplates {
         public var end: CGPoint
         public var steepness = CGFloat(0.3)
         public var direction = Direction.vertical
-        
         
         public init(
             start: CGPoint,

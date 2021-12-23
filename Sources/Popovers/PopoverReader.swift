@@ -9,15 +9,14 @@
 import SwiftUI
 
 public struct PopoverReader<Content: View>: View {
-    public init(content: @escaping (Popover.Context) -> Content) {
-        self.content = content
+    public init(@ViewBuilder view: @escaping (Popover.Context) -> Content) {
+        self.view = view
     }
     
-    
-    @ViewBuilder var content: (Popover.Context) -> Content
+    @ViewBuilder var view: (Popover.Context) -> Content
     @EnvironmentObject var context: Popover.Context
 
     public var body: some View {
-        content(context)
+        view(context)
     }
 }
