@@ -67,7 +67,16 @@ public struct Popover: Identifiable {
         /// Add a tag to reference the popover from anywhere.
         public var tag: String?
         
-        /// The frame that the popover attaches to or is placed within (configure in `position`). Automatically provided if you're using SwiftUI.
+        /**
+         The frame that the popover attaches to or is placed within (configure in `position`). This must be in global window coordinates.
+         
+         If you're using SwiftUI, this is automatically provided.
+         If you're using UIKit, you must provide this. Use `.windowFrame()` to convert to window coordinates.
+         
+             attributes.sourceFrame = { [weak self] in
+                 self?.button.windowFrame() ?? .zero
+             }
+         */
         public var sourceFrame: (() -> CGRect) = { .zero }
         
         /// Inset the source frame by this.
