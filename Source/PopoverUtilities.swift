@@ -73,14 +73,13 @@ public extension View {
     }
 }
 
-public extension Optional where Wrapped == UIView {
+public extension Optional where Wrapped: UIView {
     /// Convert a view's frame to global coordinates, which are needed for `sourceFrame` and `excludedFrames.`
     func windowFrame() -> CGRect {
-        if let self = self {
-            return self.convert(self.bounds, to: nil)
-        } else {
-            return .zero
+        if let view = self {
+            return view.convert(view.bounds, to: nil)
         }
+        return .zero
     }
 }
 
