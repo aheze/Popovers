@@ -93,12 +93,19 @@ The example app was written in Swift Playgrounds 4, so you can run it right on y
 
 ![Example app](GitHub/Assets/ExampleApp.png)
 
-### Installation
-Add the Swift Package.
+## Installation
+### Swift Package Manager
+Add the Swift Package URL:
 ```
 https://github.com/aheze/Popovers
 ```
 
-### Details
+### Cocoapods
+Add this to the Podfile:
+```
+pod 'Popovers'
+```
+
+## Details
 iOS 13+
 
