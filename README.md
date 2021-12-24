@@ -89,23 +89,77 @@ Notification
 </table>
 
 ## Example
-The example app was written in Swift Playgrounds 4, so you can run it right on your iPad. You can always use Xcode if you want though. [Download for Swift Playgrounds 4](https://github.com/aheze/Popovers/raw/main/Examples/PopoversPlaygroundApp.swiftpm.zip) • [Download for Xcode](https://github.com/aheze/Popovers/raw/main/Examples/PopoversXcodeApp.zip)
+The example app was written in Swift Playgrounds 4, so you can run it right on your iPad. If you're using a Mac, download the Xcode version. [Download for Swift Playgrounds 4](https://github.com/aheze/Popovers/raw/main/Examples/PopoversPlaygroundApp.swiftpm.zip) • [Download for Xcode](https://github.com/aheze/Popovers/raw/main/Examples/PopoversXcodeApp.zip)
 
 ![Example app](GitHub/Assets/ExampleApp.png)
 
 ## Installation
-### Swift Package Manager
+Popovers can be installed through the Swift Package Manager or Cocoapods.
+
+<table>
+<tr>
+<td>
+Swift Package Manager
+</td>
+<td>
+Cocoapods
+</td>
+</tr>
+
+<tr>
+<td>
 Add the Swift Package URL:
+
 ```
 https://github.com/aheze/Popovers
 ```
-
-### Cocoapods
+</td>
+<td>
 Add this to the Podfile:
+
 ```
 pod 'Popovers'
 ```
+</td>
+</tr>
+</table>
 
-## Details
-iOS 13+
+
+
+## Usage
+First:
+```
+import Popovers
+```
+Then you can use either SwiftUI or UIKit.
+
+
+## Customization
+Customize popovers through the `attributes` struct.
+
+## License
+Popovers is made by [aheze](https://github.com/aheze). Use it however you want.
+```
+MIT License
+
+Copyright (c) 2022 A. Zheng
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
 
