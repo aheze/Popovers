@@ -8,15 +8,15 @@ import PackageDescription
 import AppleProductTypes
 
 let package = Package(
-    name: "PopoversApp",
+    name: "PopoversPlaygroundApp",
     platforms: [
         .iOS("15.2")
     ],
     products: [
         .iOSApplication(
-            name: "PopoversApp",
+            name: "PopoversPlaygroundApp",
             targets: ["AppModule"],
-            bundleIdentifier: "com.aheze.PopoversApp",
+            bundleIdentifier: "com.aheze.PopoversPlaygroundApp",
             teamIdentifier: "YA533DMD5J",
             displayVersion: "1.0",
             bundleVersion: "1",

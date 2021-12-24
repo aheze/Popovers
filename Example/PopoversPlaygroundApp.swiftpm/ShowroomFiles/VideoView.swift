@@ -72,7 +72,7 @@ struct VideoViewPopover: View {
     var body: some View {
         VideoPlayer(
             player: AVPlayer(
-                url: URL(string: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4")!
+                url: URL(string: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4")!
             )
         )
     }
