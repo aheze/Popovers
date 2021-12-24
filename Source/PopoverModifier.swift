@@ -2,7 +2,7 @@ import SwiftUI
 import Combine 
 
 /**
- Present a popover in SwiftUI. Access using `.popover(present:attributes:view)`.
+ Present a popover in SwiftUI. Access using `.popover(present:attributes:view:)`.
  */
 struct PopoverModifier: ViewModifier {
     
@@ -28,7 +28,7 @@ struct PopoverModifier: ViewModifier {
     /// The source frame to present from. Calculated by reading the frame of whatever view the modifier is attached to.
     @State var sourceFrame: CGRect?
     
-    /// Create a popover. Use `.popover(present:attributes:view)` to access.
+    /// Create a popover. Use `.popover(present:attributes:view:)` to access.
     init<Content: View>(
         present: Binding<Bool>,
         buildAttributes: @escaping ((inout Popover.Attributes) -> Void) = { _ in },
@@ -40,7 +40,7 @@ struct PopoverModifier: ViewModifier {
         self.background = AnyView(Color.clear)
     }
     
-    /// Create a popover with a background. Use `.popover(present:attributes:view:background)` to access.
+    /// Create a popover with a background. Use `.popover(present:attributes:view:background:)` to access.
     init<MainContent: View, BackgroundContent: View>(
         present: Binding<Bool>,
         buildAttributes: @escaping ((inout Popover.Attributes) -> Void) = { _ in },
@@ -108,7 +108,7 @@ struct PopoverModifier: ViewModifier {
 }
 
 /**
- Present a popover that can transition to another popover in SwiftUI. Access using `.popover(selection:tag:attributes:view)`.
+ Present a popover that can transition to another popover in SwiftUI. Access using `.popover(selection:tag:attributes:view:)`.
  */
 struct MultiPopoverModifier: ViewModifier {
     
@@ -147,7 +147,7 @@ struct MultiPopoverModifier: ViewModifier {
         self.background = AnyView(Color.clear)
     }
     
-    /// Create a popover with a background. Use `.popover(selection:tag:attributes:view:background)` to access.
+    /// Create a popover with a background. Use `.popover(selection:tag:attributes:view:background:)` to access.
     init<MainContent: View, BackgroundContent: View>(
         selection: Binding<String?>,
         tag: String,

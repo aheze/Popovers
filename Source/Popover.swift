@@ -64,7 +64,11 @@ public struct Popover: Identifiable {
      */
     public struct Attributes {
         
-        /// Add a tag to reference the popover from anywhere.
+        /**
+         Add a tag to reference the popover from anywhere. If you use `.popover(selection:tag:attributes:view:)`, this `tag` is automatically set to what you provide in the parameter.
+         
+         Use `Popovers.popovers(tagged: "Your Tag")` to access popovers that are currently presented.
+         */
         public var tag: String?
         
         /// The popover's position.
@@ -265,7 +269,7 @@ public struct Popover: Identifiable {
             public var mode = Mode.tapOutside
             
             /// Dismiss the popover when the user taps outside, **even when another presented popover is what's tapped**. Only applies when `mode` is `.tapOutside`.
-            public var dismissWhenTappedOtherPopover = false
+            public var tapOutsideIncludesOtherPopovers = false
             
             /// Don't dismiss the popover when the user taps on these frames. Only applies when `mode` is `.tapOutside`.
             public var excludedFrames: (() -> [CGRect]) = { [] }
@@ -294,7 +298,7 @@ public struct Popover: Identifiable {
                 animation: Animation? = .default,
                 transition: AnyTransition? = .opacity,
                 mode: Popover.Attributes.Dismissal.Mode = Mode.tapOutside,
-                dismissWhenTappedOtherPopover: Bool = false,
+                tapOutsideIncludesOtherPopovers: Bool = false,
                 excludedFrames: @escaping (() -> [CGRect]) = { [] },
                 dragMovesPopoverOffScreen: Bool = true,
                 dragDismissalProximity: CGFloat = CGFloat(0.25)
@@ -302,7 +306,7 @@ public struct Popover: Identifiable {
                 self.animation = animation
                 self.transition = transition
                 self.mode = mode
-                self.dismissWhenTappedOtherPopover = dismissWhenTappedOtherPopover
+                self.tapOutsideIncludesOtherPopovers = tapOutsideIncludesOtherPopovers
                 self.excludedFrames = excludedFrames
                 self.dragMovesPopoverOffScreen = dragMovesPopoverOffScreen
                 self.dragDismissalProximity = dragDismissalProximity

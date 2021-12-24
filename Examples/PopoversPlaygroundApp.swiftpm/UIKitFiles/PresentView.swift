@@ -53,7 +53,7 @@ class PresentViewController: UIViewController {
         
             1. You need to manually present the popover
                 >    Popovers.present(popover)
-            2. You need to supply a source frame
+            2. It's highly recommended that you supply a source frame. Otherwise, the popover will be attached to the screen's top-left.
                 >    attributes.sourceFrame = { yourView.windowFrame() }
         """
         label.numberOfLines = 0

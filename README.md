@@ -194,18 +194,23 @@ struct PopoverView: View {
 ![Button "Present popover!" with a popover underneath.](GitHub/Assets/UsagePopover.png)
 
 ## Customization
-Customize popovers through the `Attributes` struct. This is completely optional, except you must provide the Source Frame if using UIKit.
+Customize popovers through the `Attributes` struct. Pretty much everything is customizable, including positioning, animations, and dismissal behavior.
 
 <table>
 <tr>
 <td>
 <strong>
-SwiftUI</strong>
+SwiftUI
+</strong>
+<br>
+Configure in the <code>attributes</code> parameter.
 </td>
 <td>
 <strong>
 UIKit
 </strong>
+<br>
+Modify the <code>attributes</code> property.
 </td>
 </tr>
   
@@ -213,10 +218,10 @@ UIKit
 <td>
 <br>
 
-```
+```swift
 .popover(
     present: $present,
-    attributes: { /// here!
+    attributes: {
         $0.position = .absolute(
             originAnchor: .bottom,
             popoverAnchor: .topLeft
@@ -230,21 +235,30 @@ UIKit
 <td>
 <br>
 
-```
+```swift
 var popover = Popover { Text("Hi, I'm a popover.") }
-popover.attributes.position = .absolute( /// here!
+popover.attributes.position = .absolute(
     originAnchor: .bottom,
     popoverAnchor: .topLeft
 )
-popover.attributes.sourceFrame = { [weak self] in
-    let button = self?.button
-    return button.windowFrame()
-}
 Popovers.present(popover)
 ```
 </td>
 </tr>
 </table>
+
+### Tag • `String?`
+Tag popovers to access them later from anywhere. This is useful for updating existing popovers.
+
+```swift
+/// Set the tag.
+$0.tag = "Your Tag"
+
+/// Access it later.
+let popover = Popovers.popovers(tagged: "Your Tag")
+```
+
+Note: When you use the `.popover(selection:tag:attributes:view:)` modifier, this `tag` is automatically set to what you provide in the parameter.
 
 ### Position • `enum`
 The popover's position can either be `.absolute` (attached to a view) or `.relative` (picture-in-picture). The enum's associated value additionally configures which sides and corners are used.
@@ -258,20 +272,24 @@ Anchor Reference | `.absolute(originAnchor: .bottom, popoverAnchor: .topLeft)` |
 ![](GitHub/Assets/Anchors.png) | ![](GitHub/Assets/Absolute.png) | ![](GitHub/Assets/Relative.png)
 
 ### Source Frame • `(() -> CGRect)`
-This is the frame that the popover attaches to or is placed within, depending on the position. This must be in global window coordinates.
-
+This is the frame that the popover attaches to or is placed within, depending on its position. This must be in global window coordinates. Because frames are can change so often, this property is a closure. Whenever the device rotates or some other bounds change happens, the closure will be called.
 
 
 <table>
 <tr>
 <td>
 <strong>
-SwiftUI</strong>
+SwiftUI
+</strong>
+<br>
+The source frame is automatically set to the parent view. You can still override it if you want.
 </td>
 <td>
 <strong>
 UIKit
 </strong>
+<br>
+It's highly recommended to provide a source frame, otherwise the popover will appear in the top-left of the screen.
 </td>
 </tr>
   
@@ -279,17 +297,14 @@ UIKit
 <td>
 <br>
 
-```
-attributes.sourceFrame = { [weak self] in
-    let button = self?.button
-    return button.windowFrame()
-}
+```swift
+$0.sourceFrame = { /** some CGRect here */ }
 ```
 </td>
 <td>
 <br>
 
-```
+```swift
 attributes.sourceFrame = { [weak self] in
     let button = self?.button
     return button.windowFrame()
@@ -298,6 +313,59 @@ attributes.sourceFrame = { [weak self] in
 </td>
 </tr>
 </table>
+
+### Source Frame Inset • `UIEdgeInsets`
+Edge insets to apply to the source frame. Positive values inset the frame, negative values expand it.
+
+Absolute | Relative
+--- | ---
+![Source view has padding around it, so the popover is offset down.](GitHub/Assets/SourceFrameInsetAbsolute.png) | ![Source view is inset, so the popover is brought more towards the center of the screen.](GitHub/Assets/SourceFrameInsetRelative.png)
+
+### Screen Edge Padding • `UIEdgeInsets`
+Global insets for all popovers to prevent them from overflowing off the screen. Kind of like a safe area. Default value is `UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)`.
+
+### Presentation • `Presentation`
+This property stores the animation and transition that's applied when the popover appears.
+
+```swift
+/// Default values:
+$0.presentation.animation = .default
+$0.presentation.transition = .opacity
+```
+
+### Dismissal • `Dismissal`
+This property stores the popover's dismissal behavior. There's a couple sub-properties here.
+
+```swift
+/// Same thing as `Presentation`.
+$0.dismissal.animation = .default
+$0.dismissal.transition = .opacity
+
+/// Advanced stuff! Here's their default values:
+$0.dismissal.mode = .tapOutside
+$0.dismissal.tapOutsideIncludesOtherPopovers = false
+$0.dismissal.excludedFrames = { [] }
+$0.dismissal.dragMovesPopoverOffScreen = true
+$0.dismissal.dragDismissalProximity = CGFloat(0.25)
+```
+
+**Mode** Configure how the popover should auto-dismiss. You can have multiple at the same time!
+- `.tapOutside` - dismiss the popover when the user taps outside it.
+- `.dragDown` - dismiss the popover when the user drags it down.
+- `.dragUp` - dismiss the popover when the user drags it up.
+- `.none` - don't automatically dismiss the popover.
+
+**Tap Outside Includes Other Popovers:** Only applies when `mode` is `.tapOutside`. If this is enabled, the popover will be dismissed when the user taps outside, **even when another presented popover is what's tapped**. Normally when you tap another popover that's presented, the current one will not dismiss.
+
+**Excluded Frames:** Only applies when `mode` is `.tapOutside`. When the user taps outside the popover, but the tap lands on one of these frames, the popover will stay presented.
+
+**Drag Moves Popover Off Screen:** Only applies when `mode` is `.dragDown` or `.dragUp`. If this is enabled, the popover will continue moving off the screen after the user drags.
+
+**Drag Dismissal Proximity:** Only applies when `mode` is `.dragDown` or `.dragUp`. Represents the point on the screen that the drag must reach in order to auto-dismiss. This property is multiplied by the screen's height.
+
+![Diagram with the top 25% of the screen highlighted in blue.](GitHub/Assets/DragDismissalProximity.png)
+
+---
 
 ## License
 Popovers is made by [aheze](https://github.com/aheze). Use it however you want.
