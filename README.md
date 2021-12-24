@@ -135,12 +135,35 @@ pod 'Popovers'
 
 
 ## Usage
-First:
-```
-import Popovers
-```
-Then you can use either SwiftUI or UIKit.
 
+To present a popover in SwiftUI, use the `.popover(present:attributes:view)` modifier.
+
+```swift
+import SwiftUI
+import Popovers
+
+struct ContentView: View {
+    @State var present = false
+    
+    var body: some View {
+        Button {
+            present = true
+        } label: {
+            Text("Present popover!")
+        }
+        .popover(present: $present) { /// here!
+            Text("Hi, I'm a popover.")
+                .padding()
+                .foregroundColor(.white)
+                .background(.blue)
+                .cornerRadius(16)
+        }
+    }
+}
+```
+In UIKit, create a `Popover` instance, then present with `Popover.present(_:)`.
+```
+```
 
 ## Customization
 Customize popovers through the `attributes` struct.
