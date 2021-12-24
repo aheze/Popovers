@@ -94,7 +94,7 @@ The example app was written in Swift Playgrounds 4, so you can run it right on y
 ![Example app](GitHub/Assets/ExampleApp.png)
 
 ## Installation
-Popovers can be installed through the Swift Package Manager or Cocoapods.
+Popovers can be installed through the Swift Package Manager (preferred) or Cocoapods.
 
 <table>
 <tr>
@@ -102,23 +102,15 @@ Popovers can be installed through the Swift Package Manager or Cocoapods.
 <strong>
 Swift Package Manager
 </strong>
+<br>
+Add the Swift Package URL:
 </td>
 <td>
 <strong>
 Cocoapods
-</strong>
-</td>
-</tr>
-
-<tr>
-</tr>
-
-<tr>
-<td>
-Add the Swift Package URL:
-</td>
-<td>
+<br>
 Add this to your Podfile:
+</strong>
 </td>
 </tr>
   
