@@ -146,10 +146,8 @@ struct ContentView: View {
     @State var present = false
     
     var body: some View {
-        Button {
+        Button("Present popover!") {
             present = true
-        } label: {
-            Text("Present popover!")
         }
         .popover(present: $present) { /// here!
             Text("Hi, I'm a popover.")
@@ -349,7 +347,7 @@ $0.dismissal.dragMovesPopoverOffScreen = true
 $0.dismissal.dragDismissalProximity = CGFloat(0.25)
 ```
 
-**Mode** Configure how the popover should auto-dismiss. You can have multiple at the same time!
+**Mode:** Configure how the popover should auto-dismiss. You can have multiple at the same time!
 - `.tapOutside` - dismiss the popover when the user taps outside it.
 - `.dragDown` - dismiss the popover when the user drags it down.
 - `.dragUp` - dismiss the popover when the user drags it up.
@@ -386,7 +384,100 @@ A closure that is called when the popover is dismissed.
 ### 🔰 On Context Change • `((Context) -> Void)?`
 A closure that is called whenever the context changed. The context contains the popover's attributes, current frame, and other visible traits.
 
----
+
+## Utilities
+Popovers comes with some features to make your life easier.
+
+### Multiple Popovers
+### Background
+### Popover Reader
+### Frame Tags
+### Templates
+
+## Notes
+### State Re-Rendering
+If you pass a binding down to the popover's view, it might not update. To ensure that the view re-renders, move it into its own struct.
+<table>
+<tr>
+<td>
+<strong>
+Yes
+</strong>
+<br>
+The popover's view is in a separate struct.
+</td>
+<td>
+<strong>
+No
+</strong>
+<br>
+This could cause the popover to not update.
+</td>
+</tr>
+  
+<tr>
+<td>
+<br>
+
+```swift
+struct ContentView: View {
+    @State var present = false
+    @State var string = "Hello, I'm a popover."
+
+    var body: some View {
+        Button("Present popover!") {
+            present = true
+        }
+        .popover(present: $present) {
+            PopoverView(string: $string)
+        }
+    }
+}
+
+/// Creating a separate view ensure that the button updates.
+struct PopoverView: View {
+    @Binding var string: String
+
+    var body: some View {
+        Button(string) {
+            string = "The string changed."
+        }
+        .background(.mint)
+        .cornerRadius(16)
+    }
+}
+```
+</td>
+<td>
+<br>
+
+```swift
+struct ContentView: View {
+    @State var present = false
+    @State var string = "Hello, I'm a popover."
+
+    var body: some View {
+        Button("Present popover!") {
+            present = true
+        }
+        .popover(present: $present) {
+
+            /// Directly passing in the binding is unsupported. The button might not update.
+            Button(string) { 
+                string = "The string changed."
+            }
+            .background(.mint)
+            .cornerRadius(16)
+        }
+    }
+}
+```
+</td>
+</tr>
+</table>
+
+- Use `.zIndex` to 
+
 
 ## License
 Popovers is made by [aheze](https://github.com/aheze). Use it however you want.

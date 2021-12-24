@@ -180,7 +180,6 @@ struct MultiPopoverModifier: ViewModifier {
                 guard newSelection != nil else {
                     if let popover = popover {
                         Popovers.dismiss(popover)
-                        Popovers.model.selectionFrameTags[tag] = nil
                     }
                     return
                 }

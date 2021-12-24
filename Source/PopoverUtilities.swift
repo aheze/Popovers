@@ -18,8 +18,8 @@ public extension View {
             .background(
                 GeometryReader { geometry in
                     Color.clear
-                        .preference(key: ContentSizeReaderPreferenceKey.self, value: geometry.frame(in: .global))
-                        .onPreferenceChange(ContentSizeReaderPreferenceKey.self) { newValue in
+                        .preference(key: ContentFrameReaderPreferenceKey.self, value: geometry.frame(in: .global))
+                        .onPreferenceChange(ContentFrameReaderPreferenceKey.self) { newValue in
                             DispatchQueue.main.async {
                                 rect(newValue)
                             }
@@ -28,11 +28,33 @@ public extension View {
                     .hidden()
             )
     }
+    
+    /// Read a view's size. From https://stackoverflow.com/a/66822461/14351818
+    func sizeReader(size: @escaping (CGSize) -> Void) -> some View {
+        return self
+            .background(
+                GeometryReader { geometry in
+                    Color.clear
+                        .preference(key: ContentSizeReaderPreferenceKey.self, value: geometry.size)
+                        .onPreferenceChange(ContentSizeReaderPreferenceKey.self) { newValue in
+                            DispatchQueue.main.async {
+                                size(newValue)
+                            }
+                        }
+                }
+                    .hidden()
+            )
+    }
+}
+
+struct ContentFrameReaderPreferenceKey: PreferenceKey {
+    static var defaultValue: CGRect { get { return CGRect() } }
+    static func reduce(value: inout CGRect, nextValue: () -> CGRect) { value = nextValue() }
 }
 
 struct ContentSizeReaderPreferenceKey: PreferenceKey {
-    static var defaultValue: CGRect { get { return CGRect() } }
-    static func reduce(value: inout CGRect, nextValue: () -> CGRect) { value = nextValue() }
+    static var defaultValue: CGSize { get { return CGSize() } }
+    static func reduce(value: inout CGSize, nextValue: () -> CGSize) { value = nextValue() }
 }
 
 /// Create a UIColor from a hex code.

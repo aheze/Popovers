@@ -66,7 +66,7 @@ public class PopoverContainerWindow: UIWindow {
         func dismissPopoverIfNecessary(popoverToDismiss: Popover) {
             if
                 popoverToDismiss.attributes.dismissal.mode.contains(.tapOutside), /// The popover can be automatically dismissed when tapped outside.
-                popoverToDismiss.attributes.dismissal.dismissWhenTappedOtherPopover || /// The popover can be dismissed even if the touch hit another popover, **or...**
+                popoverToDismiss.attributes.dismissal.tapOutsideIncludesOtherPopovers || /// The popover can be dismissed even if the touch hit another popover, **or...**
                 !popoverFrames.contains(where: { $0.contains(point) }) /// ... no other popover frame contains the point (the touch landed outside)
             {
                 Popovers.dismiss(popoverToDismiss)
@@ -80,7 +80,7 @@ public class PopoverContainerWindow: UIWindow {
             /// Check it the popover was hit.
             if popover.context.frame.contains(point) {
                 
-                /// Dismiss other popovers if they have `dismissWhenTappedOtherPopover` set to true.
+                /// Dismiss other popovers if they have `tapOutsideIncludesOtherPopovers` set to true.
                 for popoverToDismiss in popoverModel.popovers {
                     if
                         popoverToDismiss != popover,

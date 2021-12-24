@@ -22,12 +22,12 @@ public struct Popovers {
     
     /// The bounds of the current window.
     public static var windowBounds: CGRect {
-        return getWindow().0.bounds
+        return getWindow().bounds
     }
     
     /// The frame of the current window with the safe area applied.
     public static var safeWindowFrame: CGRect {
-        let window = getWindow().0
+        let window = getWindow()
         let safeAreaFrame = window.safeAreaLayoutGuide.layoutFrame
         return safeAreaFrame
     }
@@ -62,17 +62,13 @@ public struct Popovers {
     
     /**
      Get the current window.
-     - Returns: A tuple `(window, reused)`.
-     
-     - `window` - the current window.
-     - `reused` - indicates if an existing window was reused.
      */
-    public static func getWindow() -> (window: PopoverContainerWindow, reused: Bool) {
+    public static func getWindow() -> PopoverContainerWindow {
         if let currentScene = UIApplication.shared.currentWindowScene {
             
             /// Get the window for the current scene.
             if let window = windows[currentScene] {
-                return (window, true)
+                return window
             } else {
                 
                 /// No popover window exists yet, make one.
@@ -82,7 +78,7 @@ public struct Popovers {
                 )
                 
                 windows[currentScene] = window
-                return (window, false)
+                return window
             }
         } else {
             
@@ -93,7 +89,7 @@ public struct Popovers {
                 scene: nil
             )
             
-            return (window, false)
+            return window
         }
     }
     
@@ -106,7 +102,7 @@ public struct Popovers {
         _ = model
         
         /// Make sure a window exists.
-        let (_, reused) = getWindow()
+        _ = getWindow()
         
         /// Configure and present the popover.
         func presentPopover() {
@@ -124,16 +120,16 @@ public struct Popovers {
         }
         
         /// Directly present the popover if an existing window was reused.
-        if reused {
+//        if reused {
             presentPopover()
-        } else {
-            
-            /// Otherwise, make sure the window is set up the first time and ready for SwiftUI.
-            /// Without a delay, SwiftUI won't apply the animation.
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
-                presentPopover()
-            }
-        }
+//        } else {
+//
+//            /// Otherwise, make sure the window is set up the first time and ready for SwiftUI.
+//            /// Without a delay, SwiftUI won't apply the animation.
+//            DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+//                presentPopover()
+//            }
+//        }
     }
     
     /**
@@ -160,10 +156,15 @@ public struct Popovers {
         }
     }
     
+    /// Remove all saved frames for `.popover(selection:tag:attributes:view:)`. Call this method when you present another view where the frames don't apply.
+    public static func clearSavedFrames() {
+        model.selectionFrameTags.removeAll()
+    }
+    
     /**
      Replace a popover with another popover smoothly.
      
-     This is what `.popover(selection:tag:attributes:view)` in SwiftUI uses.
+     This is what `.popover(selection:tag:attributes:view:)` in SwiftUI uses.
      */
     public static func replace(_ oldPopover: Popover, with newPopover: Popover) {
         _ = getWindow()
@@ -208,6 +209,11 @@ public struct Popovers {
         
         /// Update all popovers.
         model.refresh()
+    }
+    
+    /// Make sure that a window exists, so that the popover's presentation animation doesn't stutter..
+    public static func prepare() {
+        _ = getWindow()
     }
     
     /**
