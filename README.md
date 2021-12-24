@@ -36,18 +36,23 @@ Standard
 
 <tr>
 <td>
+Alert
 <img src="GitHub/Assets/GIFs/Alert.gif" alt="Alert">
 </td>
 <td>
+Color
 <img src="GitHub/Assets/GIFs/Color.gif" alt="Color">
 </td>
 <td>
+Menu
 <img src="GitHub/Assets/GIFs/Menu.gif" alt="Menu">
 </td>
 <td>
+Tip
 <img src="GitHub/Assets/GIFs/Tip.gif" alt="Tip">
 </td>
 <td>
+Standard
 <img src="GitHub/Assets/GIFs/Standard.gif" alt="Standard">
 </td>
 </tr>
