@@ -8,12 +8,9 @@ Popovers is a library to present popovers.
 - Lightweight and fast
 - Powered by SwiftUI, so everything is exactly as you declare it to be.
 
-### Example
-Check out the app. Works on Swift Playgrounds 4 or Xcode 13.2.
-
-Playground | Showroom
---- | ---
-![](GitHub/Assets/Playground.png) | ![](GitHub/Assets/Showroom.png)
+## Example
+The example app walks through Popovers' features. Download for [Swift Playgrounds 4](Examples/PopoversPlaygroundApp.zip) or [Xcode]((Examples/PopoversXcodeApp.zip)).
+![Example app](GitHub/Assets/ExampleApp.png)
 
 ### Installation
 Add the Swift Package.
