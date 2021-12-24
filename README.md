@@ -194,7 +194,18 @@ struct PopoverView: View {
 ![Button "Present popover!" with a popover underneath.](GitHub/Assets/UsagePopover.png)
 
 ## Customization
-Customize popovers through the `attributes` struct.
+Customize popovers through the `Attributes` struct.
+
+### Position • `enum`
+The popover's position can either be `.absolute` (attached to a view) or `.relative` (picture-in-picture). The enum's associated value additionally configures which sides and corners are used.
+
+- `Anchor`s represent sides and corners.
+- For `.absolute`, provide the origin anchor and popover anchor.
+- For `.relative`, provide the popover anchors. If there's multiple, the user will be able to drag between them like a PIP.
+
+Anchor Reference | `.absolute(originAnchor: .bottom, popoverAnchor: .topLeft)` | `.relative(popoverAnchors: [.right])`
+--- | --- | ---
+![](GitHub/Assets/Anchors.png) | ![](GitHub/Assets/Absolute.png) | ![](GitHub/Assets/Relative.png)
 
 ## License
 Popovers is made by [aheze](https://github.com/aheze). Use it however you want.

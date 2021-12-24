@@ -67,6 +67,9 @@ public struct Popover: Identifiable {
         /// Add a tag to reference the popover from anywhere.
         public var tag: String?
         
+        /// The popover's position.
+        public var position = Position.absolute(originAnchor: .bottom, popoverAnchor: .top)
+        
         /**
          The frame that the popover attaches to or is placed within (configure in `position`). This must be in global window coordinates.
          
@@ -81,9 +84,6 @@ public struct Popover: Identifiable {
         
         /// Inset the source frame by this.
         public var sourceFrameInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-        
-        /// The popover's position.
-        public var position = Position.absolute(originAnchor: .bottom, popoverAnchor: .top)
         
         /// Padding to prevent the popover from overflowing off the screen.
         public var screenEdgePadding = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
@@ -114,9 +114,9 @@ public struct Popover: Identifiable {
          */
         public init(
             tag: String? = nil,
+            position: Popover.Attributes.Position = Position.absolute(originAnchor: .bottom, popoverAnchor: .top),
             sourceFrame: @escaping (() -> CGRect) = { .zero },
             sourceFrameInset: UIEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0),
-            position: Popover.Attributes.Position = Position.absolute(originAnchor: .bottom, popoverAnchor: .top),
             screenEdgePadding: UIEdgeInsets = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16),
             presentation: Popover.Attributes.Presentation = Presentation(),
             dismissal: Popover.Attributes.Dismissal = Dismissal(),
@@ -127,9 +127,9 @@ public struct Popover: Identifiable {
             onContextChange: ((Popover.Context) -> Void)? = nil
         ) {
             self.tag = tag
+            self.position = position
             self.sourceFrame = sourceFrame
             self.sourceFrameInset = sourceFrameInset
-            self.position = position
             self.screenEdgePadding = screenEdgePadding
             self.presentation = presentation
             self.dismissal = dismissal
@@ -241,6 +241,73 @@ public struct Popover: Identifiable {
             }
             
             /**
+             The position of the popover.
+             - `absolute` - attach the popover to a source view.
+             - `relative` - place the popover within a container view.
+             */
+            public enum Position {
+                
+                /**
+                 Attach the popover to a source view (supplied by the attributes' `sourceFrame` property).
+                 - parameter originAnchor: The corner of the source view used as the attaching point.
+                 - parameter popoverAnchor: The corner of the popover that attaches to the source view.
+                 */
+                case absolute(originAnchor: Anchor, popoverAnchor: Anchor)
+                
+                /**
+                 Place the popover within a container view (supplied by the attributes' `sourceFrame` property).
+                 - parameter popoverAnchors: The corners of the container view that the popover can be placed. Supply multiple to get a picture-in-picture behavior..
+                 */
+                case relative(popoverAnchors: [Anchor])
+                
+                
+                /// The edges and corners of a rectangle.
+                /**
+              
+             topLeft              top              topRight
+                    X──────────────X──────────────X
+                    |                             |
+                    |                             |
+             left   X            center           X   right
+                    |                             |
+                    |                             |
+                    X──────────────X──────────────X
+             bottomLeft          bottom         bottomRight
+                 
+                  
+                 */
+                public enum Anchor {
+                    
+                    /// The point at the **top-left** of a rectangle.
+                    case topLeft
+                    
+                    /// The point at the **top** of a rectangle.
+                    case top
+                    
+                    /// The point at the **top-right** of a rectangle.
+                    case topRight
+                    
+                    /// The point at the **right** of a rectangle.
+                    case right
+                    
+                    /// The point at the **bottom-right** of a rectangle.
+                    case bottomRight
+                    
+                    /// The point at the **bottom** of a rectangle.
+                    case bottom
+                    
+                    /// The point at the **bottom-left** of a rectangle.
+                    case bottomLeft
+                    
+                    /// The point at the **left** of a rectangle.
+                    case left
+                    
+                    /// The point at the **center** of a rectangle.
+                    case center
+                }
+            }
+            
+            /**
              The auto-dismissal behavior of the popover.
              - `.tapOutside` - dismiss the popover when the user taps outside.
              - `.dragDown` - dismiss the popover when the user drags it down.
@@ -264,73 +331,6 @@ public struct Popover: Identifiable {
                 
                 /// Don't automatically dismiss the popover.
                 public static let none = Mode([])
-            }
-        }
-        
-        /**
-         The position of the popover.
-         - `absolute` - attach the popover to a source view.
-         - `relative` - place the popover within a container view.
-         */
-        public enum Position {
-            
-            /**
-             Attach the popover to a source view (supplied by the attributes' `sourceFrame` property).
-             - parameter originAnchor: The corner of the source view used as the attaching point.
-             - parameter popoverAnchor: The corner of the popover that attaches to the source view.
-             */
-            case absolute(originAnchor: Anchor, popoverAnchor: Anchor)
-            
-            /**
-             Place the popover within a container view (supplied by the attributes' `sourceFrame` property).
-             - parameter popoverAnchors: The corners of the container view that the popover can be placed. Supply multiple to get a picture-in-picture behavior..
-             */
-            case relative(popoverAnchors: [Anchor])
-            
-            
-            /// The edges and corners of a rectangle.
-            /**
-          
-         topLeft              top              topRight
-                X──────────────X──────────────X
-                |                             |
-                |                             |
-         left   X            center           X   right
-                |                             |
-                |                             |
-                X──────────────X──────────────X
-         bottomLeft          bottom         bottomRight
-             
-              
-             */
-            public enum Anchor {
-                
-                /// The point at the **top-left** of a rectangle.
-                case topLeft
-                
-                /// The point at the **top** of a rectangle.
-                case top
-                
-                /// The point at the **top-right** of a rectangle.
-                case topRight
-                
-                /// The point at the **right** of a rectangle.
-                case right
-                
-                /// The point at the **bottom-right** of a rectangle.
-                case bottomRight
-                
-                /// The point at the **bottom** of a rectangle.
-                case bottom
-                
-                /// The point at the **bottom-left** of a rectangle.
-                case bottomLeft
-                
-                /// The point at the **left** of a rectangle.
-                case left
-                
-                /// The point at the **center** of a rectangle.
-                case center
             }
         }
     }
