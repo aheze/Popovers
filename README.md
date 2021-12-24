@@ -162,7 +162,7 @@ struct ContentView: View {
 }
 ```
 
-In UIKit, create a `Popover` instance, then present with `Popover.present(_:)`. You need to manually set the source frame yourself.
+In UIKit, create a `Popover` instance, then present with `Popover.present(_:)`. You should also set the source frame.
 
 ```swift
 import SwiftUI
@@ -247,8 +247,9 @@ Popovers.present(popover)
 </tr>
 </table>
 
-### Tag • `String?`
+### Tag • `String?` 
 Tag popovers to access them later from anywhere. This is useful for updating existing popovers.
+
 
 ```swift
 /// Set the tag.
@@ -260,7 +261,7 @@ let popover = Popovers.popovers(tagged: "Your Tag")
 
 Note: When you use the `.popover(selection:tag:attributes:view:)` modifier, this `tag` is automatically set to what you provide in the parameter.
 
-### Position • `enum`
+### Position • `Position`
 The popover's position can either be `.absolute` (attached to a view) or `.relative` (picture-in-picture). The enum's associated value additionally configures which sides and corners are used.
 
 - `Anchor`s represent sides and corners.
