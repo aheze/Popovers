@@ -365,6 +365,27 @@ $0.dismissal.dragDismissalProximity = CGFloat(0.25)
 
 ![Diagram with the top 25% of the screen highlighted in blue.](GitHub/Assets/DragDismissalProximity.png)
 
+## Rubber Banding Mode • `RubberBandingMode`
+Configures which axes the popover can "rubber-band" on when dragged. The default is `[.xAxis, .yAxis]`.
+
+- `.xAxis` - enable rubber banding on the x-axis.
+- `.yAxis` - enable rubber banding on the y-axis.
+- `.none` - disable rubber banding.
+
+## Blocks Background Touches • `Bool`
+Set this to true to prevent underlying views from being pressed.
+
+![Popover overlaid over some buttons. Tapping on the buttons has no effect.](GitHub/Assets/BlocksBackgroundTouches.png)
+
+## On Tap Outside • `(() -> Void)?`
+A closure that is called whenever the user taps outside the popover.
+
+## On Dismiss • `(() -> Void)?`
+A closure that is called when the popover is dismissed.
+
+## On Context Change • `((Context) -> Void)?`
+A closure that is called whenever the context changed. The context contains the popover's attributes, current frame, and other visible traits.
+
 ---
 
 ## License
