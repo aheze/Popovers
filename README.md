@@ -194,6 +194,11 @@ struct PopoverView: View {
 ![Button "Present popover!" with a popover underneath.](GitHub/Assets/UsagePopover.png)
 
 ## Customization
+
+
+![](GitHub/Assets/Attributes/Tag.png) | ![](GitHub/Assets/Attributes/Position.png) | ![](GitHub/Assets/Attributes/SourceFrame.png) | ![](GitHub/Assets/Attributes/SourceFrameInset.png) | ![](GitHub/Assets/Attributes/Tag.png) | ![](GitHub/Assets/Attributes/Tag.png) | ![](GitHub/Assets/Attributes/Tag.png) | ![](GitHub/Assets/Attributes/Tag.png) | ![](GitHub/Assets/Attributes/Tag.png) | ![](GitHub/Assets/Attributes/Tag.png) | ![](GitHub/Assets/Attributes/Tag.png) | ![](GitHub/Assets/Attributes/Tag.png) | ![](GitHub/Assets/Attributes/Tag.png) | ![](GitHub/Assets/Attributes/Tag.png)
+--- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---
+
 Customize popovers through the `Attributes` struct. Pretty much everything is customizable, including positioning, animations, and dismissal behavior.
 
 <table>
@@ -247,9 +252,8 @@ Popovers.present(popover)
 </tr>
 </table>
 
-### 🏷 Tag • `String?`
+### <kbd>🏷</kbd> Tag • `String?`
 Tag popovers to access them later from anywhere. This is useful for updating existing popovers.
-
 
 ```swift
 /// Set the tag.
@@ -261,7 +265,7 @@ let popover = Popovers.popovers(tagged: "Your Tag")
 
 Note: When you use the `.popover(selection:tag:attributes:view:)` modifier, this `tag` is automatically set to what you provide in the parameter.
 
-### ⏹ Position • `Position`
+### Position • `Position`
 The popover's position can either be `.absolute` (attached to a view) or `.relative` (picture-in-picture). The enum's associated value additionally configures which sides and corners are used.
 
 - `Anchor`s represent sides and corners.
@@ -272,7 +276,7 @@ Anchor Reference | `.absolute(originAnchor: .bottom, popoverAnchor: .topLeft)` |
 --- | --- | ---
 ![](GitHub/Assets/Anchors.png) | ![](GitHub/Assets/Absolute.png) | ![](GitHub/Assets/Relative.png)
 
-### ⬜️ Source Frame • `(() -> CGRect)`
+### Source Frame • `(() -> CGRect)`
 This is the frame that the popover attaches to or is placed within, depending on its position. This must be in global window coordinates. Because frames are can change so often, this property is a closure. Whenever the device rotates or some other bounds change happens, the closure will be called.
 
 
@@ -315,17 +319,17 @@ attributes.sourceFrame = { [weak self] in
 </tr>
 </table>
 
-### 🔲 Source Frame Inset • `UIEdgeInsets`
+### Source Frame Inset • `UIEdgeInsets`
 Edge insets to apply to the source frame. Positive values inset the frame, negative values expand it.
 
 Absolute | Relative
 --- | ---
 ![Source view has padding around it, so the popover is offset down.](GitHub/Assets/SourceFrameInsetAbsolute.png) | ![Source view is inset, so the popover is brought more towards the center of the screen.](GitHub/Assets/SourceFrameInsetRelative.png)
 
-### ⏺ Screen Edge Padding • `UIEdgeInsets`
+### Screen Edge Padding • `UIEdgeInsets`
 Global insets for all popovers to prevent them from overflowing off the screen. Kind of like a safe area. Default value is `UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)`.
 
-### 🟩 Presentation • `Presentation`
+### Presentation • `Presentation`
 This property stores the animation and transition that's applied when the popover appears.
 
 ```swift
@@ -334,7 +338,7 @@ $0.presentation.animation = .default
 $0.presentation.transition = .opacity
 ```
 
-### 🟥 Dismissal • `Dismissal`
+### Dismissal • `Dismissal`
 This property stores the popover's dismissal behavior. There's a couple sub-properties here.
 
 ```swift
@@ -366,25 +370,25 @@ $0.dismissal.dragDismissalProximity = CGFloat(0.25)
 
 ![Diagram with the top 25% of the screen highlighted in blue.](GitHub/Assets/DragDismissalProximity.png)
 
-## 🔀 Rubber Banding Mode • `RubberBandingMode`
+### Rubber Banding Mode • `RubberBandingMode`
 Configures which axes the popover can "rubber-band" on when dragged. The default is `[.xAxis, .yAxis]`.
 
 - `.xAxis` - enable rubber banding on the x-axis.
 - `.yAxis` - enable rubber banding on the y-axis.
 - `.none` - disable rubber banding.
 
-## 🛑 Blocks Background Touches • `Bool`
+### Blocks Background Touches • `Bool`
 Set this to true to prevent underlying views from being pressed.
 
 ![Popover overlaid over some buttons. Tapping on the buttons has no effect.](GitHub/Assets/BlocksBackgroundTouches.png)
 
-## 👉 On Tap Outside • `(() -> Void)?`
+### On Tap Outside • `(() -> Void)?`
 A closure that is called whenever the user taps outside the popover.
 
-## 🎈 On Dismiss • `(() -> Void)?`
+### On Dismiss • `(() -> Void)?`
 A closure that is called when the popover is dismissed.
 
-## 🔰 On Context Change • `((Context) -> Void)?`
+### On Context Change • `((Context) -> Void)?`
 A closure that is called whenever the context changed. The context contains the popover's attributes, current frame, and other visible traits.
 
 ---
