@@ -10,6 +10,7 @@ Popovers is a library to present popovers.
 
 ## Example
 The example app walks through Popovers' features. Download for [Swift Playgrounds 4](Examples/PopoversPlaygroundApp.zip) or [Xcode]((Examples/PopoversXcodeApp.zip)).
+
 ![Example app](GitHub/Assets/ExampleApp.png)
 
 ### Installation
