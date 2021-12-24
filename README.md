@@ -15,7 +15,7 @@ A library to present popovers.
 ## Showcase
 
 <table>
-<tr>
+<!-- <tr>
 <td>
 Alert
 </td>
@@ -31,7 +31,7 @@ Tip
 <td>
 Standard
 </td>
-</tr>
+</tr> -->
 
 
 <tr>
@@ -53,7 +53,7 @@ Standard
 </tr>
 
 
-<tr>
+<!-- <tr>
 <td colspan=2>
 Tutorial
 </td>
@@ -63,7 +63,7 @@ PIP
 <td>
 Notification
 </td>
-</tr>
+</tr> -->
 
 <td colspan=2>
 <img src="GitHub/Assets/GIFs/Tutorial.gif" alt="Tutorial">
