@@ -12,64 +12,69 @@ A library to present popovers.
 - Highly customizable API that's super simple — just add `.popover`.
 - Written in SwiftUI with full SwiftUI and UIKit support.
 
-## Showcase
+## Showroom
+
 
 <table>
-<!-- <tr>
-<td>
-Alert
-</td>
-<td>
-Color Picker
-</td>
-<td>
-Context Menu
-</td>
-<td>
-Tip
-</td>
-<td>
-Standard
-</td>
-</tr> -->
-
 
 <tr>
 <td>
-Alert
+Alert   
+</td>
+<td>
+Color  
+</td>
+<td>
+Menu   
+</td>
+<td>
+Tip      
+</td>
+<td>
+Standard 
+</td>
+</tr>
+
+<tr>
+</tr>
+  
+<tr>
+<td>
 <img src="GitHub/Assets/GIFs/Alert.gif" alt="Alert">
 </td>
 <td>
-Color
 <img src="GitHub/Assets/GIFs/Color.gif" alt="Color">
 </td>
 <td>
-Menu
 <img src="GitHub/Assets/GIFs/Menu.gif" alt="Menu">
 </td>
 <td>
-Tip
 <img src="GitHub/Assets/GIFs/Tip.gif" alt="Tip">
 </td>
 <td>
-Standard
 <img src="GitHub/Assets/GIFs/Standard.gif" alt="Standard">
 </td>
 </tr>
 
-
-<!-- <tr>
+<tr>
+</tr>
+  
+<tr>
 <td colspan=2>
 Tutorial
 </td>
 <td colspan=2>
-PIP
+Picture-in-Picture
 </td>
 <td>
 Notification
 </td>
-</tr> -->
-
+</tr>
+  
+<tr>
+</tr>
+  
+<tr>
 <td colspan=2>
 <img src="GitHub/Assets/GIFs/Tutorial.gif" alt="Tutorial">
 </td>
@@ -80,10 +85,11 @@ Notification
 <img src="GitHub/Assets/GIFs/Notification.gif" alt="Notification">
 </td>
 </tr>
+
 </table>
 
 ## Example
-The example app walks through the library and has lots of examples. Download for [Swift Playgrounds 4](Examples/PopoversPlaygroundApp.zip) or [Xcode]((Examples/PopoversXcodeApp.zip)).
+Walks you through the library. Download for [Swift Playgrounds 4](Examples/PopoversPlaygroundApp.zip) or [Xcode]((Examples/PopoversXcodeApp.zip)).
 
 ![Example app](GitHub/Assets/ExampleApp.png)
 
