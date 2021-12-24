@@ -194,7 +194,57 @@ struct PopoverView: View {
 ![Button "Present popover!" with a popover underneath.](GitHub/Assets/UsagePopover.png)
 
 ## Customization
-Customize popovers through the `Attributes` struct.
+Customize popovers through the `Attributes` struct. This is completely optional, except you must provide the Source Frame if using UIKit.
+
+<table>
+<tr>
+<td>
+<strong>
+SwiftUI</strong>
+</td>
+<td>
+<strong>
+UIKit
+</strong>
+</td>
+</tr>
+  
+<tr>
+<td>
+<br>
+
+```
+.popover(
+    present: $present,
+    attributes: { /// here!
+        $0.position = .absolute(
+            originAnchor: .bottom,
+            popoverAnchor: .topLeft
+        )
+    }
+) {
+    Text("Hi, I'm a popover.")
+}
+```
+</td>
+<td>
+<br>
+
+```
+var popover = Popover { Text("Hi, I'm a popover.") }
+popover.attributes.position = .absolute( /// here!
+    originAnchor: .bottom,
+    popoverAnchor: .topLeft
+)
+popover.attributes.sourceFrame = { [weak self] in
+    let button = self?.button
+    return button.windowFrame()
+}
+Popovers.present(popover)
+```
+</td>
+</tr>
+</table>
 
 ### Position • `enum`
 The popover's position can either be `.absolute` (attached to a view) or `.relative` (picture-in-picture). The enum's associated value additionally configures which sides and corners are used.
@@ -206,6 +256,48 @@ The popover's position can either be `.absolute` (attached to a view) or `.relat
 Anchor Reference | `.absolute(originAnchor: .bottom, popoverAnchor: .topLeft)` | `.relative(popoverAnchors: [.right])`
 --- | --- | ---
 ![](GitHub/Assets/Anchors.png) | ![](GitHub/Assets/Absolute.png) | ![](GitHub/Assets/Relative.png)
+
+### Source Frame • `(() -> CGRect)`
+This is the frame that the popover attaches to or is placed within, depending on the position. This must be in global window coordinates.
+
+
+
+<table>
+<tr>
+<td>
+<strong>
+SwiftUI</strong>
+</td>
+<td>
+<strong>
+UIKit
+</strong>
+</td>
+</tr>
+  
+<tr>
+<td>
+<br>
+
+```
+attributes.sourceFrame = { [weak self] in
+    let button = self?.button
+    return button.windowFrame()
+}
+```
+</td>
+<td>
+<br>
+
+```
+attributes.sourceFrame = { [weak self] in
+    let button = self?.button
+    return button.windowFrame()
+}
+```
+</td>
+</tr>
+</table>
 
 ## License
 Popovers is made by [aheze](https://github.com/aheze). Use it however you want.
