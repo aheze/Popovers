@@ -108,9 +108,9 @@ Add the Swift Package URL:
 <td>
 <strong>
 Cocoapods
+</strong>
 <br>
 Add this to your Podfile:
-</strong>
 </td>
 </tr>
   
