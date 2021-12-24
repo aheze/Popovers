@@ -5,8 +5,12 @@
 # Popovers
 
 Popovers is a library to present popovers.
-- Lightweight and fast
-- Powered by SwiftUI, so everything is exactly as you declare it to be.
+- Present **any** view above your app's main content.
+- Supports multiple popovers at the same time and smooth transitions.
+- Attach to source views or use picture-in-picture positioning.
+- Popovers are interactive and can be dragged to different positions.
+- Highly customizable API that's super simple — just add `.popover`.
+- Written in SwiftUI with full SwiftUI and UIKit support.
 
 ## Example
 The example app walks through Popovers' features. Download for [Swift Playgrounds 4](Examples/PopoversPlaygroundApp.zip) or [Xcode]((Examples/PopoversXcodeApp.zip)).
