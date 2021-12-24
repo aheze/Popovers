@@ -136,7 +136,7 @@ pod 'Popovers'
 
 ## Usage
 
-To present a popover in SwiftUI, use the `.popover(present:attributes:view)` modifier.
+To present a popover in SwiftUI, use the `.popover(present:attributes:view)` modifier. By default, the popover uses the parent view as the source frame.
 
 ```swift
 import SwiftUI
@@ -161,9 +161,37 @@ struct ContentView: View {
     }
 }
 ```
-In UIKit, create a `Popover` instance, then present with `Popover.present(_:)`.
+
+In UIKit, create a `Popover` instance, then present with `Popover.present(_:)`. You need to manually set the source frame yourself.
+
+```swift
+import SwiftUI
+import Popovers
+
+class ViewController: UIViewController {
+    @IBOutlet weak var button: UIButton!
+    @IBAction func buttonPressed(_ sender: Any) {
+        var popover = Popover { PopoverView() }
+        popover.attributes.sourceFrame = { [weak self] in
+            let button = self?.button
+            return button.windowFrame()
+        }
+        Popovers.present(popover) /// here!
+    }
+}
+
+struct PopoverView: View {
+    var body: some View {
+        Text("Hi, I'm a popover.")
+            .padding()
+            .foregroundColor(.white)
+            .background(.blue)
+            .cornerRadius(16)
+    }
+}
 ```
-```
+
+![Button "Present popover!" with a popover underneath.](GitHub/Assets/UsagePopover.png)
 
 ## Customization
 Customize popovers through the `attributes` struct.
