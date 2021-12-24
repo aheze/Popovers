@@ -99,23 +99,39 @@ Popovers can be installed through the Swift Package Manager or Cocoapods.
 <table>
 <tr>
 <td>
+<strong>
 Swift Package Manager
+</strong>
 </td>
 <td>
+<strong>
 Cocoapods
+</strong>
 </td>
+</tr>
+
+<tr>
 </tr>
 
 <tr>
 <td>
 Add the Swift Package URL:
+</td>
+<td>
+Add this to your Podfile:
+</td>
+</tr>
+  
+<tr>
+<td>
+<br>
 
 ```
 https://github.com/aheze/Popovers
 ```
 </td>
 <td>
-Add this to the Podfile:
+<br>
 
 ```
 pod 'Popovers'
