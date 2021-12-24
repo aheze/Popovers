@@ -89,7 +89,7 @@ Notification
 </table>
 
 ## Example
-Walks you through the library. Download for [Swift Playgrounds 4](Examples/PopoversPlaygroundApp.zip) or [Xcode]((Examples/PopoversXcodeApp.zip)).
+The example app was written in Swift Playgrounds 4, so you can run it right on your iPad. You can always use Xcode if you want though. <kbd>[Download for Swift Playgrounds 4](Examples/PopoversPlaygroundApp.swiftpm.zip)</kbd> - <kbd>[Download for Xcode](Examples/PopoversXcodeApp.zip)</kbd>
 
 ![Example app](GitHub/Assets/ExampleApp.png)
 
