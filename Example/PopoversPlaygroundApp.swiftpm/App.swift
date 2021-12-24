@@ -1,14 +1,15 @@
 //
-//  PopoversAppApp.swift
-//  PopoversApp
+//  App.swift
+//  PopoversPlaygroundApp
 //
-//  Created by Zheng on 12/22/21.
+//  Created by A. Zheng (github.com/aheze) on 12/23/21.
+//  Copyright © 2021 A. Zheng. All rights reserved.
 //
 
 import SwiftUI
 
 @main
-struct PopoversApp: App {
+struct PopoversPlaygroundApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()

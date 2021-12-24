@@ -1,8 +1,9 @@
 //
-//  File.swift
-//  PopoversApp
+//  ContentViewToolbar.swift
+//  PopoversPlaygroundApp
 //
-//  Created by Zheng on 12/23/21.
+//  Created by A. Zheng (github.com/aheze) on 12/23/21.
+//  Copyright © 2021 A. Zheng. All rights reserved.
 //
 
 import SwiftUI
