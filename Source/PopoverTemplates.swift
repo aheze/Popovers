@@ -410,80 +410,37 @@ public struct PopoverTemplates {
         }
     }
     
-    /**
-     A button for use in a `PopoverTemplates.Menu`.
-     */
-    public struct MenuButton: View {
-        
-        /// The button's title.
-        public var title: String
-        
-        /// The button's image (system icon).
-        public var image: String
-        
-        /// The action to be executed when the button is pressed.
-        public var action: (() -> Void)
-        
-        /// The Menu view model.
-        @EnvironmentObject var model: MenuModel
-        
-        /// The button's ID in a wrapper class.
-        @EnvironmentObject var menuID: MenuID
-        
-        /**
-         A button for use in a `PopoverTemplates.Menu`.
-         - parameter title: The button's title.
-         - parameter image: The button's image (system icon).
-         - parameter action: The action to be executed when the button is pressed.
-         */
-        public init(title: String, image: String, action: @escaping (() -> Void)) {
-            self.title = title
-            self.image = image
-            self.action = action
+    /// Allow dragging between buttons. From https://stackoverflow.com/a/58901508/14351818
+    struct DestinationDataKey: PreferenceKey {
+        typealias Value = [DestinationData]
+        static var defaultValue: [DestinationData] = []
+        static func reduce(value: inout [DestinationData], nextValue: () -> [DestinationData]) {
+            value.append(contentsOf: nextValue())
         }
+    }
+    
+    struct DestinationData: Equatable {
+        let destination: Int
+        let frame: CGRect
+    }
+    
+    struct DestinationDataSetter: View {
+        let destination: Int
         
-        public var body: some View {
-            HStack(spacing: 8) {
-                Text(title)
-                
-                Spacer()
-                
-                Image(systemName: image)
+        var body: some View {
+            GeometryReader { geometry in
+                Rectangle()
+                    .fill(Color.clear)
+                    .preference(
+                        key: DestinationDataKey.self,
+                        value: [
+                            DestinationData(
+                                destination: self.destination,
+                                frame: geometry.frame(in: .global)
+                            )
+                        ]
+                    )
             }
-            .contentShape(Rectangle())
-            .frame(maxWidth: .infinity)
-            .padding(EdgeInsets(top: 14, leading: 20, bottom: 14, trailing: 20))
-            .background(model.active == menuID.id ? PopoverTemplates.buttonHighlightColor : .clear)
-            .foregroundColor(.primary)
-            .simultaneousGesture(
-                DragGesture(minimumDistance: 0, coordinateSpace: .global)
-                    .onChanged { value in
-                        
-                        /// First set to nil (out of bounds).
-                        model.active = nil
-                        
-                        /// Then check if the point is inside another button.
-                        for (id, destination) in model.destinations {
-                            if destination.contains(value.location) {
-                                model.active = id
-                            }
-                        }
-                    }
-                    .onEnded { value in
-                        model.selected = model.active
-                        model.active = nil
-                    }
-            )
-            .onDataChange(of: model.selected) { (_, _) in
-                if
-                    let selected = model.selected,
-                    selected == menuID.id
-                {
-                    /// Call the action if the selected button is this button.
-                    action()
-                }
-            }
-            .background(DestinationDataSetter(destination: menuID.id))
         }
     }
     
@@ -559,38 +516,80 @@ public struct PopoverTemplates {
         }
     }
     
-    
-    /// Allow dragging between buttons. From https://stackoverflow.com/a/58901508/14351818
-    struct DestinationDataKey: PreferenceKey {
-        typealias Value = [DestinationData]
-        static var defaultValue: [DestinationData] = []
-        static func reduce(value: inout [DestinationData], nextValue: () -> [DestinationData]) {
-            value.append(contentsOf: nextValue())
-        }
-    }
-    
-    struct DestinationData: Equatable {
-        let destination: Int
-        let frame: CGRect
-    }
-    
-    struct DestinationDataSetter: View {
-        let destination: Int
+    /**
+     A button for use in a `PopoverTemplates.Menu`.
+     */
+    public struct MenuButton: View {
         
-        var body: some View {
-            GeometryReader { geometry in
-                Rectangle()
-                    .fill(Color.clear)
-                    .preference(
-                        key: DestinationDataKey.self,
-                        value: [
-                            DestinationData(
-                                destination: self.destination,
-                                frame: geometry.frame(in: .global)
-                            )
-                        ]
-                    )
+        /// The button's title.
+        public var title: String
+        
+        /// The button's image (system icon).
+        public var image: String
+        
+        /// The action to be executed when the button is pressed.
+        public var action: (() -> Void)
+        
+        /// The Menu view model.
+        @EnvironmentObject var model: MenuModel
+        
+        /// The button's ID in a wrapper class.
+        @EnvironmentObject var menuID: MenuID
+        
+        /**
+         A button for use in a `PopoverTemplates.Menu`.
+         - parameter title: The button's title.
+         - parameter image: The button's image (system icon).
+         - parameter action: The action to be executed when the button is pressed.
+         */
+        public init(title: String, image: String, action: @escaping (() -> Void)) {
+            self.title = title
+            self.image = image
+            self.action = action
+        }
+        
+        public var body: some View {
+            HStack(spacing: 8) {
+                Text(title)
+                
+                Spacer()
+                
+                Image(systemName: image)
             }
+            .contentShape(Rectangle())
+            .frame(maxWidth: .infinity)
+            .padding(EdgeInsets(top: 14, leading: 20, bottom: 14, trailing: 20))
+            .background(model.active == menuID.id ? PopoverTemplates.buttonHighlightColor : .clear)
+            .foregroundColor(.primary)
+            .simultaneousGesture(
+                DragGesture(minimumDistance: 0, coordinateSpace: .global)
+                    .onChanged { value in
+                        
+                        /// First set to nil (out of bounds).
+                        model.active = nil
+                        
+                        /// Then check if the point is inside another button.
+                        for (id, destination) in model.destinations {
+                            if destination.contains(value.location) {
+                                model.active = id
+                            }
+                        }
+                    }
+                    .onEnded { value in
+                        model.selected = model.active
+                        model.active = nil
+                    }
+            )
+            .onDataChange(of: model.selected) { (_, _) in
+                if
+                    let selected = model.selected,
+                    selected == menuID.id
+                {
+                    /// Call the action if the selected button is this button.
+                    action()
+                }
+            }
+            .background(DestinationDataSetter(destination: menuID.id))
         }
     }
 }

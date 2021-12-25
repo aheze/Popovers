@@ -374,7 +374,7 @@ popover2.attributes.dismissal.excludedFrames = { [weak button1] in [ button1.win
 **Drag Dismissal Proximity:** Only applies when `mode` is `.dragDown` or `.dragUp`. Represents the point on the screen that the drag must reach in order to auto-dismiss. This property is multiplied by the screen's height.
 
 
-<img src="GtHub/Assets/DragDismissalProximity.png" width=200 alt="Diagram with the top 25% of the screen highlighted in blue.">
+<img src="GitHub/Assets/DragDismissalProximity.png" width=300 alt="Diagram with the top 25% of the screen highlighted in blue.">
 
 
 ### 🔀 Rubber Banding Mode • `RubberBandingMode`
@@ -387,7 +387,7 @@ Configures which axes the popover can "rubber-band" on when dragged. The default
 ### 🛑 Blocks Background Touches • `Bool`
 Set this to true to prevent underlying views from being pressed.
 
-<img src="GitHub/Assets/BlocksBackgroundTouches.png" width=200 alt="Popover overlaid over some buttons. Tapping on the buttons has no effect.">
+<img src="GitHub/Assets/BlocksBackgroundTouches.png" width=300 alt="Popover overlaid over some buttons. Tapping on the buttons has no effect.">
 
 ### 👉 On Tap Outside • `(() -> Void)?`
 A closure that is called whenever the user taps outside the popover.
@@ -486,7 +486,7 @@ struct ContentView: View {
 </tr>
 </table>
 
-| <img src="GitHub/Assets/AnimatingBetweenPopovers.gif" width=200 alt="Smooth transition between popovers (from blue to green and back."> |
+| <img src="GitHub/Assets/AnimatingBetweenPopovers.gif" width=300 alt="Smooth transition between popovers (from blue to green and back."> |
 | --- |
 
 ### 🌃 Background
@@ -560,7 +560,32 @@ It's kind of like [`GeometryReader`](https://www.hackingwithswift.com/quick-star
 | --- |
 
 ### 🔖 Frame Tags
+Lets you tag view frames in SwiftUI. You can use this to provide the `sourceFrame` or `excludedFrames`. As convenient as it is, don't use it for anything else, due to State issues.
+
+```swift
+Text("This is a view")
+    .frameTag("Your Tag Name")
+
+/// ...
+
+.popover(
+    present: $present,
+    attributes: {
+        $0.sourceFrame = Popovers.frameTagged("Your Tag Name")
+    }
+)
+```
+
 ### 📄 Templates
+Get started quickly with some templates. All of them are inside `PopoverTemplates.swift` with example usage in the example app.
+- `AlertButtonStyle` - a button style resembling a system alert.
+- `VisualEffectView` - lets you use UIKit blurs in SwiftUI.
+- `ContainerShadow` - a view modifier that applies a system-like shadow.
+- `Container` - a wrapper view for the `BackgroundWithArrow` shape.
+- `BackgroundWithArrow` - a shape with an arrow that looks like the system popover.
+- `CurveConnector` - an animatable shape with endpoints that you can set.
+- `Menu` - the system menu but built from scratch.
+- `MenuButton` - buttons to put in the `Menu`.
 
 ## Notes
 ### State Re-Rendering
