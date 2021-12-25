@@ -115,6 +115,9 @@ class ReplaceViewController: UIViewController {
     @objc func button1Pressed() {
         var attributes = Popover.Attributes()
         attributes.tag = "A Popover"
+        
+        /// exclude the frame of the other button
+        attributes.dismissal.excludedFrames = { [weak button2] in [ button2.windowFrame() ] }
         attributes.sourceFrame = { [weak button1] in
             button1.windowFrame()
         }
@@ -135,6 +138,9 @@ class ReplaceViewController: UIViewController {
     @objc func button2Pressed() {
         var attributes = Popover.Attributes()
         attributes.tag = "A Popover"
+        
+        /// exclude the frame of the other button
+        attributes.dismissal.excludedFrames = { [weak button1] in [ button1.windowFrame() ] }
         attributes.sourceFrame = { [weak button2] in
             button2.windowFrame()
         }

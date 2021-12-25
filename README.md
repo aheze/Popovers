@@ -170,9 +170,8 @@ class ViewController: UIViewController {
     @IBOutlet weak var button: UIButton!
     @IBAction func buttonPressed(_ sender: Any) {
         var popover = Popover { PopoverView() }
-        popover.attributes.sourceFrame = { [weak self] in
-            let button = self?.button
-            return button.windowFrame()
+        popover.attributes.sourceFrame = { [weak button] in
+            button.windowFrame()
         }
         Popovers.present(popover) /// here!
     }
@@ -303,9 +302,8 @@ $0.sourceFrame = { /** some CGRect here */ }
 <br>
 
 ```swift
-attributes.sourceFrame = { [weak self] in
-    let button = self?.button
-    return button.windowFrame()
+attributes.sourceFrame = { [weak button] in /// use `weak` to prevent a retain cycle
+    button.windowFrame()
 }
 ```
 </td>
@@ -355,7 +353,20 @@ $0.dismissal.dragDismissalProximity = CGFloat(0.25)
 
 **Tap Outside Includes Other Popovers:** Only applies when `mode` is `.tapOutside`. If this is enabled, the popover will be dismissed when the user taps outside, **even when another presented popover is what's tapped**. Normally when you tap another popover that's presented, the current one will not dismiss.
 
-**Excluded Frames:** Only applies when `mode` is `.tapOutside`. When the user taps outside the popover, but the tap lands on one of these frames, the popover will stay presented.
+**Excluded Frames:** Only applies when `mode` is `.tapOutside`. When the user taps outside the popover, but the tap lands on one of these frames, the popover will stay presented. If you want multiple popovers, you should set the source frames of your other popovers as the excluded frames.
+
+```swift
+/// Set one popover's source frame as the other's excluded frame.
+/// This prevents the the current popover from being dismissed before animating to the other one.
+
+let popover1 = Popover { Text("Hello") }
+popover1.attributes.sourceFrame = { [weak button1] in button1.windowFrame() }
+popover1.attributes.dismissal.excludedFrames = { [weak button2] in [ button2.windowFrame() ] }
+
+let popover2 = Popover { Text("Hello") }
+popover2.attributes.sourceFrame = { [weak button2] in button2.windowFrame() }
+popover2.attributes.dismissal.excludedFrames = { [weak button1] in [ button1.windowFrame() ] }
+```
 
 **Drag Moves Popover Off Screen:** Only applies when `mode` is `.dragDown` or `.dragUp`. If this is enabled, the popover will continue moving off the screen after the user drags.
 
@@ -388,7 +399,93 @@ A closure that is called whenever the context changed. The context contains the 
 ## Utilities
 Popovers comes with some features to make your life easier.
 
-### Multiple Popovers
+### Animating Between Popovers
+As long as the view structure is the same, you can smoothly transition from one popover to another. 
+
+<table>
+<tr>
+<td>
+<strong>
+SwiftUI
+</strong>
+<br>
+Use the `.popover(selection:tag:attributes:view:)` modifier. 
+</td>
+<td>
+<strong>
+UIKit
+</strong>
+<br>
+Get the existing popover using `Popovers.popover(tagged:)`, then call `Popovers.replace(_:with:)`.
+</td>
+</tr>
+  
+<tr>
+<td>
+<br>
+
+```swift
+struct ContentView: View {
+    @State var selection: String?
+    
+    var body: some View {
+        HStack {
+            Button("Present First Popover") { selection = "1" }
+            .popover(selection: $selection, tag: "1") {
+                Text("Hi, I'm a popover.") /// Will be presented when selection == "1".
+                    .background(.blue)
+            }
+            
+            Button("Present Second Popover") { selection = "2" }
+            .popover(selection: $selection, tag: "2") {
+                Text("Hi, I'm a popover.") /// Will be presented when selection == "2".
+                    .background(.green)
+            }
+        }
+    }
+}
+```
+</td>
+<td>
+<br>
+
+```swift
+@IBAction func button1Pressed(_ sender: Any) {
+    var newPopover = Popover {
+        Text("Hi, I'm a popover.")
+            .background(.blue)
+    }
+    newPopover.attributes.sourceFrame = { [weak button1] in button1.windowFrame() }
+    newPopover.attributes.dismissal.excludedFrames = { [weak button2] in [button2.windowFrame()] }
+    newPopover.attributes.tag = "Popover 1"
+    
+    if let oldPopover = Popovers.popover(tagged: "Popover 2") {
+        Popovers.replace(oldPopover, with: newPopover)
+    } else {
+        Popovers.present(newPopover) /// Present if the old popover doesn't exist.
+    }
+}
+@IBAction func button2Pressed(_ sender: Any) {
+    var newPopover = Popover {
+        Text("Hi, I'm a popover.")
+            .background(.green)
+    }
+    newPopover.attributes.sourceFrame = { [weak button2] in button2.windowFrame() }
+    newPopover.attributes.dismissal.excludedFrames = { [weak button1] in [button1.windowFrame()] }
+    newPopover.attributes.tag = "Popover 2"
+    
+    if let oldPopover = Popovers.popover(tagged: "Popover 1") {
+        Popovers.replace(oldPopover, with: newPopover)
+    } else {
+        Popovers.present(newPopover)
+    }
+}
+```
+</td>
+</tr>
+</table>
+
+![Smooth transition between popovers (from blue to green and back.)](GitHub/Assets/AnimatingBetweenPopovers.gif)
 
 ### Background
 ### Popover Reader
