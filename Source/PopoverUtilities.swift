@@ -1,16 +1,34 @@
 //
 //  PopoverUtilities.swift
-//  Popover
+//  Popovers
 //
-//  Created by Zheng on 12/3/21.
-//  Copyright © 2021 Andrew. All rights reserved.
-//
+//  Created by A. Zheng (github.com/aheze) on 12/23/21.
+//  Copyright © 2021 A. Zheng. All rights reserved.
 //
 
 import SwiftUI
 import Combine
 
+public extension UIView {
+    
+    /// Convert a view's frame to global coordinates, which are needed for `sourceFrame` and `excludedFrames.`
+    func windowFrame() -> CGRect {
+        return self.convert(self.bounds, to: nil)
+    }
+}
+public extension Optional where Wrapped: UIView {
+    /// Convert a view's frame to global coordinates, which are needed for `sourceFrame` and `excludedFrames.` This is a convenience overload for optional `UIView`s.
+    func windowFrame() -> CGRect {
+        if let view = self {
+            return view.windowFrame()
+        }
+        return .zero
+    }
+}
+
+
 public extension View {
+    
     
     /// Read a view's frame. From https://stackoverflow.com/a/66822461/14351818
     func frameReader(rect: @escaping (CGRect) -> Void) -> some View {
@@ -95,15 +113,6 @@ public extension View {
     }
 }
 
-public extension Optional where Wrapped: UIView {
-    /// Convert a view's frame to global coordinates, which are needed for `sourceFrame` and `excludedFrames.`
-    func windowFrame() -> CGRect {
-        if let view = self {
-            return view.convert(view.bounds, to: nil)
-        }
-        return .zero
-    }
-}
 
 /// For easier CGPoint math
 public extension CGPoint {

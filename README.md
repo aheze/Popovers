@@ -89,12 +89,12 @@ Notification
 </table>
 
 ## Example
-The example app was written in Swift Playgrounds 4, so you can run it right on your iPad. If you're using a Mac, download the Xcode version. [Download for Swift Playgrounds 4](https://github.com/aheze/Popovers/raw/main/Examples/PopoversPlaygroundApp.swiftpm.zip) • [Download for Xcode](https://github.com/aheze/Popovers/raw/main/Examples/PopoversXcodeApp.zip)
+I wrote the example app in Swift Playgrounds 4, so you can run it right on your iPad. If you're using a Mac, download the Xcode version. [Download for Swift Playgrounds 4](https://github.com/aheze/Popovers/raw/main/Examples/PopoversPlaygroundApp.swiftpm.zip) • [Download for Xcode](https://github.com/aheze/Popovers/raw/main/Examples/PopoversXcodeApp.zip)
 
 ![Example app](GitHub/Assets/ExampleApp.png)
 
 ## Installation
-Popovers can be installed through the Swift Package Manager (preferred) or Cocoapods.
+Popovers can be installed through the Swift Package Manager (recommended) or Cocoapods.
 
 <table>
 <tr>
@@ -103,7 +103,7 @@ Popovers can be installed through the Swift Package Manager (preferred) or Cocoa
 Swift Package Manager
 </strong>
 <br>
-Add the Swift Package URL:
+Add the Package URL:
 </td>
 <td>
 <strong>
@@ -389,6 +389,7 @@ A closure that is called whenever the context changed. The context contains the 
 Popovers comes with some features to make your life easier.
 
 ### Multiple Popovers
+
 ### Background
 ### Popover Reader
 ### Frame Tags
@@ -476,7 +477,8 @@ struct ContentView: View {
 </tr>
 </table>
 
-- Use `.zIndex` to 
+### Popover Hierarchy
+You can attach [`.zIndex(_:)`](https://developer.apple.com/documentation/swiftui/view/zindex(_:)) to each popover's view. A higher index will bring it to the front.
 
 
 ## License
