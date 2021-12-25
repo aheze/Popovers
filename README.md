@@ -192,7 +192,7 @@ struct PopoverView: View {
 
 ## Customization
 
-| 🏷 | ⏹ | ⬛️ | 🔳 | ⏺ | 🟩 | 🟥 | 🔀 | 🛑 | 👉 | 🎈 | 🔰 |
+| 🏷  | 💠  | ⬜  | 🔲  | ⏹  | 🟩  | 🟥  | 🔀  | 🛑  | 👉  | 🎈  | 🔰  |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 
 Customize popovers through the `Attributes` struct. Pretty much everything is customizable, including positioning, animations, and dismissal behavior.
@@ -261,7 +261,7 @@ let popover = Popovers.popovers(tagged: "Your Tag")
 
 Note: When you use the `.popover(selection:tag:attributes:view:)` modifier, this `tag` is automatically set to what you provide in the parameter.
 
-### ⏹ Position • `Position`
+### 💠 Position • `Position`
 The popover's position can either be `.absolute` (attached to a view) or `.relative` (picture-in-picture). The enum's associated value additionally configures which sides and corners are used.
 
 - `Anchor`s represent sides and corners.
@@ -272,7 +272,7 @@ Anchor Reference | `.absolute(originAnchor: .bottom, popoverAnchor: .topLeft)` |
 --- | --- | ---
 ![](GitHub/Assets/Anchors.png) | ![](GitHub/Assets/Absolute.png) | ![](GitHub/Assets/Relative.png)
 
-### ⬛️ Source Frame • `(() -> CGRect)`
+### ⬜ Source Frame • `(() -> CGRect)`
 This is the frame that the popover attaches to or is placed within, depending on its position. This must be in global window coordinates. Because frames are can change so often, this property is a closure. Whenever the device rotates or some other bounds change happens, the closure will be called.
 
 
@@ -315,14 +315,14 @@ attributes.sourceFrame = { [weak button] in
 </tr>
 </table>
 
-### 🔳 Source Frame Inset • `UIEdgeInsets`
+### 🔲 Source Frame Inset • `UIEdgeInsets`
 Edge insets to apply to the source frame. Positive values inset the frame, negative values expand it.
 
 Absolute | Relative
 --- | ---
 ![Source view has padding around it, so the popover is offset down.](GitHub/Assets/SourceFrameInsetAbsolute.png) | ![Source view is inset, so the popover is brought more towards the center of the screen.](GitHub/Assets/SourceFrameInsetRelative.png)
 
-### ⏺ Screen Edge Padding • `UIEdgeInsets`
+### ⏹ Screen Edge Padding • `UIEdgeInsets`
 Global insets for all popovers to prevent them from overflowing off the screen. Kind of like a safe area. Default value is `UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)`.
 
 ### 🟩 Presentation • `Presentation`
