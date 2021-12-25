@@ -701,11 +701,18 @@ struct YourApp: App {
 }
 ```
 
+
+## Community
+### Author
+Popovers is made by [aheze](https://github.com/aheze).
+
+### Contributing
+All contributions are welcome. Just fork the repo, then make a pull request.
+
 ### Need Help?
-Open an [issue](https://github.com/aheze/Popovers/issues) or join the [Discord server](https://discord.com/invite/Pmq8fYcus2).
+Open an [issue](https://github.com/aheze/Popovers/issues) or join the [Discord server](https://discord.com/invite/Pmq8fYcus2). Or read the source code — there's lots of comments.
 
 ## License
-Popovers is made by [aheze](https://github.com/aheze). Use it however you want.
 
 ```
 MIT License
