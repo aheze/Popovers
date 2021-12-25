@@ -7,7 +7,7 @@ A library to present popovers.
 - Attach to source views or use picture-in-picture positioning.
 - Supports multiple popovers at the same time with smooth transitions.
 - Highly customizable API that's super simple — just add `.popover`.
-- Written in SwiftUI with full SwiftUI + UIKit support. 0 dependencies.
+- Written in SwiftUI with full SwiftUI + UIKit support. No dependencies.
 
 ## Showroom
 
@@ -190,7 +190,7 @@ struct PopoverView: View {
 <br>
 
 ## Customization
-| [🏷](https://github.com/aheze/Popovers#tag--string)  | [💠](https://github.com/aheze/Popovers#position--position)  | [⬜](https://github.com/aheze/Popovers#source-frame-----cgrect)  | [🔲](https://github.com/aheze/Popovers#source-frame-inset--uiedgeinsets)  | [⏹](https://github.com/aheze/Popovers#screen-edge-padding--uiedgeinsets)  | [🟩](https://github.com/aheze/Popovers#presentation--presentation)  | [🟥](https://github.com/aheze/Popovers#dismissal--dismissal)  | [🎾](https://github.com/aheze/Popovers#rubber-banding-mode--rubberbandingmode)  | [🛑](https://github.com/aheze/Popovers#rubber-banding-mode--rubberbandingmode)  | [👉](https://github.com/aheze/Popovers#on-tap-outside-----void)  | [🎈](https://github.com/aheze/Popovers#on-dismiss-----void)  | [🔰](https://github.com/aheze/Popovers#on-context-change--context---void)  |
+| [🔖](https://github.com/aheze/Popovers#tag--string)  | [💠](https://github.com/aheze/Popovers#position--position)  | [⬜](https://github.com/aheze/Popovers#source-frame-----cgrect)  | [🔲](https://github.com/aheze/Popovers#source-frame-inset--uiedgeinsets)  | [⏹](https://github.com/aheze/Popovers#screen-edge-padding--uiedgeinsets)  | [🟩](https://github.com/aheze/Popovers#presentation--presentation)  | [🟥](https://github.com/aheze/Popovers#dismissal--dismissal)  | [🎾](https://github.com/aheze/Popovers#rubber-banding-mode--rubberbandingmode)  | [🛑](https://github.com/aheze/Popovers#rubber-banding-mode--rubberbandingmode)  | [👉](https://github.com/aheze/Popovers#on-tap-outside-----void)  | [🎈](https://github.com/aheze/Popovers#on-dismiss-----void)  | [🔰](https://github.com/aheze/Popovers#on-context-change--context---void)  |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 
 Customize popovers through the `Attributes` struct. Pretty much everything is customizable, including positioning, animations, and dismissal behavior.
@@ -246,7 +246,7 @@ Popovers.present(popover)
 </tr>
 </table>
 
-### 🏷 Tag • `String?`
+### 🔖 Tag • `String?`
 Tag popovers to access them later from anywhere. This is useful for updating existing popovers.
 
 ```swift
@@ -403,9 +403,12 @@ A closure that's called whenever the context changed. The context contains the p
 <br>
 
 ## Utilities
+| [🧩](https://github.com/aheze/Popovers#animating-between-popovers)  | [🌃](https://github.com/aheze/Popovers#background)  | [📖](https://github.com/aheze/Popovers#popover-reader)  | [🏷](https://github.com/aheze/Popovers#frame-tags)  | [📄](https://github.com/aheze/Popovers#templates)  |
+| --- | --- | --- | --- | --- |
+
 Popovers comes with some features to make your life easier.
 
-### ✨ Animating Between Popovers
+### 🧩 Animating Between Popovers
 As long as the view structure is the same, you can smoothly transition from one popover to another. 
 
 <table>
@@ -562,7 +565,7 @@ This reads the popover's context, which contains its frame, attributes, and vari
 | <img src="Assets/PopoverReader.gif" width=200 alt="Line connects the bottom of the popover with the bottom of the screen"> |
 | --- |
 
-### 🔖 Frame Tags
+### 🏷 Frame Tags
 Popovers provides a mechanism for tagging and reading SwiftUI view frames. You can use this to provide a popover's `sourceFrame` or `excludedFrames`. As convenient as it is, don't use it for anything else, due to possible state issues.
 
 ```swift
@@ -658,7 +661,8 @@ struct ContentView: View {
         }
         .popover(present: $present) {
 
-            /// Directly passing down the variable (no $) is unsupported. The button might not update.
+            /// Directly passing down the variable (without $) is unsupported.
+            /// The button might not update.
             Button(string) { 
                 string = "The string changed."
             }
@@ -676,7 +680,7 @@ struct ContentView: View {
 To bring a popover to front, just attach [`.zIndex(_:)`](https://developer.apple.com/documentation/swiftui/view/zindex(_:)). A higher index will bring it forwards.
 
 ### Popover Not Animating At First?
-Make sure that `Popovers` is set up by calling `Popovers.prepare()` when your app starts.
+Make sure the library is set up by calling `Popovers.prepare()` when your app starts.
 
 ```swift
 import SwiftUI
