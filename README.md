@@ -390,13 +390,13 @@ Set this to true to prevent underlying views from being pressed.
 <img src="GitHub/Assets/BlocksBackgroundTouches.png" width=300 alt="Popover overlaid over some buttons. Tapping on the buttons has no effect.">
 
 ### 👉 On Tap Outside • `(() -> Void)?`
-A closure that is called whenever the user taps outside the popover.
+A closure that's called whenever the user taps outside the popover.
 
 ### 🎈 On Dismiss • `(() -> Void)?`
-A closure that is called when the popover is dismissed.
+A closure that's called when the popover is dismissed.
 
 ### 🔰 On Context Change • `((Context) -> Void)?`
-A closure that is called whenever the context changed. The context contains the popover's attributes, current frame, and other visible traits.
+A closure that's called whenever the context changed. The context contains the popover's attributes, current frame, and other visible traits.
 
 
 ## Utilities
@@ -490,7 +490,7 @@ struct ContentView: View {
 | --- |
 
 ### 🌃 Background
-You can put anything you want in the popover's background.
+You can put anything in a popover's background.
 
 <table>
 <tr>
@@ -540,7 +540,7 @@ var popover = Popover {
 
 
 ### 📖 Popover Reader
-It's kind of like [`GeometryReader`](https://www.hackingwithswift.com/quick-start/swiftui/how-to-provide-relative-sizes-using-geometryreader). This reads the popover's context, which includes its frame. You can put it in the popover's view or background and do some cool stuff.
+Reads the popover's context, which includes its frame. It's kind of like [`GeometryReader`](https://www.hackingwithswift.com/quick-start/swiftui/how-to-provide-relative-sizes-using-geometryreader), but cooler. You can put it in the popover's view or background.
 
 ```swift
 .popover(present: $present) {
@@ -560,7 +560,7 @@ It's kind of like [`GeometryReader`](https://www.hackingwithswift.com/quick-star
 | --- |
 
 ### 🔖 Frame Tags
-Lets you tag view frames in SwiftUI. You can use this to provide the `sourceFrame` or `excludedFrames`. As convenient as it is, don't use it for anything else, due to State issues.
+Lets you tag view frames in SwiftUI. You can use this to provide a popover's `sourceFrame` or `excludedFrames`. As convenient as it is, don't use it for anything else, due to possible State issues.
 
 ```swift
 Text("This is a view")
@@ -577,7 +577,7 @@ Text("This is a view")
 ```
 
 ### 📄 Templates
-Get started quickly with some templates. All of them are inside `PopoverTemplates.swift` with example usage in the example app.
+Get started quickly with some templates. All of them are inside [`PopoverTemplates.swift`](Source/PopoverTemplates.swift) with example usage in the example app.
 - `AlertButtonStyle` - a button style resembling a system alert.
 - `VisualEffectView` - lets you use UIKit blurs in SwiftUI.
 - `ContainerShadow` - a view modifier that applies a system-like shadow.
@@ -598,14 +598,14 @@ If you directly pass a variable down to the popover's view, it might not update.
 Yes
 </strong>
 <br>
-The popover's view is in a separate struct.
+The popover's view is in a separate struct, with <code>$string</code> passed down.
 </td>
 <td>
 <strong>
 No
 </strong>
 <br>
-The button is 
+The button is directly inside the <code>view</code> parameter and receives <code>string</code>.
 </td>
 </tr>
   
@@ -619,9 +619,7 @@ struct ContentView: View {
     @State var string = "Hello, I'm a popover."
 
     var body: some View {
-        Button("Present popover!") {
-            present = true
-        }
+        Button("Present popover!") { present = true }
         .popover(present: $present) {
             PopoverView(string: $string) /// Pass down a Binding ($).
         }
@@ -633,9 +631,7 @@ struct PopoverView: View {
     @Binding var string: String
 
     var body: some View {
-        Button(string) {
-            string = "The string changed."
-        }
+        Button(string) { string = "The string changed." }
         .background(.mint)
         .cornerRadius(16)
     }
@@ -671,7 +667,29 @@ struct ContentView: View {
 </table>
 
 ### Popover Hierarchy
-You can attach [`.zIndex(_:)`](https://developer.apple.com/documentation/swiftui/view/zindex(_:)) to popover views. A higher index will bring it forwards.
+To bring a popover to front, just attach [`.zIndex(_:)`](https://developer.apple.com/documentation/swiftui/view/zindex(_:)). A higher index will bring it forwards.
+
+### Popover Not Animating At First?
+Make sure that `Popovers` is set up by calling `Popovers.prepare()` when your app starts.
+
+```swift
+import SwiftUI
+import Popovers
+
+@main
+struct YourApp: App {
+    @Environment(\.scenePhase) private var scenePhase
+    
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+        }
+        .onChange(of: scenePhase) { _ in
+            Popovers.prepare() /// Make sure Popovers is ready.
+        }
+    }
+}
+```
 
 
 ## License
