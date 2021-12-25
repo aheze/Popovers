@@ -544,7 +544,7 @@ var popover = Popover {
 
 
 ### 📖 Popover Reader
-Reads the popover's context, which includes its frame. It's kind of like [`GeometryReader`](https://www.hackingwithswift.com/quick-start/swiftui/how-to-provide-relative-sizes-using-geometryreader), but cooler. You can put it in the popover's view or background.
+This reads the popover's context, which contains its frame, attributes, and various other properties. It's kind of like [`GeometryReader`](https://www.hackingwithswift.com/quick-start/swiftui/how-to-provide-relative-sizes-using-geometryreader), but cooler. You can put it in the popover's view or its background.
 
 ```swift
 .popover(present: $present) {
@@ -564,7 +564,7 @@ Reads the popover's context, which includes its frame. It's kind of like [`Geome
 | --- |
 
 ### 🔖 Frame Tags
-Lets you tag view frames in SwiftUI. You can use this to provide a popover's `sourceFrame` or `excludedFrames`. As convenient as it is, don't use it for anything else, due to possible State issues.
+Popovers provides a mechanism for tagging and reading SwiftUI view frames. You can use this to provide a popover's `sourceFrame` or `excludedFrames`. As convenient as it is, don't use it for anything else, due to possible state issues.
 
 ```swift
 Text("This is a view")
@@ -582,6 +582,7 @@ Text("This is a view")
 
 ### 📄 Templates
 Get started quickly with some templates. All of them are inside [`PopoverTemplates.swift`](Source/PopoverTemplates.swift) with example usage in the example app.
+
 - `AlertButtonStyle` - a button style resembling a system alert.
 - `VisualEffectView` - lets you use UIKit blurs in SwiftUI.
 - `ContainerShadow` - a view modifier that applies a system-like shadow.
@@ -697,6 +698,8 @@ struct YourApp: App {
 }
 ```
 
+### Need Help?
+Open an [issue](https://github.com/aheze/Popovers/issues) or join the [Discord server](https://discord.com/invite/Pmq8fYcus2).
 
 ## License
 Popovers is made by [aheze](https://github.com/aheze). Use it however you want.
@@ -704,7 +707,7 @@ Popovers is made by [aheze](https://github.com/aheze). Use it however you want.
 ```
 MIT License
 
-Copyright (c) 2022 A. Zheng
+Copyright (c) 2021 A. Zheng
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

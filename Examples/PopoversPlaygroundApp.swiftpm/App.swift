@@ -17,10 +17,8 @@ struct PopoversPlaygroundApp: App {
         WindowGroup {
             ContentView()
         }
-        
-        /// Make sure Popovers is ready. This avoid stuttering animations.
         .onChange(of: scenePhase) { _ in
-            Popovers.prepare()
+            Popovers.prepare() /// Make sure Popovers is ready.
         }
     }
 }
