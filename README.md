@@ -1,4 +1,4 @@
-![Header Image](GitHub/Assets/Header.png)
+![Header Image](Assets/Header.png)
 
 # Popovers
 
@@ -38,19 +38,19 @@ Standard
   
 <tr>
 <td>
-<img src="GitHub/Assets/GIFs/Alert.gif" alt="Alert">
+<img src="Assets/GIFs/Alert.gif" alt="Alert">
 </td>
 <td>
-<img src="GitHub/Assets/GIFs/Color.gif" alt="Color">
+<img src="Assets/GIFs/Color.gif" alt="Color">
 </td>
 <td>
-<img src="GitHub/Assets/GIFs/Menu.gif" alt="Menu">
+<img src="Assets/GIFs/Menu.gif" alt="Menu">
 </td>
 <td>
-<img src="GitHub/Assets/GIFs/Tip.gif" alt="Tip">
+<img src="Assets/GIFs/Tip.gif" alt="Tip">
 </td>
 <td>
-<img src="GitHub/Assets/GIFs/Standard.gif" alt="Standard">
+<img src="Assets/GIFs/Standard.gif" alt="Standard">
 </td>
 </tr>
 
@@ -74,13 +74,13 @@ Notification
   
 <tr>
 <td colspan=2>
-<img src="GitHub/Assets/GIFs/Tutorial.gif" alt="Tutorial">
+<img src="Assets/GIFs/Tutorial.gif" alt="Tutorial">
 </td>
 <td colspan=2>
-<img src="GitHub/Assets/GIFs/PIP.gif" alt="Picture in Picture">
+<img src="Assets/GIFs/PIP.gif" alt="Picture in Picture">
 </td>
 <td>
-<img src="GitHub/Assets/GIFs/Notification.gif" alt="Notification">
+<img src="Assets/GIFs/Notification.gif" alt="Notification">
 </td>
 </tr>
 
@@ -89,7 +89,7 @@ Notification
 ## Example
 I wrote the example app with Swift Playgrounds 4, so you can run it right on your iPad. If you're using a Mac, download the Xcode version. [Download for Swift Playgrounds 4](https://github.com/aheze/Popovers/raw/main/Examples/PopoversPlaygroundApp.swiftpm.zip) • [Download for Xcode](https://github.com/aheze/Popovers/raw/main/Examples/PopoversXcodeApp.zip)
 
-![Example app](GitHub/Assets/ExampleApp.png)
+![Example app](Assets/ExampleApp.png)
 
 ## Installation
 Requires iOS 13+. Popovers can be installed through the Swift Package Manager (recommended) or [Cocoapods](https://cocoapods.org/).
@@ -186,7 +186,7 @@ struct PopoverView: View {
 }
 ```
 
-<img src="GitHub/Assets/UsagePopover.png" width=300 alt="Button 'Present popover!' with a popover underneath.">
+<img src="Assets/UsagePopover.png" width=300 alt="Button 'Present popover!' with a popover underneath.">
 
 <br>
 
@@ -269,7 +269,7 @@ The popover's position can either be `.absolute` (attached to a view) or `.relat
 
 Anchor Reference | `.absolute(originAnchor: .bottom, popoverAnchor: .topLeft)` | `.relative(popoverAnchors: [.right])`
 --- | --- | ---
-![](GitHub/Assets/Anchors.png) | ![](GitHub/Assets/Absolute.png) | ![](GitHub/Assets/Relative.png)
+![](Assets/Anchors.png) | ![](Assets/Absolute.png) | ![](Assets/Relative.png)
 
 ### ⬜ Source Frame • `(() -> CGRect)`
 This is the frame that the popover attaches to or is placed within, depending on its position. This must be in global window coordinates. Because frames are can change so often, this property is a closure. Whenever the device rotates or some other bounds change happens, the closure will be called.
@@ -319,7 +319,7 @@ Edge insets to apply to the source frame. Positive values inset the frame, negat
 
 Absolute | Relative
 --- | ---
-![Source view has padding around it, so the popover is offset down.](GitHub/Assets/SourceFrameInsetAbsolute.png) | ![Source view is inset, so the popover is brought more towards the center of the screen.](GitHub/Assets/SourceFrameInsetRelative.png)
+![Source view has padding around it, so the popover is offset down.](Assets/SourceFrameInsetAbsolute.png) | ![Source view is inset, so the popover is brought more towards the center of the screen.](Assets/SourceFrameInsetRelative.png)
 
 ### ⏹ Screen Edge Padding • `UIEdgeInsets`
 Global insets for all popovers to prevent them from overflowing off the screen. Kind of like a safe area. Default value is `UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)`.
@@ -377,7 +377,7 @@ popover2.attributes.dismissal.excludedFrames = { [weak button1] in [ button1.win
 **Drag Dismissal Proximity:** Only applies when `mode` is `.dragDown` or `.dragUp`. Represents the point on the screen that the drag must reach in order to auto-dismiss. This property is multiplied by the screen's height.
 
 
-<img src="GitHub/Assets/DragDismissalProximity.png" width=300 alt="Diagram with the top 25% of the screen highlighted in blue.">
+<img src="Assets/DragDismissalProximity.png" width=300 alt="Diagram with the top 25% of the screen highlighted in blue.">
 
 
 ### 🎾 Rubber Banding Mode • `RubberBandingMode`
@@ -390,7 +390,7 @@ Configures which axes the popover can "rubber-band" on when dragged. The default
 ### 🛑 Blocks Background Touches • `Bool`
 Set this to true to prevent underlying views from being pressed.
 
-<img src="GitHub/Assets/BlocksBackgroundTouches.png" width=300 alt="Popover overlaid over some buttons. Tapping on the buttons has no effect.">
+<img src="Assets/BlocksBackgroundTouches.png" width=300 alt="Popover overlaid over some buttons. Tapping on the buttons has no effect.">
 
 ### 👉 On Tap Outside • `(() -> Void)?`
 A closure that's called whenever the user taps outside the popover.
@@ -490,7 +490,7 @@ struct ContentView: View {
 </tr>
 </table>
 
-| <img src="GitHub/Assets/AnimatingBetweenPopovers.gif" width=300 alt="Smooth transition between popovers (from blue to green and back."> |
+| <img src="Assets/AnimatingBetweenPopovers.gif" width=300 alt="Smooth transition between popovers (from blue to green and back."> |
 | --- |
 
 ### 🌃 Background
@@ -540,7 +540,7 @@ var popover = Popover {
 </tr>
 </table>
 
-<img src="GitHub/Assets/PopoverBackground.png" width=200 alt="Green background over the entire screen, but underneath the popover">
+<img src="Assets/PopoverBackground.png" width=200 alt="Green background over the entire screen, but underneath the popover">
 
 
 ### 📖 Popover Reader
@@ -560,7 +560,7 @@ This reads the popover's context, which contains its frame, attributes, and vari
 }
 ```
 
-| <img src="GitHub/Assets/PopoverReader.gif" width=200 alt="Line connects the bottom of the popover with the bottom of the screen"> |
+| <img src="Assets/PopoverReader.gif" width=200 alt="Line connects the bottom of the popover with the bottom of the screen"> |
 | --- |
 
 ### 🔖 Frame Tags
