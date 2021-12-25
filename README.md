@@ -302,7 +302,8 @@ $0.sourceFrame = { /** some CGRect here */ }
 <br>
 
 ```swift
-attributes.sourceFrame = { [weak button] in /// use `weak` to prevent a retain cycle
+ /// use `weak` to prevent a retain cycle
+attributes.sourceFrame = { [weak button] in
     button.windowFrame()
 }
 ```
@@ -399,7 +400,7 @@ A closure that is called whenever the context changed. The context contains the 
 ## Utilities
 Popovers comes with some features to make your life easier.
 
-### Animating Between Popovers
+### ✨ Animating Between Popovers
 As long as the view structure is the same, you can smoothly transition from one popover to another. 
 
 <table>
@@ -432,13 +433,17 @@ struct ContentView: View {
         HStack {
             Button("Present First Popover") { selection = "1" }
             .popover(selection: $selection, tag: "1") {
-                Text("Hi, I'm a popover.") /// Will be presented when selection == "1".
+
+                /// Will be presented when selection == "1".
+                Text("Hi, I'm a popover.")
                     .background(.blue)
             }
             
             Button("Present Second Popover") { selection = "2" }
             .popover(selection: $selection, tag: "2") {
-                Text("Hi, I'm a popover.") /// Will be presented when selection == "2".
+
+                /// Will be presented when selection == "2".
+                Text("Hi, I'm a popover.")
                     .background(.green)
             }
         }
@@ -451,10 +456,7 @@ struct ContentView: View {
 
 ```swift
 @IBAction func button1Pressed(_ sender: Any) {
-    var newPopover = Popover {
-        Text("Hi, I'm a popover.")
-            .background(.blue)
-    }
+    var newPopover = Popover { Text("Hi, I'm a popover.").background(.blue) }
     newPopover.attributes.sourceFrame = { [weak button1] in button1.windowFrame() }
     newPopover.attributes.dismissal.excludedFrames = { [weak button2] in [button2.windowFrame()] }
     newPopover.attributes.tag = "Popover 1"
@@ -466,10 +468,7 @@ struct ContentView: View {
     }
 }
 @IBAction func button2Pressed(_ sender: Any) {
-    var newPopover = Popover {
-        Text("Hi, I'm a popover.")
-            .background(.green)
-    }
+    var newPopover = Popover { Text("Hi, I'm a popover.").background(.green) }
     newPopover.attributes.sourceFrame = { [weak button2] in button2.windowFrame() }
     newPopover.attributes.dismissal.excludedFrames = { [weak button1] in [button1.windowFrame()] }
     newPopover.attributes.tag = "Popover 2"
@@ -487,10 +486,10 @@ struct ContentView: View {
 
 ![Smooth transition between popovers (from blue to green and back.)](GitHub/Assets/AnimatingBetweenPopovers.gif)
 
-### Background
-### Popover Reader
-### Frame Tags
-### Templates
+### 🌃 Background
+### 📖 Popover Reader
+### 🔖 Frame Tags
+### 📄 Templates
 
 ## Notes
 ### State Re-Rendering
