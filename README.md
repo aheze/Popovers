@@ -6,9 +6,8 @@ A library to present popovers.
 - Present **any** view above your app's main content.
 - Attach to source views or use picture-in-picture positioning.
 - Supports multiple popovers at the same time with smooth transitions.
-- Popovers are interactive and can be dragged to different positions.
 - Highly customizable API that's super simple — just add `.popover`.
-- Written in SwiftUI with no dependencies and full SwiftUI + UIKit support.
+- Written in SwiftUI with full SwiftUI + UIKit support. 0 dependencies.
 
 ## Showroom
 
