@@ -7,12 +7,20 @@
 //
 
 import SwiftUI
+import Popovers
 
 @main
 struct PopoversPlaygroundApp: App {
+    @Environment(\.scenePhase) private var scenePhase
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
+        }
+        
+        /// Make sure Popovers is ready. This avoid stuttering animations.
+        .onChange(of: scenePhase) { _ in
+            Popovers.prepare()
         }
     }
 }

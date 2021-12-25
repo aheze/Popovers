@@ -101,7 +101,8 @@ class PresentViewController: UIViewController {
         var attributes = Popover.Attributes()
         attributes.rubberBandingMode = .yAxis
         attributes.sourceFrame = { [weak self] in
-            self?.button.windowFrame() ?? .zero
+            let button = self?.button
+            return button.windowFrame()
         }
         
         let popover = Popover(attributes: attributes) {
