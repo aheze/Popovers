@@ -112,9 +112,8 @@ class DismissViewController: UIViewController {
     @objc func presentButtonPressed() {
         var attributes = Popover.Attributes()
         attributes.tag = "Dismissal Popover"
-        attributes.sourceFrame = { [weak self] in
-            let presentButton = self?.presentButton
-            return presentButton.windowFrame()
+        attributes.sourceFrame = { [weak presentButton] in
+            presentButton.windowFrame()
         }
         
         let popover = Popover(attributes: attributes) {

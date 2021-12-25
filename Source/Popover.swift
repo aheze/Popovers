@@ -80,9 +80,8 @@ public struct Popover: Identifiable {
          If you're using SwiftUI, this is automatically provided.
          If you're using UIKit, you must provide this. Use `.windowFrame()` to convert to window coordinates.
          
-             attributes.sourceFrame = { [weak self] in
-                 let button = self?.button
-                 return button.windowFrame()
+             attributes.sourceFrame = { [weak button] in /// `weak` to prevent a retain cycle
+                 button.windowFrame()
              }
          */
         public var sourceFrame: (() -> CGRect) = { .zero }

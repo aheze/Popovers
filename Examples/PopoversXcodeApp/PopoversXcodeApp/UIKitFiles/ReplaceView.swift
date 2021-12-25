@@ -115,9 +115,8 @@ class ReplaceViewController: UIViewController {
     @objc func button1Pressed() {
         var attributes = Popover.Attributes()
         attributes.tag = "A Popover"
-        attributes.sourceFrame = { [weak self] in
-            let button1 = self?.button1
-            return button1.windowFrame()
+        attributes.sourceFrame = { [weak button1] in
+            button1.windowFrame()
         }
         
         let newPopover = Popover(attributes: attributes) {

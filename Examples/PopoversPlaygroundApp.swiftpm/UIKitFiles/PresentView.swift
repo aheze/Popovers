@@ -54,7 +54,7 @@ class PresentViewController: UIViewController {
             1. You need to manually present the popover
                 >    Popovers.present(popover)
             2. It's highly recommended that you supply a source frame. Otherwise, the popover will be attached to the screen's top-left.
-                >    attributes.sourceFrame = { yourView.windowFrame() }
+                >    attributes.sourceFrame = { [weak yourView] in yourView.windowFrame() }
         """
         label.numberOfLines = 0
         label.textAlignment = .left
@@ -100,9 +100,8 @@ class PresentViewController: UIViewController {
     @objc func buttonPressed() {
         var attributes = Popover.Attributes()
         attributes.rubberBandingMode = .yAxis
-        attributes.sourceFrame = { [weak self] in
-            let button = self?.button
-            return button.windowFrame()
+        attributes.sourceFrame = { [weak button] in
+            button.windowFrame()
         }
         
         let popover = Popover(attributes: attributes) {
