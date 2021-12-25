@@ -397,7 +397,8 @@ Popovers comes with some features to make your life easier.
 
 ## Notes
 ### State Re-Rendering
-If you pass a binding down to the popover's view, it might not update. To ensure that the view re-renders, move it into its own struct.
+If you directly pass a variable down to the popover's view, it might not update. Instead, move the view into its own struct and pass down a `Binding`.
+
 <table>
 <tr>
 <td>
@@ -412,7 +413,7 @@ The popover's view is in a separate struct.
 No
 </strong>
 <br>
-This could cause the popover to not update.
+The button is 
 </td>
 </tr>
   
@@ -430,12 +431,12 @@ struct ContentView: View {
             present = true
         }
         .popover(present: $present) {
-            PopoverView(string: $string)
+            PopoverView(string: $string) /// Pass down a Binding ($).
         }
     }
 }
 
-/// Creating a separate view ensure that the button updates.
+/// Create a separate view to ensure that the button updates.
 struct PopoverView: View {
     @Binding var string: String
 
@@ -463,7 +464,7 @@ struct ContentView: View {
         }
         .popover(present: $present) {
 
-            /// Directly passing in the binding is unsupported. The button might not update.
+            /// Directly passing down the variable (no $) is unsupported. The button might not update.
             Button(string) { 
                 string = "The string changed."
             }
@@ -478,7 +479,7 @@ struct ContentView: View {
 </table>
 
 ### Popover Hierarchy
-You can attach [`.zIndex(_:)`](https://developer.apple.com/documentation/swiftui/view/zindex(_:)) to each popover's view. A higher index will bring it to the front.
+You can attach [`.zIndex(_:)`](https://developer.apple.com/documentation/swiftui/view/zindex(_:)) to popover views. A higher index will bring it forwards.
 
 
 ## License
