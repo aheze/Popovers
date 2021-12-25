@@ -16,6 +16,7 @@ public extension UIView {
         return self.convert(self.bounds, to: nil)
     }
 }
+
 public extension Optional where Wrapped: UIView {
     /// Convert a view's frame to global coordinates, which are needed for `sourceFrame` and `excludedFrames.` This is a convenience overload for optional `UIView`s.
     func windowFrame() -> CGRect {
@@ -28,7 +29,6 @@ public extension Optional where Wrapped: UIView {
 
 
 public extension View {
-    
     
     /// Read a view's frame. From https://stackoverflow.com/a/66822461/14351818
     func frameReader(rect: @escaping (CGRect) -> Void) -> some View {

@@ -25,7 +25,7 @@ let package = Package(
         .target(
             name: "Popovers",
             dependencies: [],
-            path: "Source"
+            path: "Sources"
         )
     ]
 )

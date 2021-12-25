@@ -60,105 +60,33 @@ public struct Popovers {
         }
     }
     
-    /**
-     Get the current window.
-     */
-    public static func getWindow() -> PopoverContainerWindow {
-        if let currentScene = UIApplication.shared.currentWindowScene {
-            
-            /// Get the window for the current scene.
-            if let window = windows[currentScene] {
-                return window
-            } else {
-                
-                /// No popover window exists yet, make one.
-                let window = PopoverContainerWindow(
-                    popoverModel: model,
-                    scene: currentScene
-                )
-                
-                windows[currentScene] = window
-                return window
-            }
-        } else {
-            
-            /// No popover window exists yet and there is no scene active, make one.
-            /// This is highly unlikely to be called.
-            let window = PopoverContainerWindow(
-                popoverModel: model,
-                scene: nil
-            )
-            
-            return window
-        }
+    /// Make sure that a window exists, so that the popover's presentation animation doesn't stutter..
+    public static func prepare() {
+        _ = getWindow()
     }
     
     /**
      Present a popover.
      */
     public static func present(_ popover: Popover) {
-
+        
         /// Make sure the view model exists.
         _ = model
         
         /// Make sure a window exists.
         _ = getWindow()
         
-        /// Configure and present the popover.
-        func presentPopover() {
-            /// Create a transaction for the presentation animation.
-            let transaction = Transaction(animation: popover.attributes.presentation.animation)
-            
-            /// Inject the transaction into the popover, so following frame calculations are animated smoothly.
-            popover.context.transaction = transaction
-            
-            withTransaction(transaction) {
-                
-                /// Add the popover to the container view.
-                current.append(popover)
-            }
-        }
+        /// Create a transaction for the presentation animation.
+        let transaction = Transaction(animation: popover.attributes.presentation.animation)
         
-        /// Directly present the popover if an existing window was reused.
-//        if reused {
-            presentPopover()
-//        } else {
-//
-//            /// Otherwise, make sure the window is set up the first time and ready for SwiftUI.
-//            /// Without a delay, SwiftUI won't apply the animation.
-//            DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
-//                presentPopover()
-//            }
-//        }
-    }
-    
-    /**
-     Dismiss a popover.
-     
-     Provide `transaction` to override the default dismissal transition.
-     */
-    public static func dismiss(_ popover: Popover, transaction: Transaction? = nil) {
-        if let popoverIndex = index(of: popover) {
-            popover.context.dismissed?()
-            popover.attributes.onDismiss?()
+        /// Inject the transaction into the popover, so following frame calculations are animated smoothly.
+        popover.context.transaction = transaction
+        
+        withTransaction(transaction) {
             
-            let dismissalTransaction = transaction ?? Transaction(animation: popover.attributes.dismissal.animation)
-            withTransaction(dismissalTransaction) {
-                _ = current.remove(at: popoverIndex)
-            }
+            /// Add the popover to the container view.
+            current.append(popover)
         }
-    }
-    
-    /// Dismiss all popovers.
-    public static func dismissAll() {
-        for popover in current.reversed() {
-            dismiss(popover)
-        }
-    }
-    
-    /// Remove all saved frames for `.popover(selection:tag:attributes:view:)`. Call this method when you present another view where the frames don't apply.
-    public static func clearSavedFrames() {
-        model.selectionFrameTags.removeAll()
     }
     
     /**
@@ -196,6 +124,30 @@ public struct Popovers {
     }
     
     /**
+     Dismiss a popover.
+     
+     Provide `transaction` to override the default dismissal transition.
+     */
+    public static func dismiss(_ popover: Popover, transaction: Transaction? = nil) {
+        if let popoverIndex = index(of: popover) {
+            popover.context.dismissed?()
+            popover.attributes.onDismiss?()
+            
+            let dismissalTransaction = transaction ?? Transaction(animation: popover.attributes.dismissal.animation)
+            withTransaction(dismissalTransaction) {
+                _ = current.remove(at: popoverIndex)
+            }
+        }
+    }
+    
+    /// Dismiss all popovers.
+    public static func dismissAll() {
+        for popover in current.reversed() {
+            dismiss(popover)
+        }
+    }
+    
+    /**
      Refresh the popovers with a new transaction.
      
      This is called when a popover's frame is being calculated.
@@ -209,11 +161,6 @@ public struct Popovers {
         
         /// Update all popovers.
         model.refresh()
-    }
-    
-    /// Make sure that a window exists, so that the popover's presentation animation doesn't stutter..
-    public static func prepare() {
-        _ = getWindow()
     }
     
     /**
@@ -242,6 +189,11 @@ public struct Popovers {
         model.refresh()
     }
     
+    /// Remove all saved frames for `.popover(selection:tag:attributes:view:)`. Call this method when you present another view where the frames don't apply.
+    public static func clearSavedFrames() {
+        model.selectionFrameTags.removeAll()
+    }
+    
     /// Get a currently-presented popover with a tag. Returns `nil` if no popover with the tag was found.
     public static func popover(tagged tag: String) -> Popover? {
         return current.first(where: { $0.attributes.tag == tag })
@@ -250,5 +202,38 @@ public struct Popovers {
     /// Get the index in the `current` array for a popover. Returns `nil` if the popover is not in the `current` array.
     public static func index(of popover: Popover) -> Int? {
         return current.indices.first(where: { current[$0] == popover })
+    }
+    
+    /**
+     Get the current window.
+     */
+    public static func getWindow() -> PopoverContainerWindow {
+        if let currentScene = UIApplication.shared.currentWindowScene {
+            
+            /// Get the window for the current scene.
+            if let window = windows[currentScene] {
+                return window
+            } else {
+                
+                /// No popover window exists yet, make one.
+                let window = PopoverContainerWindow(
+                    popoverModel: model,
+                    scene: currentScene
+                )
+                
+                windows[currentScene] = window
+                return window
+            }
+        } else {
+            
+            /// No popover window exists yet and there is no scene active, make one.
+            /// This is highly unlikely to be called.
+            let window = PopoverContainerWindow(
+                popoverModel: model,
+                scene: nil
+            )
+            
+            return window
+        }
     }
 }
