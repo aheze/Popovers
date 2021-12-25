@@ -373,7 +373,9 @@ popover2.attributes.dismissal.excludedFrames = { [weak button1] in [ button1.win
 
 **Drag Dismissal Proximity:** Only applies when `mode` is `.dragDown` or `.dragUp`. Represents the point on the screen that the drag must reach in order to auto-dismiss. This property is multiplied by the screen's height.
 
-![Diagram with the top 25% of the screen highlighted in blue.](GitHub/Assets/DragDismissalProximity.png)
+
+<img src="GtHub/Assets/DragDismissalProximity.png" width=200 alt="Diagram with the top 25% of the screen highlighted in blue.">
+
 
 ### 🔀 Rubber Banding Mode • `RubberBandingMode`
 Configures which axes the popover can "rubber-band" on when dragged. The default is `[.xAxis, .yAxis]`.
@@ -385,7 +387,7 @@ Configures which axes the popover can "rubber-band" on when dragged. The default
 ### 🛑 Blocks Background Touches • `Bool`
 Set this to true to prevent underlying views from being pressed.
 
-![Popover overlaid over some buttons. Tapping on the buttons has no effect.](GitHub/Assets/BlocksBackgroundTouches.png)
+<img src="GitHub/Assets/BlocksBackgroundTouches.png" width=200 alt="Popover overlaid over some buttons. Tapping on the buttons has no effect.">
 
 ### 👉 On Tap Outside • `(() -> Void)?`
 A closure that is called whenever the user taps outside the popover.
@@ -484,7 +486,7 @@ struct ContentView: View {
 </tr>
 </table>
 
-| ![Smooth transition between popovers (from blue to green and back.)](GitHub/Assets/AnimatingBetweenPopovers.gif) |
+| <img src="GitHub/Assets/AnimatingBetweenPopovers.gif" width=200 alt="Smooth transition between popovers (from blue to green and back."> |
 | --- |
 
 ### 🌃 Background
@@ -534,7 +536,8 @@ var popover = Popover {
 </tr>
 </table>
 
-![Green background over the entire screen, but underneath the popover](GitHub/Assets/PopoverBackground.png)
+<img src="GitHub/Assets/PopoverBackground.png" width=200 alt="Green background over the entire screen, but underneath the popover">
+
 
 ### 📖 Popover Reader
 It's kind of like [`GeometryReader`](https://www.hackingwithswift.com/quick-start/swiftui/how-to-provide-relative-sizes-using-geometryreader). This reads the popover's context, which includes its frame. You can put it in the popover's view or background and do some cool stuff.
@@ -553,7 +556,7 @@ It's kind of like [`GeometryReader`](https://www.hackingwithswift.com/quick-star
 }
 ```
 
-| ![Line connects the bottom of the popover with the bottom of the screen](GitHub/Assets/PopoverReader.gif) |
+| <img src="GitHub/Assets/PopoverReader.gif" width=200 alt="Line connects the bottom of the popover with the bottom of the screen"> |
 | --- |
 
 ### 🔖 Frame Tags
