@@ -191,7 +191,7 @@ struct PopoverView: View {
 <br>
 
 ## Customization
-| [🏷](https://github.com/aheze/Popovers#tag--string)  | [💠](https://github.com/aheze/Popovers#position--position)  | [⬜](https://github.com/aheze/Popovers#source-frame-----cgrect)  | [🔲](https://github.com/aheze/Popovers#source-frame-inset--uiedgeinsets)  | [⏹](https://github.com/aheze/Popovers#screen-edge-padding--uiedgeinsets)  | [🟩](https://github.com/aheze/Popovers#presentation--presentation)  | [🟥](https://github.com/aheze/Popovers#dismissal--dismissal)  | [☄️](https://github.com/aheze/Popovers#rubber-banding-mode--rubberbandingmode)  | [🛑](https://github.com/aheze/Popovers#rubber-banding-mode--rubberbandingmode)  | [👉](https://github.com/aheze/Popovers#on-tap-outside-----void)  | [🎈](https://github.com/aheze/Popovers#on-dismiss-----void)  | [🔰](https://github.com/aheze/Popovers#on-context-change--context---void)  |
+| [🏷](https://github.com/aheze/Popovers#tag--string)  | [💠](https://github.com/aheze/Popovers#position--position)  | [⬜](https://github.com/aheze/Popovers#source-frame-----cgrect)  | [🔲](https://github.com/aheze/Popovers#source-frame-inset--uiedgeinsets)  | [⏹](https://github.com/aheze/Popovers#screen-edge-padding--uiedgeinsets)  | [🟩](https://github.com/aheze/Popovers#presentation--presentation)  | [🟥](https://github.com/aheze/Popovers#dismissal--dismissal)  | [🎾☄️](https://github.com/aheze/Popovers#rubber-banding-mode--rubberbandingmode)  | [🛑](https://github.com/aheze/Popovers#rubber-banding-mode--rubberbandingmode)  | [👉](https://github.com/aheze/Popovers#on-tap-outside-----void)  | [🎈](https://github.com/aheze/Popovers#on-dismiss-----void)  | [🔰](https://github.com/aheze/Popovers#on-context-change--context---void)  |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 
 Customize popovers through the `Attributes` struct. Pretty much everything is customizable, including positioning, animations, and dismissal behavior.
@@ -380,7 +380,7 @@ popover2.attributes.dismissal.excludedFrames = { [weak button1] in [ button1.win
 <img src="GitHub/Assets/DragDismissalProximity.png" width=300 alt="Diagram with the top 25% of the screen highlighted in blue.">
 
 
-### ☄️ Rubber Banding Mode • `RubberBandingMode`
+### 🎾 Rubber Banding Mode • `RubberBandingMode`
 Configures which axes the popover can "rubber-band" on when dragged. The default is `[.xAxis, .yAxis]`.
 
 - `.xAxis` - enable rubber banding on the x-axis.
