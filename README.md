@@ -158,7 +158,7 @@ struct ContentView: View {
 }
 ```
 
-In UIKit, create a `Popover` instance, then present with `Popover.present(_:)`. You should also set the source frame.
+In UIKit, create a `Popover` instance, then present with `Popovers.present(_:)`. You should also set the source frame.
 
 ```swift
 import SwiftUI
@@ -191,6 +191,10 @@ struct PopoverView: View {
 <br>
 
 ## Customization
+
+| 🏷 | ⏹ | ⬛️ | 🔳 | ⏺ | 🟩 | 🟥 | 🔀 | 🛑 | 👉 | 🎈 | 🔰 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+
 Customize popovers through the `Attributes` struct. Pretty much everything is customizable, including positioning, animations, and dismissal behavior.
 
 <table>
