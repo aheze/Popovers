@@ -192,7 +192,7 @@ struct PopoverView: View {
 
 ## Customization
 
-| 🏷  | 💠  | ⬜  | 🔲  | ⏹  | 🟩  | 🟥  | 🔀  | 🛑  | 👉  | 🎈  | 🔰  |
+| 🏷  | 💠  | ⬜  | 🔲  | ⏹  | 🟩  | 🟥  | 🔀  | 🛑  | 👉  | 🎈  | 🔰  |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 
 Customize popovers through the `Attributes` struct. Pretty much everything is customizable, including positioning, animations, and dismissal behavior.
