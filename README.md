@@ -410,14 +410,14 @@ As long as the view structure is the same, you can smoothly transition from one 
 SwiftUI
 </strong>
 <br>
-Use the `.popover(selection:tag:attributes:view:)` modifier. 
+Use the <code>.popover(selection:tag:attributes:view:)</code> modifier. 
 </td>
 <td>
 <strong>
 UIKit
 </strong>
 <br>
-Get the existing popover using `Popovers.popover(tagged:)`, then call `Popovers.replace(_:with:)`.
+Get the existing popover using <code>Popovers.popover(tagged:)</code>, then call <code>Popovers.replace(_:with:)</code>.
 </td>
 </tr>
   
@@ -484,10 +484,78 @@ struct ContentView: View {
 </tr>
 </table>
 
-![Smooth transition between popovers (from blue to green and back.)](GitHub/Assets/AnimatingBetweenPopovers.gif)
+| ![Smooth transition between popovers (from blue to green and back.)](GitHub/Assets/AnimatingBetweenPopovers.gif) |
+| --- |
 
 ### 🌃 Background
+You can put anything you want in the popover's background.
+
+<table>
+<tr>
+<td>
+<strong>
+SwiftUI
+</strong>
+<br>
+Use the <code>.popover(present:attributes:view:background:)</code> modifier. 
+</td>
+<td>
+<strong>
+UIKit
+</strong>
+<br>
+Use the <code>Popover(attributes:view:background:)</code> initializer. 
+</td>
+</tr>
+  
+<tr>
+<td>
+<br>
+
+```swift
+.popover(present: $present) {
+    PopoverView()
+} background: { /// here!
+    Color.green.opacity(0.5)
+}
+```
+</td>
+<td>
+<br>
+
+```swift
+var popover = Popover {
+    PopoverView()
+} background: { /// here!
+    Color.green.opacity(0.5)
+}
+```
+</td>
+</tr>
+</table>
+
+![Green background over the entire screen, but underneath the popover](GitHub/Assets/PopoverBackground.png)
+
 ### 📖 Popover Reader
+It's kind of like [`GeometryReader`](https://www.hackingwithswift.com/quick-start/swiftui/how-to-provide-relative-sizes-using-geometryreader). This reads the popover's context, which includes its frame. You can put it in the popover's view or background and do some cool stuff.
+
+```swift
+.popover(present: $present) {
+    PopoverView()
+} background: {
+    PopoverReader { context in
+        Path {
+            $0.move(to: context.frame.point(at: .bottom))
+            $0.addLine(to: Popovers.windowBounds.point(at: .bottom))
+        }
+        .stroke(Color.blue, lineWidth: 4)
+    }
+}
+```
+
+| ![Line connects the bottom of the popover with the bottom of the screen](GitHub/Assets/PopoverReader.gif) |
+| --- |
+
 ### 🔖 Frame Tags
 ### 📄 Templates
 

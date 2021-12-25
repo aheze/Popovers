@@ -63,6 +63,7 @@ struct PopoverReaderView: View {
                     .position(context.frame.point(at: .top))
                     .zIndex(1)
                 
+                
                 PopoverTemplates.CurveConnector(
                     start: context.frame.point(at: .top),
                     end: Popovers.frameTagged("Frame-Tagged View").point(at: .bottom)
