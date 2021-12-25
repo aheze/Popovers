@@ -1,5 +1,3 @@
-# Under development. Should be done by Christmas!
-
 ![Header Image](GitHub/Assets/Header.png)
 
 # Popovers
@@ -89,12 +87,12 @@ Notification
 </table>
 
 ## Example
-I wrote the example app in Swift Playgrounds 4, so you can run it right on your iPad. If you're using a Mac, download the Xcode version. [Download for Swift Playgrounds 4](https://github.com/aheze/Popovers/raw/main/Examples/PopoversPlaygroundApp.swiftpm.zip) • [Download for Xcode](https://github.com/aheze/Popovers/raw/main/Examples/PopoversXcodeApp.zip)
+I wrote the example app with Swift Playgrounds 4, so you can run it right on your iPad. If you're using a Mac, download the Xcode version. [Download for Swift Playgrounds 4](https://github.com/aheze/Popovers/raw/main/Examples/PopoversPlaygroundApp.swiftpm.zip) • [Download for Xcode](https://github.com/aheze/Popovers/raw/main/Examples/PopoversXcodeApp.zip)
 
 ![Example app](GitHub/Assets/ExampleApp.png)
 
 ## Installation
-Popovers can be installed through the Swift Package Manager (recommended) or Cocoapods.
+Requires iOS 13+. Popovers can be installed through the Swift Package Manager (recommended) or [Cocoapods](https://cocoapods.org/).
 
 <table>
 <tr>
@@ -188,7 +186,9 @@ struct PopoverView: View {
 }
 ```
 
-![Button "Present popover!" with a popover underneath.](GitHub/Assets/UsagePopover.png)
+<img src="GitHub/Assets/UsagePopover.png" width=300 alt="Button 'Present popover!' with a popover underneath.">
+
+<br>
 
 ## Customization
 Customize popovers through the `Attributes` struct. Pretty much everything is customizable, including positioning, animations, and dismissal behavior.
@@ -398,6 +398,7 @@ A closure that's called when the popover is dismissed.
 ### 🔰 On Context Change • `((Context) -> Void)?`
 A closure that's called whenever the context changed. The context contains the popover's attributes, current frame, and other visible traits.
 
+<br>
 
 ## Utilities
 Popovers comes with some features to make your life easier.
@@ -587,6 +588,8 @@ Get started quickly with some templates. All of them are inside [`PopoverTemplat
 - `Menu` - the system menu but built from scratch.
 - `MenuButton` - buttons to put in the `Menu`.
 
+<br>
+
 ## Notes
 ### State Re-Rendering
 If you directly pass a variable down to the popover's view, it might not update. Instead, move the view into its own struct and pass down a `Binding`.
@@ -694,6 +697,7 @@ struct YourApp: App {
 
 ## License
 Popovers is made by [aheze](https://github.com/aheze). Use it however you want.
+
 ```
 MIT License
 
