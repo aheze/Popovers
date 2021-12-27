@@ -235,7 +235,9 @@ Modify the <code>attributes</code> property.
 <br>
 
 ```swift
-var popover = Popover { Text("Hi, I'm a popover.") }
+var popover = Popover {
+    Text("Hi, I'm a popover.")
+}
 popover.attributes.position = .absolute(
     originAnchor: .bottom,
     popoverAnchor: .topLeft
@@ -257,7 +259,7 @@ $0.tag = "Your Tag"
 let popover = Popovers.popovers(tagged: "Your Tag")
 ```
 
-Note: When you use the `.popover(selection:tag:attributes:view:)` modifier, this `tag` is automatically set to what you provide in the parameter.
+**Note:** When you use the `.popover(selection:tag:attributes:view:)` modifier, this `tag` is automatically set to what you provide in the parameter.
 
 ### 💠 Position • `Position`
 The popover's position can either be `.absolute` (attached to a view) or `.relative` (picture-in-picture). The enum's associated value additionally configures which sides and corners are used.
@@ -297,7 +299,9 @@ It's highly recommended to provide a source frame, otherwise the popover will ap
 <br>
 
 ```swift
-$0.sourceFrame = { /** some CGRect here */ }
+$0.sourceFrame = {
+    /** some CGRect here */
+}
 ```
 </td>
 <td>
