@@ -128,7 +128,7 @@ public class PopoverContainerWindow: UIWindow {
     }
 }
 
-extension UIApplication {
+public extension UIApplication {
     var currentWindowScene: UIWindowScene? {
         
         /// Get the current window scene. `keyWindow` is deprecated, but this seems to be the only way. See https://tengl.net/blog/2021/11/9/uiapplication-key-window-replacement

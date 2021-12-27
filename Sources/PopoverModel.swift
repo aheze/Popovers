@@ -25,7 +25,7 @@ public class PopoverModel: ObservableObject {
     @Published var popoversDraggable = true
     
     /// Store the frames of views (for excluding popover dismissal or source frames). Access this via `Popovers.popover(tagged:)`.
-    @Published var frameTags: [String: CGRect] = [:]
+    @Published var frameTags: [FrameTag: CGRect] = [:]
     
     /**
      Store frames of popover source views when presented using `.popover(selection:tag:attributes:view:)`. These frames are then used as excluded frames for dismissal.

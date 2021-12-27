@@ -201,8 +201,8 @@ public struct Popovers {
     }
     
     /// Get a currently-presented popover with a tag. Returns `nil` if no popover with the tag was found.
-    public static func popover(tagged tag: String) -> Popover? {
-        return current.first(where: { $0.attributes.tag == tag })
+    public static func popover(tagged tag: String, in windowScene: UIWindowScene? = UIApplication.shared.currentWindowScene) -> Popover? {
+        return current.first(where: { $0.context.windowScene == windowScene && $0.attributes.tag == tag })
     }
     
     /// Get the index in the `current` array for a popover. Returns `nil` if the popover is not in the `current` array.

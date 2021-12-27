@@ -65,8 +65,8 @@ struct PopoverModifier: ViewModifier {
         content
         
         /// Read the frame of the source view.
-            .frameReader { rect in
-                sourceFrame = rect
+            .frameReader { frame in
+                sourceFrame = frame
             }
         
         /// Detect a state change in `$present`.
@@ -174,11 +174,11 @@ struct MultiPopoverModifier: ViewModifier {
         content
         
         /// Read the frame of the source view.
-            .frameReader { rect in
+            .frameReader { frame in
                 
                 /// Save the frame in `selectionFrameTags` to provide `excludedFrames`.
-                Popovers.model.selectionFrameTags[tag] = rect
-                sourceFrame = rect
+                Popovers.model.selectionFrameTags[tag] = frame
+                sourceFrame = frame
             }
         
         /// `$selection` was changed, determine if the popover should be presented, animated, or dismissed.
