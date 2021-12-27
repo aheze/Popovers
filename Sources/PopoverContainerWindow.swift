@@ -8,6 +8,7 @@
 
 import UIKit
 import SwiftUI
+import Combine
 
 /**
  The window that contains the popovers, overlaid over the main one. This is automatically managed.
@@ -17,22 +18,21 @@ public class PopoverContainerWindow: UIWindow {
     /// The popover model that contains the popovers.
     public var popoverModel: PopoverModel
     
-    /// The scene that this window is tied to.
-    public var scene: UIWindowScene?
-    
     /// The view controller that holds the popover.
     public lazy var popoverContainerViewController: PopoverContainerViewController = {
-        let popoverContainerViewController = PopoverContainerViewController(popoverModel: popoverModel)
+        let popoverContainerViewController = PopoverContainerViewController(
+            popoverModel: popoverModel,
+            windowScene: windowScene
+        )
         return popoverContainerViewController
     }()
     
     /// Create a new container window for popovers. This is automatically managed.
-    public init(popoverModel: PopoverModel, scene: UIWindowScene?) {
+    public init(popoverModel: PopoverModel, windowScene: UIWindowScene?) {
         self.popoverModel = popoverModel
-        self.scene = scene
         
-        if let scene = scene {
-            super.init(windowScene: scene)
+        if let windowScene = windowScene {
+            super.init(windowScene: windowScene)
         } else {
             
             /// no scene was provided, so fall back to the other window initializer.
@@ -43,11 +43,13 @@ public class PopoverContainerWindow: UIWindow {
         self.windowLevel = .alert
         self.backgroundColor = .clear
         self.makeKeyAndVisible()
+        
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
     
     /**
      Determine if touches should land on popovers or pass through to the underlying view.
@@ -59,8 +61,11 @@ public class PopoverContainerWindow: UIWindow {
         /// Make sure the hit event was actually a touch and not a cursor hover or something else.
         guard event.map({ $0.type == .touches }) ?? true else { return nil }
         
+        /// Only loop through the popovers that are in this window.
+        let popovers = popoverModel.popovers.filter { $0.context.windowScene == windowScene }
+        
         /// The current popovers' frames
-        let popoverFrames = popoverModel.popovers.map { $0.context.frame }
+        let popoverFrames = popovers.map { $0.context.frame }
         
         /// Dismiss a popover, knowing that its frame does not contain the touch.
         func dismissPopoverIfNecessary(popoverToDismiss: Popover) {
@@ -75,13 +80,13 @@ public class PopoverContainerWindow: UIWindow {
         
         /// Loop through the popovers and see if the touch hit it.
         /// `reversed` to start from the most recently presented popovers, working backwards.
-        for popover in popoverModel.popovers.reversed() {
+        for popover in popovers.reversed() {
             
             /// Check it the popover was hit.
             if popover.context.frame.contains(point) {
                 
                 /// Dismiss other popovers if they have `tapOutsideIncludesOtherPopovers` set to true.
-                for popoverToDismiss in popoverModel.popovers {
+                for popoverToDismiss in popovers {
                     if
                         popoverToDismiss != popover,
                         !popoverToDismiss.context.frame.contains(point) /// The popover's frame doesn't contain the touch point.
@@ -123,16 +128,10 @@ public class PopoverContainerWindow: UIWindow {
     }
 }
 
-/// Get the current window scene. From https://stackoverflow.com/a/58673530/14351818
 extension UIApplication {
     var currentWindowScene: UIWindowScene? {
-        connectedScenes
-            .filter({$0.activationState == .foregroundActive})
-            .map({$0 as? UIWindowScene})
-            .compactMap({$0})
-            .first?.windows
-            .filter({$0.isKeyWindow})
-            .first?
-            .windowScene
+        
+        /// Get the current window scene. `keyWindow` is deprecated, but this seems to be the only way. See https://tengl.net/blog/2021/11/9/uiapplication-key-window-replacement
+        UIApplication.shared.keyWindow?.windowScene
     }
 }

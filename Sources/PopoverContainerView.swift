@@ -16,6 +16,8 @@ struct PopoverContainerView: View {
     /// The view model that stores the popovers.
     @ObservedObject var popoverModel: PopoverModel
     
+    let windowScene: UIWindowScene?
+    
     /// The currently-dragging popover.
     @State var selectedPopover: Popover? = nil
     
@@ -28,7 +30,7 @@ struct PopoverContainerView: View {
         ZStack(alignment: .topLeading) {
             
             /// Loop over the popovers.
-            ForEach(Array(zip(popoverModel.popovers.indices, popoverModel.popovers)), id: \.1.id) { (index, popover) in
+            ForEach(getPopovers(), id: \.1.id) { (index, popover) in
                 
                 /// Show the popover's background.
                 popover.background
@@ -124,6 +126,11 @@ struct PopoverContainerView: View {
         }
         .edgesIgnoringSafeArea(.all) /// All calculations are done from the screen bounds.
         
+    }
+    
+    func getPopovers() -> [(Int, Popover)] {
+        let popovers = popoverModel.popovers.filter { $0.context.windowScene == windowScene }
+        return Array(zip(popovers.indices, popovers))
     }
     
     /// Apply edge padding **only** to the bottom and right - the top and left are set via the frame origin in `Popover.swift`.

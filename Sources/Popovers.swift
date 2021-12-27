@@ -82,6 +82,9 @@ public struct Popovers {
         /// Inject the transaction into the popover, so following frame calculations are animated smoothly.
         popover.context.transaction = transaction
         
+        /// Set the popover's window scene as the current one.
+        popover.context.windowScene = UIApplication.shared.currentWindowScene
+        
         withTransaction(transaction) {
             
             /// Add the popover to the container view.
@@ -108,6 +111,9 @@ public struct Popovers {
             
             /// Inject the transaction into the new popover, so following frame calculations are animated smoothly.
             newPopover.context.transaction = transaction
+            
+            /// Set the popover's window scene as the current one.
+            newPopover.context.windowScene = UIApplication.shared.currentWindowScene
             
             /// Use same ID so that SwiftUI animates the change.
             newPopover.context.id = oldContext.id
@@ -218,7 +224,7 @@ public struct Popovers {
                 /// No popover window exists yet, make one.
                 let window = PopoverContainerWindow(
                     popoverModel: model,
-                    scene: currentScene
+                    windowScene: currentScene
                 )
                 
                 windows[currentScene] = window
@@ -230,7 +236,7 @@ public struct Popovers {
             /// This is highly unlikely to be called.
             let window = PopoverContainerWindow(
                 popoverModel: model,
-                scene: nil
+                windowScene: nil
             )
             
             return window

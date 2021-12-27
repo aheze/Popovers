@@ -350,6 +350,9 @@ public struct Popover: Identifiable {
         /// The popover's customizable properties.
         public var attributes = Attributes()
         
+        /// The window scene that this popover is tied to.
+        public var windowScene: UIWindowScene?
+        
         /// The popover's dynamic size, calculated from SwiftUI. If this is `nil`, the popover is not yet ready to be displayed.
         @Published public var size: CGSize?
         

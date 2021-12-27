@@ -14,8 +14,12 @@ import SwiftUI
  */
 public class PopoverModel: ObservableObject {
     
+    
     /// The currently-presented popovers. The oldest are in front, the newest at the end. Access this via `Popovers.current`.
     @Published var popovers = [Popover]()
+    
+    /// The current active window.
+    @Published var activeWindowScene: UIWindowScene?
     
     /// Determines is the popovers can be dragged. Access this via `Popovers.draggingEnabled`.
     @Published var popoversDraggable = true

@@ -16,11 +16,15 @@ public class PopoverContainerViewController: UIViewController {
     /// The popover model to pass down to `PopoverContainerView`.
     public var popoverModel: PopoverModel
     
+    /// The window scene to pass down to `PopoverContainerView`.
+    public let windowScene: UIWindowScene?
+    
     /**
      Create a new `PopoverContainerViewController`. This is automatically managed.
      */
-    public init(popoverModel: PopoverModel) {
+    public init(popoverModel: PopoverModel, windowScene: UIWindowScene?) {
         self.popoverModel = popoverModel
+        self.windowScene = windowScene
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -44,7 +48,10 @@ public class PopoverContainerViewController: UIViewController {
         view.backgroundColor = .clear
         
         /// Embed `PopoverContainerView` in a view controller.
-        let popoverContainerView = PopoverContainerView(popoverModel: popoverModel)
+        let popoverContainerView = PopoverContainerView(
+            popoverModel: popoverModel,
+            windowScene: windowScene
+        )
         let hostingController = UIHostingController(rootView: popoverContainerView)
         hostingController.view.frame = view.bounds
         hostingController.view.backgroundColor = .clear
