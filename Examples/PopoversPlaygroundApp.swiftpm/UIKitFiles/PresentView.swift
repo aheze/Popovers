@@ -105,6 +105,7 @@ class PresentViewController: UIViewController {
         attributes.sourceFrame = { [weak button] in
             button.windowFrame()
         }
+        attributes.windowScene = view.window?.windowScene
         
         let popover = Popover(attributes: attributes) {
             PresentViewPopoverRepresentable()

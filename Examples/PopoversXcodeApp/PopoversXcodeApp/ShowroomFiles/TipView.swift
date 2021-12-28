@@ -11,6 +11,7 @@ import Popovers
 
 struct TipView: View {
     @State var present = false
+    @EnvironmentObject var windowSceneModel: WindowSceneModel
     
     var body: some View {
         Button {
@@ -25,7 +26,7 @@ struct TipView: View {
                 }
             }
         }
-        .frameTag("TipView")
+        .frameTag("TipView", in: windowSceneModel.windowScene)
         .popover(
             present: $present,
             attributes: {
@@ -42,7 +43,7 @@ struct TipView: View {
                 
                 PopoverTemplates.CurveConnector(
                     start: context.frame.point(at: .bottom),
-                    end: Popovers.frameTagged("TipView").point(at: .top)
+                    end: Popovers.frameTagged("TipView", in: windowSceneModel.windowScene).point(at: .top)
                 )
                     .stroke(
                         Color(UIColor(hex: 0xFFAD46)),
@@ -58,7 +59,7 @@ struct TipView: View {
                     .fill(Color(UIColor(hex: 0xFFAD46)))
                     .frame(width: 16, height: 16)
                     .position(
-                        Popovers.frameTagged("TipView").point(at: .top)
+                        Popovers.frameTagged("TipView", in: windowSceneModel.windowScene).point(at: .top)
                     )
             }
         }

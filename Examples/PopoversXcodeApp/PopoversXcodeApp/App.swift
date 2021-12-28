@@ -16,6 +16,8 @@ struct PopoversPlaygroundApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .injectWindowScene() /// Make the window scene available to all subviews.
+            
         }
         .onChange(of: scenePhase) { _ in
             Popovers.prepare() /// Make sure Popovers is ready.

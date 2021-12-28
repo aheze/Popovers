@@ -12,6 +12,7 @@ import Popovers
 
 struct FrameTaggedView: View {
     @State var present = false
+    @EnvironmentObject var windowSceneModel: WindowSceneModel
     
     var body: some View {
         ExampleRow(
@@ -21,15 +22,16 @@ struct FrameTaggedView: View {
         ) {
             present.toggle()
         }
-        .frameTag("Frame-Tagged View")
+        .frameTag("Frame-Tagged View", in: windowSceneModel.windowScene)
         .popover(present: $present) {
-            FrameTaggedPopover()
+            FrameTaggedPopover(windowSceneModel: windowSceneModel)
                 .frame(maxWidth: 300)
         }
     }
 }
 
 struct FrameTaggedPopover: View {
+    @ObservedObject var windowSceneModel: WindowSceneModel
     @State var savedFrame = CGRect.zero
     
     var body: some View {
@@ -37,7 +39,7 @@ struct FrameTaggedPopover: View {
             Text(verbatim: "This is just a view with a saved frame: \(savedFrame).")
             
             Button {
-                savedFrame = Popovers.frameTagged("Frame-Tagged View")
+                savedFrame = Popovers.frameTagged("Frame-Tagged View", in: windowSceneModel.windowScene)
             } label: {
                 HStack {
                     ExampleImage("square.dashed", color: 0x68BB3D)

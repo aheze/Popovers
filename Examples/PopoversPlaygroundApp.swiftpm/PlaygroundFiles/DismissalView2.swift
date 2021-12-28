@@ -11,6 +11,7 @@ import Popovers
 
 struct DismissalView2: View {
     @State var present = false
+    @EnvironmentObject var windowSceneModel: WindowSceneModel
     
     var body: some View {
         ExampleRow(
@@ -36,7 +37,7 @@ struct DismissalView2: View {
                 $0.tag = "Advanced Dismissal 1"
                 $0.dismissal.excludedFrames = {
                     [
-                        Popovers.frameTagged("Frame-Tagged View")
+                        Popovers.frameTagged("Frame-Tagged View", in: windowSceneModel.windowScene)
                     ]
                 }
             }

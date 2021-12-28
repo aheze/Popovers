@@ -53,8 +53,10 @@ class PresentViewController: UIViewController {
         
             1. You need to manually present the popover
                 >    Popovers.present(popover)
-            2. You need to supply a source frame
+            2. It's highly recommended that you supply a source frame. Otherwise, the popover will be attached to the screen's top-left.
                 >    attributes.sourceFrame = { [weak yourView] in yourView.windowFrame() }
+            3. If your app supports multiple screens, you should set the popover's windowScene.
+                >    attributes.windowScene = view.window?.windowScene
         """
         label.numberOfLines = 0
         label.textAlignment = .left
@@ -103,6 +105,7 @@ class PresentViewController: UIViewController {
         attributes.sourceFrame = { [weak button] in
             button.windowFrame()
         }
+        attributes.windowScene = view.window?.windowScene
         
         let popover = Popover(attributes: attributes) {
             PresentViewPopoverRepresentable()

@@ -9,6 +9,9 @@
 import SwiftUI
 import Popovers
 
+import SwiftUI
+import Popovers
+
 struct ReplaceView: View {
     @State var present = false
     
@@ -115,9 +118,13 @@ class ReplaceViewController: UIViewController {
     @objc func button1Pressed() {
         var attributes = Popover.Attributes()
         attributes.tag = "A Popover"
+        
+        /// exclude the frame of the other button
+        attributes.dismissal.excludedFrames = { [weak button2] in [ button2.windowFrame() ] }
         attributes.sourceFrame = { [weak button1] in
             button1.windowFrame()
         }
+        attributes.windowScene = view.window?.windowScene
         
         let newPopover = Popover(attributes: attributes) {
             ReplaceViewPopoverRepresentable()
@@ -135,10 +142,13 @@ class ReplaceViewController: UIViewController {
     @objc func button2Pressed() {
         var attributes = Popover.Attributes()
         attributes.tag = "A Popover"
-        attributes.sourceFrame = { [weak self] in
-            let button2 = self?.button2
-            return button2.windowFrame()
+        
+        /// exclude the frame of the other button
+        attributes.dismissal.excludedFrames = { [weak button1] in [ button1.windowFrame() ] }
+        attributes.sourceFrame = { [weak button2] in
+            button2.windowFrame()
         }
+        attributes.windowScene = view.window?.windowScene
         
         let newPopover = Popover(attributes: attributes) {
             ReplaceViewPopoverRepresentable()
