@@ -693,7 +693,7 @@ Here's a couple things to keep in mind.
 - Popovers are tied to window scenes. This way, tapping on one side of the screen won't interfere or dismiss popovers on the other side.
 - Set a popover's window scene with `attributes.windowScene`. By default, this is `UIApplication.shared.keyWindow?.windowScene`, which is enough for basic multi-screen support.
 - Each screen will only show the popovers with the same `windowScene`.
-- Utility methods like `Popovers.popover(tagged:)` require specifying the window scene.
+- If your app has multiple screens enabled (all SwiftUI apps by default), methods like `Popovers.popover(tagged:)` require specifying the window scene:
 
 ```swift
 /// Get a currently-presented popover in the window scene.
@@ -707,7 +707,7 @@ Text("Hello").frameTag("Your Frame Tag Name", in: yourWindowScene)
 Popovers.frameTagged("Your Frame Tag Name", in: yourWindowScene)
 ```
 
-However, getting a view's window scene in SwiftUI is tricky. My current workaround is [embedding a `UIViewRepresentable`](https://github.com/aheze/Popovers/blob/5fcaa9d9eb2ed077cd43e323b5a772a04bd6e1be/Sources/PopoverFrameTag.swift#L68) and reading its window scene. This however is not completely reliable. If anyone has a better method, please let me know.
+However, getting a view's window scene in SwiftUI is tricky. My [current workaround](https://github.com/aheze/Popovers/blob/5fcaa9d9eb2ed077cd43e323b5a772a04bd6e1be/Sources/PopoverFrameTag.swift#L68) is embedding a `UIViewRepresentable` and reading its window scene. This is not completely reliable — if anyone has a better method, please let me know.
 
 
 ```swift
@@ -760,7 +760,7 @@ Popovers is made by [aheze](https://github.com/aheze).
 All contributions are welcome. Just fork the repo, then make a pull request.
 
 ### Need Help?
-Open an [issue](https://github.com/aheze/Popovers/issues) or join the [Discord server](https://discord.com/invite/Pmq8fYcus2). Or read the source code — there's lots of comments.
+Open an [issue](https://github.com/aheze/Popovers/issues) or join the [Discord server](https://discord.com/invite/Pmq8fYcus2). You can also DM me on [Twitter](https://twitter.com/aheze0). Or read the source code — there's lots of comments.
 
 ## License
 
