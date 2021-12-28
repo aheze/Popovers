@@ -707,10 +707,13 @@ Text("Hello").frameTag("Your Frame Tag Name", in: yourWindowScene)
 Popovers.frameTagged("Your Frame Tag Name", in: yourWindowScene)
 ```
 
-However, getting a view's window scene in SwiftUI is tricky. My [current workaround](https://github.com/aheze/Popovers/blob/5fcaa9d9eb2ed077cd43e323b5a772a04bd6e1be/Sources/PopoverFrameTag.swift#L68) is embedding a `UIViewRepresentable` and reading its window scene. This is not completely reliable — if anyone has a better method, please let me know.
+However, getting a view's window scene in SwiftUI is tricky. My [current workaround](https://github.com/aheze/Popovers/blob/5fcaa9d9eb2ed077cd43e323b5a772a04bd6e1be/Sources/PopoverFrameTag.swift#L68) is embedding a `UIViewRepresentable` and reading its window scene. This is not completely reliable — if anyone has a better method, please [let me know](https://github.com/aheze/Popovers/issues/3).
+
 
 
 ```swift
+/// Help me fix in https://github.com/aheze/Popovers/issues/3
+
 WindowGroup {
     ContentView()
         .injectWindowScene() /// Make the window scene available to all subviews. Not ideal, but it works (usually).
@@ -760,7 +763,7 @@ Popovers is made by [aheze](https://github.com/aheze).
 All contributions are welcome. Just fork the repo, then make a pull request.
 
 ### Need Help?
-Open an [issue](https://github.com/aheze/Popovers/issues) or join the [Discord server](https://discord.com/invite/Pmq8fYcus2). You can also DM me on [Twitter](https://twitter.com/aheze0). Or read the source code — there's lots of comments.
+Open an [issue](https://github.com/aheze/Popovers/issues) or join the [Discord server](https://discord.com/invite/Pmq8fYcus2). You can also ping me on [Twitter](https://twitter.com/aheze0). Or read the source code — there's lots of comments.
 
 ## License
 
