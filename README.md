@@ -190,8 +190,8 @@ struct PopoverView: View {
 <br>
 
 ## Customization
-| [🔖](https://github.com/aheze/Popovers#tag--string)  | [💠](https://github.com/aheze/Popovers#position--position)  | [⬜](https://github.com/aheze/Popovers#source-frame-----cgrect)  | [🔲](https://github.com/aheze/Popovers#source-frame-inset--uiedgeinsets)  | [⏹](https://github.com/aheze/Popovers#screen-edge-padding--uiedgeinsets)  | [🟩](https://github.com/aheze/Popovers#presentation--presentation)  | [🟥](https://github.com/aheze/Popovers#dismissal--dismissal)  | [🎾](https://github.com/aheze/Popovers#rubber-banding-mode--rubberbandingmode)  | [🛑](https://github.com/aheze/Popovers#rubber-banding-mode--rubberbandingmode)  | [👉](https://github.com/aheze/Popovers#on-tap-outside-----void)  | [🎈](https://github.com/aheze/Popovers#on-dismiss-----void)  | [🔰](https://github.com/aheze/Popovers#on-context-change--context---void)  |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| [🔖](https://github.com/aheze/Popovers#tag--string)  | [💠](https://github.com/aheze/Popovers#position--position)  | [⬜](https://github.com/aheze/Popovers#source-frame-----cgrect)  | [🔲](https://github.com/aheze/Popovers#source-frame-inset--uiedgeinsets)  | [⏹](https://github.com/aheze/Popovers#screen-edge-padding--uiedgeinsets)  | [🟩](https://github.com/aheze/Popovers#presentation--presentation)  | [🟥](https://github.com/aheze/Popovers#dismissal--dismissal)  | [🎾](https://github.com/aheze/Popovers#rubber-banding-mode--rubberbandingmode)  | [🛑](https://github.com/aheze/Popovers#rubber-banding-mode--rubberbandingmode)  | [🪟](https://github.com/aheze/Popovers#window-scene--uiwindowscene--v104)  | [👉](https://github.com/aheze/Popovers#on-tap-outside-----void)  | [🎈](https://github.com/aheze/Popovers#on-dismiss-----void)  | [🔰](https://github.com/aheze/Popovers#on-context-change--context---void)  |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 
 Customize popovers through the `Attributes` struct. Pretty much everything is customizable, including positioning, animations, and dismissal behavior.
 
@@ -396,7 +396,7 @@ Set this to true to prevent underlying views from being pressed.
 <img src="Assets/BlocksBackgroundTouches.png" width=300 alt="Popover overlaid over some buttons. Tapping on the buttons has no effect.">
 
 ### 🪟 Window Scene • `UIWindowScene?` • [*`v1.0.4`*](https://github.com/aheze/Popovers/releases/tag/1.0.4)
-The window scene that the popover is tied to. By default, this is set to `UIApplication.shared.keyWindow?.windowScene`, which is fully provides single window support and basic multi-window support on iPad. See [Supporting Multiple Screens](https://github.com/aheze/Popovers) for more details.
+The window scene that the popover is tied to. By default, this is set to `UIApplication.shared.keyWindow?.windowScene`, which is fully provides single window support and basic multi-window support on iPad. See [Supporting Multiple Screens](https://github.com/aheze/Popovers#supporting-multiple-screens--v104) for more details.
 
 
 ### 👉 On Tap Outside • `(() -> Void)?`
