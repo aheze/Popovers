@@ -129,7 +129,7 @@ struct PopoverContainerView: View {
     }
     
     func getPopovers() -> [(Int, Popover)] {
-        let popovers = popoverModel.popovers.filter { $0.context.windowScene == windowScene }
+        let popovers = popoverModel.popovers.filter { $0.attributes.windowScene == windowScene }
         return Array(zip(popovers.indices, popovers))
     }
     

@@ -62,7 +62,7 @@ public class PopoverContainerWindow: UIWindow {
         guard event.map({ $0.type == .touches }) ?? true else { return nil }
         
         /// Only loop through the popovers that are in this window.
-        let popovers = popoverModel.popovers.filter { $0.context.windowScene == windowScene }
+        let popovers = popoverModel.popovers.filter { $0.attributes.windowScene == windowScene }
         
         /// The current popovers' frames
         let popoverFrames = popovers.map { $0.context.frame }

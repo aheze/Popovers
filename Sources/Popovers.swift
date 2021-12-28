@@ -82,9 +82,6 @@ public struct Popovers {
         /// Inject the transaction into the popover, so following frame calculations are animated smoothly.
         popover.context.transaction = transaction
         
-        /// Set the popover's window scene as the current one.
-        popover.context.windowScene = UIApplication.shared.currentWindowScene
-        
         withTransaction(transaction) {
             
             /// Add the popover to the container view.
@@ -111,9 +108,6 @@ public struct Popovers {
             
             /// Inject the transaction into the new popover, so following frame calculations are animated smoothly.
             newPopover.context.transaction = transaction
-            
-            /// Set the popover's window scene as the current one.
-            newPopover.context.windowScene = UIApplication.shared.currentWindowScene
             
             /// Use same ID so that SwiftUI animates the change.
             newPopover.context.id = oldContext.id
@@ -206,7 +200,7 @@ public struct Popovers {
      - parameter windowScene: The window scene of the popover to look for. Only needed if your app supports multiple windows.
      */
     public static func popover(tagged tag: String, in windowScene: UIWindowScene? = UIApplication.shared.currentWindowScene) -> Popover? {
-        return current.first(where: { $0.context.windowScene == windowScene && $0.attributes.tag == tag })
+        return current.first(where: { $0.attributes.windowScene == windowScene && $0.attributes.tag == tag })
     }
     
     /// Get the index in the `current` array for a popover. Returns `nil` if the popover is not in the `current` array.

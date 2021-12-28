@@ -104,6 +104,9 @@ public struct Popover: Identifiable {
         /// Prevent views underneath the popover from being pressed.
         public var blocksBackgroundTouches = false
         
+        /// The popover's window scene. Defaults to the app's current window scene. Only needed if your app supports multiple windows.
+        public var windowScene: UIWindowScene? = UIApplication.shared.currentWindowScene
+        
         /// Called when the user taps outside the popover.
         public var onTapOutside: (() -> Void)?
         
@@ -126,6 +129,7 @@ public struct Popover: Identifiable {
             dismissal: Popover.Attributes.Dismissal = Dismissal(),
             rubberBandingMode: Popover.Attributes.RubberBandingMode = [.xAxis, .yAxis],
             blocksBackgroundTouches: Bool = false,
+            windowScene: UIWindowScene? = UIApplication.shared.currentWindowScene,
             onTapOutside: (() -> Void)? = nil,
             onDismiss: (() -> Void)? = nil,
             onContextChange: ((Popover.Context) -> Void)? = nil
@@ -349,9 +353,6 @@ public struct Popover: Identifiable {
         
         /// The popover's customizable properties.
         public var attributes = Attributes()
-        
-        /// The window scene that this popover is tied to.
-        public var windowScene: UIWindowScene?
         
         /// The popover's dynamic size, calculated from SwiftUI. If this is `nil`, the popover is not yet ready to be displayed.
         @Published public var size: CGSize?
