@@ -55,6 +55,8 @@ class PresentViewController: UIViewController {
                 >    Popovers.present(popover)
             2. It's highly recommended that you supply a source frame. Otherwise, the popover will be attached to the screen's top-left.
                 >    attributes.sourceFrame = { [weak yourView] in yourView.windowFrame() }
+            3. If your app supports multiple screens, you should set the popover's windowScene.
+                >    attributes.windowScene = view.window?.windowScene
         """
         label.numberOfLines = 0
         label.textAlignment = .left
