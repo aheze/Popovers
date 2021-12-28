@@ -32,7 +32,7 @@ public class PopoverModel: ObservableObject {
      
      To opt out of this behavior, set `attributes.dismissal.excludedFrames` manually. To clear this array (usually when you present another view where the frames don't apply), call `Popovers.clearSavedFrames()`.
      */
-    @Published var selectionFrameTags: [String: CGRect] = [:]
+    @Published var selectionFrameTags: [FrameTag: CGRect] = [:]
     
     /// Force the container view to update.
     func refresh() {
