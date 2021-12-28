@@ -21,7 +21,7 @@ struct UIKit: View {
                 PresentView()
                 ReplaceView()
                 DismissView()
-                
+                PresentWithinSheet()
             }
         }
     }
