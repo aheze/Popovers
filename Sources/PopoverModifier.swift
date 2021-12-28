@@ -175,21 +175,26 @@ struct MultiPopoverModifier: ViewModifier {
         
         /// Read the frame of the source view.
             .frameReader { frame in
+                
+                /// Save the frame for now, until the selection changes (by that time, the window scene should be ready).
                 sourceFrame = frame
-                
-                /// Make sure the view's parent window scene exists.
-                guard let windowScene = popover?.context.windowScene else { return }
-                
-                /// Create a new tag key.
-                let frameTag = FrameTag(tag: tag, windowScene: windowScene)
-                
-                /// Save the frame in `selectionFrameTags` to provide `excludedFrames`.
-                Popovers.model.selectionFrameTags[frameTag] = frame
-                
             }
         
         /// `$selection` was changed, determine if the popover should be presented, animated, or dismissed.
             .onDataChange(of: selection) { (oldSelection, newSelection) in
+                
+                /// Get the current window scene.
+                let windowScene = UIApplication.shared.currentWindowScene
+                
+                /// Make sure the view's parent window scene exists.
+                if let windowScene = windowScene {
+                    
+                    /// Create a new tag key.
+                    let frameTag = FrameTag(tag: tag, windowScene: windowScene)
+                    
+                    /// Save the frame in `selectionFrameTags` to provide `excludedFrames`.
+                    Popovers.model.selectionFrameTags[frameTag] = sourceFrame
+                }
                 
                 /// If the new selection is nil, dismiss the popover.
                 guard newSelection != nil else {

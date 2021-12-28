@@ -200,7 +200,11 @@ public struct Popovers {
         model.selectionFrameTags.removeAll()
     }
     
-    /// Get a currently-presented popover with a tag. Returns `nil` if no popover with the tag was found.
+    /**
+     Get a currently-presented popover with a tag. Returns `nil` if no popover with the tag was found.
+     - parameter tag: The tag of the popover to look for.
+     - parameter windowScene: The window scene of the popover to look for. Only needed if your app supports multiple windows.
+     */
     public static func popover(tagged tag: String, in windowScene: UIWindowScene? = UIApplication.shared.currentWindowScene) -> Popover? {
         return current.first(where: { $0.context.windowScene == windowScene && $0.attributes.tag == tag })
     }
