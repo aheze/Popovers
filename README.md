@@ -395,6 +395,10 @@ Set this to true to prevent underlying views from being pressed.
 
 <img src="Assets/BlocksBackgroundTouches.png" width=300 alt="Popover overlaid over some buttons. Tapping on the buttons has no effect.">
 
+### 🪟 Window Scene • `UIWindowScene?` • [*`v1.0.4`*](https://github.com/aheze/Popovers/releases/tag/1.0.4)
+The window scene that the popover is tied to. By default, this is set to `UIApplication.shared.keyWindow?.windowScene`, which is fully provides single window support and basic multi-window support on iPad. See [Supporting Multiple Screens](https://github.com/aheze/Popovers) for more details.
+
+
 ### 👉 On Tap Outside • `(() -> Void)?`
 A closure that's called whenever the user taps outside the popover.
 
@@ -679,6 +683,48 @@ struct ContentView: View {
 </td>
 </tr>
 </table>
+
+### Supporting Multiple Screens • [*`v1.0.4`*](https://github.com/aheze/Popovers/releases/tag/1.0.4)
+Popovers comes with built-in support for multiple screens (represented by [`UIWindowScene`](https://developer.apple.com/documentation/uikit/uiwindowscene)).
+
+<img src="Assets/SupportingMultipleScreens.png" width=200 alt="2 screens side by side with a popover in each.">
+
+Here's a couple things to keep in mind.
+- Popovers are tied to window scenes. This way, tapping on one side of the screen won't interfere or dismiss popovers on the other side.
+- Set a popover's window scene with `attributes.windowScene`. By default, this is `UIApplication.shared.keyWindow?.windowScene`, which is enough for basic multi-screen support.
+- Each screen will only show the popovers with the same `windowScene`.
+- Utility methods like `Popovers.popover(tagged:)` require specifying the window scene.
+
+```swift
+/// Get a currently-presented popover in the window scene.
+Popovers.popover(tagged: "Your Tag Name", in: yourWindowScene)
+
+
+/// Tag a frame (SwiftUI) in the window scene.
+Text("Hello").frameTag("Your Frame Tag Name", in: yourWindowScene)
+
+/// Get a tagged frame (SwiftUI) in the window scene.
+Popovers.frameTagged("Your Frame Tag Name", in: yourWindowScene)
+```
+
+However, getting a view's window scene in SwiftUI is tricky. My current workaround is [embedding a `UIViewRepresentable`](https://github.com/aheze/Popovers/blob/5fcaa9d9eb2ed077cd43e323b5a772a04bd6e1be/Sources/PopoverFrameTag.swift#L68) and reading its window scene. This however is not completely reliable. If anyone has a better method, please let me know.
+
+
+```swift
+WindowGroup {
+    ContentView()
+        .injectWindowScene() /// Make the window scene available to all subviews. Not ideal, but it works (usually).
+}
+
+struct ContentView: View {
+    @EnvironmentObject var windowSceneModel: WindowSceneModel
+
+    /// ... 
+
+    Text("Hello").frameTag("Your Frame Tag Name", in: windowSceneModel.windowScene)
+}
+```
+
 
 ### Popover Hierarchy
 To bring a popover to front, just attach [`.zIndex(_:)`](https://developer.apple.com/documentation/swiftui/view/zindex(_:)). A higher index will bring it forwards.
