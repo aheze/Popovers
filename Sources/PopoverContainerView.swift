@@ -16,8 +16,6 @@ struct PopoverContainerView: View {
     /// The view model that stores the popovers.
     @ObservedObject var popoverModel: PopoverModel
     
-    let windowScene: UIWindowScene?
-    
     /// The currently-dragging popover.
     @State var selectedPopover: Popover? = nil
     
@@ -56,12 +54,12 @@ struct PopoverContainerView: View {
                             /// When `popover.context.size` is nil, the popover was just presented.
                             if popover.context.size == nil {
                                 popover.setSize(size)
-                                Popovers.refresh(with: transaction)
+                                popoverModel.refresh(with: transaction)
                             } else {
                                 /// Otherwise, the popover is *replacing* a previous popover, so animate it.
                                 withTransaction(transaction) {
                                     popover.setSize(size)
-                                    Popovers.refresh(with: transaction)
+                                    popoverModel.refresh(with: transaction)
                                 }
                             }
                             popover.context.transaction = nil
@@ -129,7 +127,7 @@ struct PopoverContainerView: View {
     }
     
     func getPopovers() -> [(Int, Popover)] {
-        let popovers = popoverModel.popovers.filter { $0.attributes.windowScene == windowScene }
+        let popovers = popoverModel.popovers
         return Array(zip(popovers.indices, popovers))
     }
     

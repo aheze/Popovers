@@ -126,7 +126,7 @@ class DismissViewController: UIViewController {
     }
     @objc func dismissButtonPressed() {
         if let popover = Popovers.popover(tagged: "Dismissal Popover") {
-            Popovers.dismiss(popover)
+            popover.dismiss()
         }
     }
 }

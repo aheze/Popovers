@@ -20,10 +20,7 @@ public class PopoverContainerWindow: UIWindow {
     
     /// The view controller that holds the popover.
     public lazy var popoverContainerViewController: PopoverContainerViewController = {
-        let popoverContainerViewController = PopoverContainerViewController(
-            popoverModel: popoverModel,
-            windowScene: windowScene
-        )
+        let popoverContainerViewController = PopoverContainerViewController(popoverModel: popoverModel)
         return popoverContainerViewController
     }()
     
@@ -74,7 +71,7 @@ public class PopoverContainerWindow: UIWindow {
                 popoverToDismiss.attributes.dismissal.tapOutsideIncludesOtherPopovers || /// The popover can be dismissed even if the touch hit another popover, **or...**
                 !popoverFrames.contains(where: { $0.contains(point) }) /// ... no other popover frame contains the point (the touch landed outside)
             {
-                Popovers.dismiss(popoverToDismiss)
+//                Popovers.dismiss(popoverToDismiss)
             }
         }
         

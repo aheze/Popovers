@@ -16,16 +16,14 @@ public class PopoverContainerViewController: UIViewController {
     /// The popover model to pass down to `PopoverContainerView`.
     public var popoverModel: PopoverModel
     
-    /// The window scene to pass down to `PopoverContainerView`.
-    public let windowScene: UIWindowScene?
-    
     /**
      Create a new `PopoverContainerViewController`. This is automatically managed.
      */
-    public init(popoverModel: PopoverModel, windowScene: UIWindowScene?) {
+    public init(popoverModel: PopoverModel) {
         self.popoverModel = popoverModel
-        self.windowScene = windowScene
         super.init(nibName: nil, bundle: nil)
+        
+        self.modalPresentationStyle = .overCurrentContext
     }
     
     required init?(coder: NSCoder) {
@@ -36,7 +34,7 @@ public class PopoverContainerViewController: UIViewController {
         super.viewDidLayoutSubviews()
         
         /// Orientation or screen bounds changed. Update popover frames.
-        Popovers.updateFrames()
+        popoverModel.updateFrames()
     }
     
     public override func loadView() {
@@ -44,14 +42,12 @@ public class PopoverContainerViewController: UIViewController {
         /**
          Instantiate the base `view`.
          */
-        view = UIView()
+        view = PopoverGestureContainer(popoverModel: popoverModel)
         view.backgroundColor = .clear
+        view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         
         /// Embed `PopoverContainerView` in a view controller.
-        let popoverContainerView = PopoverContainerView(
-            popoverModel: popoverModel,
-            windowScene: windowScene
-        )
+        let popoverContainerView = PopoverContainerView(popoverModel: popoverModel)
         let hostingController = UIHostingController(rootView: popoverContainerView)
         hostingController.view.frame = view.bounds
         hostingController.view.backgroundColor = .clear
@@ -61,4 +57,96 @@ public class PopoverContainerViewController: UIViewController {
         view.addSubview(hostingController.view)
         hostingController.didMove(toParent: self)
     }
+    
+    private class PopoverGestureContainer: UIView {
+        
+        private let popoverModel: PopoverModel
+        
+        init(popoverModel: PopoverModel) {
+            self.popoverModel = popoverModel
+            super.init(frame: .zero)
+        }
+        
+        required init?(coder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
+        }
+        
+        /**
+         Determine if touches should land on popovers or pass through to the underlying view.
+         
+         The popover container view takes up the entire screen, so normally it would block all touches from going through. This method fixes that.
+         */
+        override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+            
+            /// Make sure the hit event was actually a touch and not a cursor hover or something else.
+            guard event.map({ $0.type == .touches }) ?? true else { return nil }
+            
+            /// Only loop through the popovers that are in this window.
+            let popovers = popoverModel.popovers
+            
+            /// The current popovers' frames
+            let popoverFrames = popovers.map { $0.context.frame }
+            
+            /// Dismiss a popover, knowing that its frame does not contain the touch.
+            func dismissPopoverIfNecessary(popoverToDismiss: Popover) {
+                if
+                    popoverToDismiss.attributes.dismissal.mode.contains(.tapOutside), /// The popover can be automatically dismissed when tapped outside.
+                    popoverToDismiss.attributes.dismissal.tapOutsideIncludesOtherPopovers || /// The popover can be dismissed even if the touch hit another popover, **or...**
+                    !popoverFrames.contains(where: { $0.contains(point) }) /// ... no other popover frame contains the point (the touch landed outside)
+                {
+                    popoverToDismiss.dismiss()
+                }
+            }
+            
+            /// Loop through the popovers and see if the touch hit it.
+            /// `reversed` to start from the most recently presented popovers, working backwards.
+            for popover in popovers.reversed() {
+                
+                /// Check it the popover was hit.
+                if popover.context.frame.contains(point) {
+                    
+                    /// Dismiss other popovers if they have `tapOutsideIncludesOtherPopovers` set to true.
+                    for popoverToDismiss in popovers {
+                        if
+                            popoverToDismiss != popover,
+                            !popoverToDismiss.context.frame.contains(point) /// The popover's frame doesn't contain the touch point.
+                        {
+                            dismissPopoverIfNecessary(popoverToDismiss: popoverToDismiss)
+                        }
+                    }
+                    
+                    /// Receive the touch and block it from going through.
+                    return super.hitTest(point, with: event)
+                }
+                
+                /// The popover was not hit, so let it know that the user tapped outside.
+                popover.attributes.onTapOutside?()
+                
+                /// If the popover has `blocksBackgroundTouches` set to true, stop underlying views from receiving the touch.
+                if popover.attributes.blocksBackgroundTouches {
+                    
+                    /// Receive the touch and block it from going through.
+                    return super.hitTest(point, with: event)
+                }
+                
+                /// Check if the touch hit an excluded view. If so, don't dismiss it.
+                if popover.attributes.dismissal.mode.contains(.tapOutside) {
+                    let excludedFrames = popover.attributes.dismissal.excludedFrames()
+                    if excludedFrames.contains(where: { $0.contains(point) }) {
+                        
+                        /// The touch hit an excluded view, so don't dismiss it.
+                        continue
+                    }
+                }
+                
+                /// All checks did not pass, which means the touch landed outside the popover. So, dismiss it if necessary.
+                dismissPopoverIfNecessary(popoverToDismiss: popover)
+            }
+            
+            /// The touch did not hit any popover, so pass it through.
+            return nil
+        }
+        
+    }
+    
 }

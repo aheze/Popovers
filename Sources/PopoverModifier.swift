@@ -62,56 +62,58 @@ struct PopoverModifier: ViewModifier {
     }
     
     func body(content: Content) -> some View {
-        content
-        
-        /// Read the frame of the source view.
-            .frameReader { frame in
-                sourceFrame = frame
-            }
-        
-        /// Detect a state change in `$present`.
-            .onDataChange(of: present) { (_, newValue) in
-                
-                /// `newValue` is true, so present the popover.
-                if newValue {
-                    var attributes = Popover.Attributes()
+        WindowReader { (window) in
+            content
+            
+            /// Read the frame of the source view.
+                .frameReader { frame in
+                    sourceFrame = frame
+                }
+            
+            /// Detect a state change in `$present`.
+                .onDataChange(of: present) { (_, newValue) in
                     
-                    /// Set the default source frame to the source view.
-                    attributes.sourceFrame = {
-                        if case .absolute(_, _) = attributes.position {
-                            return sourceFrame ?? .zero
-                        } else {
-                            return Popovers.safeWindowFrame
+                    /// `newValue` is true, so present the popover.
+                    if newValue {
+                        var attributes = Popover.Attributes()
+                        
+                        /// Set the default source frame to the source view.
+                        attributes.sourceFrame = {
+                            if case .absolute(_, _) = attributes.position {
+                                return sourceFrame ?? .zero
+                            } else {
+                                return Popovers.safeWindowFrame
+                            }
                         }
-                    }
-                    
-                    /// Build the attributes using the closure. If you supply a custom source frame, the default will be overridden.
-                    buildAttributes(&attributes)
-                    
-                    let popover = Popover(
-                        attributes: attributes,
-                        view: { view },
-                        background: { background }
-                    )
-                    
-                    /// Listen to the `dismissed` callback.
-                    popover.context.dismissed = {
-                        present = false
-                    }
-                    
-                    /// Store a reference to the popover.
-                    self.popover = popover
-                    
-                    /// Present the popover.
-                    Popovers.present(popover)
-                } else {
-                    
-                    /// `$present` was set to `false`, dismiss the popover.
-                    if let popover = popover {
-                        Popovers.dismiss(popover)
+                        
+                        /// Build the attributes using the closure. If you supply a custom source frame, the default will be overridden.
+                        buildAttributes(&attributes)
+                        
+                        let popover = Popover(
+                            attributes: attributes,
+                            view: { view },
+                            background: { background }
+                        )
+                        
+                        /// Listen to the `dismissed` callback.
+                        popover.context.dismissed = {
+                            present = false
+                        }
+                        
+                        /// Store a reference to the popover.
+                        self.popover = popover
+                        
+                        
+                        
+                        /// Present the popover.
+                        popover.present(in: window)
+                    } else {
+                        
+                        /// `$present` was set to `false`, dismiss the popover.
+                        popover?.dismiss()
                     }
                 }
-            }
+        }
     }
 }
 
@@ -199,7 +201,7 @@ struct MultiPopoverModifier: ViewModifier {
                 /// If the new selection is nil, dismiss the popover.
                 guard newSelection != nil else {
                     if let popover = popover {
-                        Popovers.dismiss(popover)
+                        popover.dismiss()
                     }
                     return
                 }

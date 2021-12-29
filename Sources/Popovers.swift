@@ -62,7 +62,7 @@ public struct Popovers {
     
     /// Make sure that a window exists, so that the popover's presentation animation doesn't stutter..
     public static func prepare() {
-        _ = getWindow()
+//        _ = getWindow()
     }
     
     /**
@@ -121,72 +121,6 @@ public struct Popovers {
                 current[oldPopoverIndex] = newPopover
             }
         }
-    }
-    
-    /**
-     Dismiss a popover.
-     
-     Provide `transaction` to override the default dismissal transition.
-     */
-    public static func dismiss(_ popover: Popover, transaction: Transaction? = nil) {
-        if let popoverIndex = index(of: popover) {
-            popover.context.dismissed?()
-            popover.attributes.onDismiss?()
-            
-            let dismissalTransaction = transaction ?? Transaction(animation: popover.attributes.dismissal.animation)
-            withTransaction(dismissalTransaction) {
-                _ = current.remove(at: popoverIndex)
-            }
-        }
-    }
-    
-    /// Dismiss all popovers.
-    public static func dismissAll() {
-        for popover in current.reversed() {
-            dismiss(popover)
-        }
-    }
-    
-    /**
-     Refresh the popovers with a new transaction.
-     
-     This is called when a popover's frame is being calculated.
-     */
-    public static func refresh(with transaction: Transaction?) {
-        
-        /// Set each popovers's transaction to the new transaction to keep the smooth animation.
-        for popover in current {
-            popover.context.transaction = transaction
-        }
-        
-        /// Update all popovers.
-        model.refresh()
-    }
-    
-    /**
-     Update all popover frames.
-     
-     This is called when the device rotates or has a bounds change.
-     */
-    public static func updateFrames() {
-        for popover in current {
-            if 
-                case .relative(let popoverAnchors) = popover.attributes.position,
-                popoverAnchors == [.center]
-            {
-                /// For some reason, relative positioning + `.center` doesn't need to be on the main queue to have a size change.
-                popover.setSize(popover.context.size)
-            } else {
-                
-                /// Must be on the main queue to get a different SwiftUI render loop
-                DispatchQueue.main.async {
-                    popover.setSize(popover.context.size)
-                }
-            }
-        }
-        
-        /// Update all popovers.
-        model.refresh()
     }
     
     /// Remove all saved frames for `.popover(selection:tag:attributes:view:)`. Call this method when you present another view where the frames don't apply.

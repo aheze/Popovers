@@ -14,7 +14,6 @@ import SwiftUI
  */
 public class PopoverModel: ObservableObject {
     
-    
     /// The currently-presented popovers. The oldest are in front, the newest at the end. Access this via `Popovers.current`.
     @Published var popovers = [Popover]()
     
@@ -38,4 +37,52 @@ public class PopoverModel: ObservableObject {
     func refresh() {
         objectWillChange.send()
     }
+    
+    /**
+     Refresh the popovers with a new transaction.
+     
+     This is called when a popover's frame is being calculated.
+     */
+    func refresh(with transaction: Transaction?) {
+        /// Set each popovers's transaction to the new transaction to keep the smooth animation.
+        for popover in popovers {
+            popover.context.transaction = transaction
+        }
+        
+        /// Update all popovers.
+        refresh()
+    }
+    
+    /// Removes a `Popover` from this model.
+    func remove(_ popoverToRemove: Popover) {
+        popovers.removeAll { (candidate) in
+            candidate == popoverToRemove
+        }
+    }
+    
+    /**
+     Update all popover frames.
+     
+     This is called when the device rotates or has a bounds change.
+     */
+    func updateFrames() {
+        for popover in popovers {
+            if
+                case .relative(let popoverAnchors) = popover.attributes.position,
+                popoverAnchors == [.center]
+            {
+                /// For some reason, relative positioning + `.center` doesn't need to be on the main queue to have a size change.
+                popover.setSize(popover.context.size)
+            } else {
+                
+                /// Must be on the main queue to get a different SwiftUI render loop
+                DispatchQueue.main.async {
+                    popover.setSize(popover.context.size)
+                }
+            }
+        }
+        
+        refresh()
+    }
+    
 }

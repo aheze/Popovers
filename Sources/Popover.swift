@@ -375,6 +375,9 @@ public struct Popover: Identifiable {
         /// For the SwiftUI `.popover` view modifier - set `$present` to false when this is called.
         internal var dismissed: (() -> Void)?
         
+        /// The `PopoverContainerViewController` presenting this `Popover`, or `nil` if the popover is currently not being presented.
+        internal var presentedPopoverViewController: PopoverContainerViewController?
+        
         /// Create a context for the popover. You shouldn't need to use this - it's done automatically when you create a new popover.
         public init() {
             changeSink = objectWillChange.sink { [weak self] in
@@ -427,8 +430,16 @@ public extension Popover {
             )
             
             let screenEdgePadding = attributes.screenEdgePadding
-            let maxX = Popovers.safeWindowFrame.maxX - screenEdgePadding.right
-            let maxY = Popovers.safeWindowFrame.maxY - screenEdgePadding.bottom
+            
+            let safeWindowFrame: CGRect
+            if let window = context.presentedPopoverViewController?.view.window {
+                safeWindowFrame = window.safeAreaLayoutGuide.layoutFrame
+            } else {
+                safeWindowFrame = Popovers.safeWindowFrame
+            }
+            
+            let maxX = safeWindowFrame.maxX - screenEdgePadding.right
+            let maxY = safeWindowFrame.maxY - screenEdgePadding.bottom
             
             /// Popover overflows on left/top side.
             if popoverFrame.origin.x < screenEdgePadding.left {
@@ -477,7 +488,7 @@ public extension Popover {
                 context.staticFrame = newFrame
                 context.frame = newFrame
             }
-            Popovers.dismiss(self)
+            dismiss()
             return
         }
         if
@@ -490,7 +501,7 @@ public extension Popover {
                 context.staticFrame = newFrame
                 context.frame = newFrame
             }
-            Popovers.dismiss(self)
+            dismiss()
             return
         }
         
