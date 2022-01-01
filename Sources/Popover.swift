@@ -382,16 +382,6 @@ public struct Popover: Identifiable {
             }
         }
         
-        /**
-         Get the saved frame of a frame-tagged view. You must first set the frame using `.frameTag(_:)`.
-         - parameter tag: The tag that you used for the frame.
-         
-         - Returns: The frame of a frame-tagged view, or `nil` if no view with the tag exists.
-         */
-        public func frameTagged(_ tag: String) -> CGRect {
-            return presentedPopoverViewController?.view.window?.frameTagged(tag) ?? .zero
-        }
-        
     }
 }
 
