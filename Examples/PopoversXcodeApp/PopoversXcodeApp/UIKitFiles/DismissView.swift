@@ -115,7 +115,6 @@ class DismissViewController: UIViewController {
         attributes.sourceFrame = { [weak presentButton] in
             presentButton.windowFrame()
         }
-        attributes.windowScene = view.window?.windowScene
         
         let popover = Popover(attributes: attributes) {
             DismissViewPopoverRepresentable()

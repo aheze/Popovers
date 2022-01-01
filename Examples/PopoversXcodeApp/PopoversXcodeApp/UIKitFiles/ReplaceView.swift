@@ -124,7 +124,6 @@ class ReplaceViewController: UIViewController {
         attributes.sourceFrame = { [weak button1] in
             button1.windowFrame()
         }
-        attributes.windowScene = view.window?.windowScene
         
         let newPopover = Popover(attributes: attributes) {
             ReplaceViewPopoverRepresentable()
@@ -148,7 +147,6 @@ class ReplaceViewController: UIViewController {
         attributes.sourceFrame = { [weak button2] in
             button2.windowFrame()
         }
-        attributes.windowScene = view.window?.windowScene
         
         let newPopover = Popover(attributes: attributes) {
             ReplaceViewPopoverRepresentable()

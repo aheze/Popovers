@@ -104,9 +104,6 @@ public struct Popover: Identifiable {
         /// Prevent views underneath the popover from being pressed.
         public var blocksBackgroundTouches = false
         
-        /// The popover's window scene. Defaults to the app's current window scene. Only needed if your app supports multiple windows.
-        public var windowScene: UIWindowScene? = UIApplication.shared.currentWindowScene
-        
         /// Called when the user taps outside the popover.
         public var onTapOutside: (() -> Void)?
         
@@ -129,7 +126,6 @@ public struct Popover: Identifiable {
             dismissal: Popover.Attributes.Dismissal = Dismissal(),
             rubberBandingMode: Popover.Attributes.RubberBandingMode = [.xAxis, .yAxis],
             blocksBackgroundTouches: Bool = false,
-            windowScene: UIWindowScene? = UIApplication.shared.currentWindowScene,
             onTapOutside: (() -> Void)? = nil,
             onDismiss: (() -> Void)? = nil,
             onContextChange: ((Popover.Context) -> Void)? = nil
@@ -385,6 +381,17 @@ public struct Popover: Identifiable {
                 self.attributes.onContextChange?(self)
             }
         }
+        
+        /**
+         Get the saved frame of a frame-tagged view. You must first set the frame using `.frameTag(_:)`.
+         - parameter tag: The tag that you used for the frame.
+         
+         - Returns: The frame of a frame-tagged view, or `nil` if no view with the tag exists.
+         */
+        public func frameTagged(_ tag: String) -> CGRect {
+            return presentedPopoverViewController?.view.window?.frameTagged(tag) ?? .zero
+        }
+        
     }
 }
 

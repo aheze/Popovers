@@ -1,34 +1,6 @@
 import SwiftUI
 import UIKit
 
-extension UIViewController {
-    
-    public func present(_ popoverToPresent: Popover) {
-        guard let window = view.window else { return }
-        popoverToPresent.present(in: window)
-    }
-    
-    public func replace(_ oldPopover: Popover, with newPopover: Popover) {
-        oldPopover.replace(with: newPopover)
-    }
-    
-    public func popover(tagged tag: String) -> Popover? {
-        guard let popoverViewController = popoverViewController else { return nil }
-        
-        let model = popoverViewController.popoverModel
-        return model.popover(tagged: tag)
-    }
-    
-}
-
-extension UIWindow {
-    
-    public func popover(tagged tag: String) -> Popover? {
-        return rootViewController?.popoverViewController?.popover(tagged: tag)
-    }
-    
-}
-
 extension Popover {
     
     func present(in window: UIWindow) {
@@ -43,14 +15,12 @@ extension Popover {
         
         /// There may already be a view controller presenting another popover - if so, lets use that.
         let popoverViewController: PopoverContainerViewController
-        let model: PopoverModel
+        let model = window.popoverModel
         
         if let existingPopoverViewController = presentingViewController as? PopoverContainerViewController {
             popoverViewController = existingPopoverViewController
-            model = existingPopoverViewController.popoverModel
         } else {
-            model = PopoverModel()
-            popoverViewController = PopoverContainerViewController(popoverModel: model)
+            popoverViewController = PopoverContainerViewController()
         }
             
         context.presentedPopoverViewController = popoverViewController
@@ -130,14 +100,6 @@ private extension UIViewController {
             return presented.topmostViewController
         } else {
             return self
-        }
-    }
-    
-    var popoverViewController: PopoverContainerViewController? {
-        if let candidate = self as? PopoverContainerViewController {
-            return candidate
-        } else {
-            return presentedViewController?.popoverViewController
         }
     }
     

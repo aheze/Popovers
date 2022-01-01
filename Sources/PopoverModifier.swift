@@ -185,19 +185,13 @@ struct MultiPopoverModifier: ViewModifier {
             
             /// `$selection` was changed, determine if the popover should be presented, animated, or dismissed.
                 .onDataChange(of: selection) { (oldSelection, newSelection) in
-                    
-                    /// Get the current window scene.
-                    let windowScene = UIApplication.shared.currentWindowScene
-                    
-                    /// Make sure the view's parent window scene exists.
-                    if let windowScene = windowScene {
+                    let model = window.popoverModel
                         
-                        /// Create a new tag key.
-                        let frameTag = FrameTag(tag: tag, windowScene: windowScene)
-                        
-                        /// Save the frame in `selectionFrameTags` to provide `excludedFrames`.
-                        Popovers.model.selectionFrameTags[frameTag] = sourceFrame
-                    }
+                    /// Create a new tag key.
+                    let frameTag = FrameTag(tag: tag)
+                    
+                    /// Save the frame in `selectionFrameTags` to provide `excludedFrames`.
+                    model.selectionFrameTags[frameTag] = sourceFrame
                     
                     /// If the new selection is nil, dismiss the popover.
                     guard newSelection != nil else {
@@ -219,7 +213,7 @@ struct MultiPopoverModifier: ViewModifier {
                          This makes sure that the popover isn't dismissed when you tap outside to present another popover.
                          To opt-out, set `attributes.dismissal.excludedFrames` manually.
                          */
-                        attributes.dismissal.excludedFrames = { Array(Popovers.model.selectionFrameTags.values) }
+                        attributes.dismissal.excludedFrames = { Array(window.popoverModel.selectionFrameTags.values) }
                         
                         /// Set the source frame.
                         attributes.sourceFrame = {

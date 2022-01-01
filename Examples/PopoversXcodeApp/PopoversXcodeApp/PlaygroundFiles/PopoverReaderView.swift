@@ -75,7 +75,7 @@ struct PopoverReaderViewBackground: View {
             
             PopoverTemplates.CurveConnector(
                 start: context.frame.point(at: .top),
-                end: Popovers.frameTagged("Frame-Tagged View", in: windowSceneModel.windowScene).point(at: .bottom)
+                end: context.frameTagged("Frame-Tagged View").point(at: .bottom)
             )
                 .stroke(
                     Color.blue,
@@ -92,7 +92,7 @@ struct PopoverReaderViewBackground: View {
                 .fill(Color.blue, strokeBorder: Color.white, lineWidth: 3)
                 .frame(width: 16, height: 16)
                 .position(
-                    Popovers.frameTagged("Frame-Tagged View", in: windowSceneModel.windowScene).point(at: .bottom)
+                    context.frameTagged("Frame-Tagged View").point(at: .bottom)
                 )
                 .zIndex(1)
         }

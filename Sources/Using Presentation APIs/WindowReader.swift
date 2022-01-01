@@ -1,12 +1,16 @@
 import SwiftUI
 import UIKit
 
-struct WindowReader<Content>: View where Content: View {
+public struct WindowReader<Content>: View where Content: View {
     
-    var content: (UIWindow) -> Content
-    @State var window: UIWindow?
+    private let content: (UIWindow) -> Content
+    @State private var window: UIWindow?
     
-    var body: some View {
+    public init(@ViewBuilder _ content: @escaping (UIWindow) -> Content) {
+        self.content = content
+    }
+    
+    public var body: some View {
         ZStack {
             if let window = window {
                 content(window)

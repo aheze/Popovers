@@ -13,16 +13,11 @@ import SwiftUI
  */
 public class PopoverContainerViewController: UIViewController {
     
-    /// The popover model to pass down to `PopoverContainerView`.
-    public var popoverModel: PopoverModel
-    
     /**
      Create a new `PopoverContainerViewController`. This is automatically managed.
      */
-    public init(popoverModel: PopoverModel) {
-        self.popoverModel = popoverModel
+    public init() {
         super.init(nibName: nil, bundle: nil)
-        
         self.modalPresentationStyle = .overCurrentContext
     }
     
@@ -42,33 +37,42 @@ public class PopoverContainerViewController: UIViewController {
         /**
          Instantiate the base `view`.
          */
-        view = PopoverGestureContainer(popoverModel: popoverModel)
+        view = PopoverGestureContainer(windowAvailable: { [unowned self] in
+            /// Embed `PopoverContainerView` in a view controller.
+            let popoverContainerView = PopoverContainerView(popoverModel: popoverModel)
+            let hostingController = UIHostingController(rootView: popoverContainerView)
+            hostingController.view.frame = view.bounds
+            hostingController.view.backgroundColor = .clear
+            hostingController.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+            
+            addChild(hostingController)
+            view.addSubview(hostingController.view)
+            hostingController.didMove(toParent: self)
+        })
+        
         view.backgroundColor = .clear
         view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        
-        /// Embed `PopoverContainerView` in a view controller.
-        let popoverContainerView = PopoverContainerView(popoverModel: popoverModel)
-        let hostingController = UIHostingController(rootView: popoverContainerView)
-        hostingController.view.frame = view.bounds
-        hostingController.view.backgroundColor = .clear
-        hostingController.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        
-        addChild(hostingController)
-        view.addSubview(hostingController.view)
-        hostingController.didMove(toParent: self)
     }
     
     private class PopoverGestureContainer: UIView {
         
-        private let popoverModel: PopoverModel
+        private let windowAvailable: () -> Void
         
-        init(popoverModel: PopoverModel) {
-            self.popoverModel = popoverModel
+        init(windowAvailable: @escaping () -> Void) {
+            self.windowAvailable = windowAvailable
             super.init(frame: .zero)
         }
         
         required init?(coder: NSCoder) {
             fatalError("init(coder:) has not been implemented")
+        }
+        
+        override func didMoveToWindow() {
+            super.didMoveToWindow()
+            
+            if window != nil {            
+                windowAvailable()
+            }
         }
         
         /**

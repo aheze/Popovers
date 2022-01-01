@@ -26,7 +26,7 @@ struct TipView: View {
                 }
             }
         }
-        .frameTag("TipView", in: windowSceneModel.windowScene)
+        .frameTag("TipView")
         .popover(
             present: $present,
             attributes: {
@@ -43,7 +43,7 @@ struct TipView: View {
                 
                 PopoverTemplates.CurveConnector(
                     start: context.frame.point(at: .bottom),
-                    end: Popovers.frameTagged("TipView", in: windowSceneModel.windowScene).point(at: .top)
+                    end: context.frameTagged("TipView").point(at: .top)
                 )
                     .stroke(
                         Color(UIColor(hex: 0xFFAD46)),
@@ -59,7 +59,7 @@ struct TipView: View {
                     .fill(Color(UIColor(hex: 0xFFAD46)))
                     .frame(width: 16, height: 16)
                     .position(
-                        Popovers.frameTagged("TipView", in: windowSceneModel.windowScene).point(at: .top)
+                        context.frameTagged("TipView").point(at: .top)
                     )
             }
         }

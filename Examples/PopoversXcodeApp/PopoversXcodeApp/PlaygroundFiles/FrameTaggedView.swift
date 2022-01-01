@@ -22,7 +22,7 @@ struct FrameTaggedView: View {
         ) {
             present.toggle()
         }
-        .frameTag("Frame-Tagged View", in: windowSceneModel.windowScene)
+        .frameTag("Frame-Tagged View")
         .popover(present: $present) {
             FrameTaggedPopover(windowSceneModel: windowSceneModel)
                 .frame(maxWidth: 300)
@@ -35,33 +35,35 @@ struct FrameTaggedPopover: View {
     @State var savedFrame = CGRect.zero
     
     var body: some View {
-        VStack(alignment: .leading) {
-            Text(verbatim: "This is just a view with a saved frame: \(savedFrame).")
-            
-            Button {
-                savedFrame = Popovers.frameTagged("Frame-Tagged View", in: windowSceneModel.windowScene)
-            } label: {
-                HStack {
-                    ExampleImage("square.dashed", color: 0x68BB3D)
-                    Text("Update saved frame")
+        PopoverReader { (context) in
+            VStack(alignment: .leading) {
+                Text(verbatim: "This is just a view with a saved frame: \(savedFrame).")
+                
+                Button {
+                    savedFrame = context.frameTagged("Frame-Tagged View")
+                } label: {
+                    HStack {
+                        ExampleImage("square.dashed", color: 0x68BB3D)
+                        Text("Update saved frame")
+                    }
                 }
+                .foregroundColor(Color(uiColor: UIColor(hex: 0x68BB3D)))
+                
+                HStack {
+                    ExampleImage.tip
+                    Text("Tag a view to access its position and size from anywhere.")
+                }
+                
+                HStack {
+                    ExampleImage.warning
+                    Text("Only use tagged frames for providing popovers' `excludedFrames` or `sourceFrame`. Avoid using them for anything else, due to State re-rendering issues.")
+                }
+                
             }
-            .foregroundColor(Color(uiColor: UIColor(hex: 0x68BB3D)))
-            
-            HStack {
-                ExampleImage.tip
-                Text("Tag a view to access its position and size from anywhere.")
-            }
-            
-            HStack {
-                ExampleImage.warning
-                Text("Only use tagged frames for providing popovers' `excludedFrames` or `sourceFrame`. Avoid using them for anything else, due to State re-rendering issues.")
-            }
-            
+            .padding()
+            .background(.background)
+            .cornerRadius(12)
+            .shadow(radius: 1)
         }
-        .padding()
-        .background(.background)
-        .cornerRadius(12)
-        .shadow(radius: 1)
     }
 }
