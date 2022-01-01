@@ -19,17 +19,4 @@ public struct Popovers {
         return model
     }()
     
-    /**
-     Enable or disable popover dragging globally.
-     
-     This is useful if you have nested sliders or other gestures that interfere with the popover's rubber banding. Set this to `true` to enable dragging, `false` to disable dragging.
-     */
-    public static var draggingEnabled: Bool {
-        get {
-            Popovers.model.popoversDraggable
-        } set {
-            Popovers.model.popoversDraggable = newValue
-        }
-    }
-    
 }

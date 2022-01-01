@@ -368,6 +368,16 @@ public struct Popover: Identifiable {
         /// Notify when context changed.
         public var changeSink: AnyCancellable?
         
+        /// Indicates whether the popover can be dragged.
+        public var isDraggingEnabled: Bool {
+            get {
+                popoverModel.popoversDraggable
+            }
+            set {
+                popoverModel.popoversDraggable = newValue
+            }
+        }
+        
         /// For the SwiftUI `.popover` view modifier - set `$present` to false when this is called.
         internal var dismissed: (() -> Void)?
         
