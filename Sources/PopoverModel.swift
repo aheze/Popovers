@@ -98,4 +98,14 @@ class PopoverModel: ObservableObject {
         refresh()
     }
     
+    func frameTagged(_ tag: String) -> CGRect {
+        let frameTag = FrameTag(tag: tag)
+        let frame = frameTags[frameTag]
+        return frame ?? .zero
+    }
+    
+    func replace(_ oldPopover: Popover, with newPopover: Popover) {
+        oldPopover.replace(with: newPopover)
+    }
+    
 }

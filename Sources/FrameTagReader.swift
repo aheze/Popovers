@@ -12,7 +12,7 @@ public struct FrameTagReader<Content>: View where Content: View {
     
     public var body: some View {
         WindowReader { (window) in
-            let proxy = FrameTagProxy(hasPopoverModel: window)
+            let proxy = FrameTagProxy(responder: window)
             content(proxy)
         }
     }
@@ -24,8 +24,8 @@ public struct FrameTagProxy {
     
     private let popoverModel: PopoverModel
     
-    init(hasPopoverModel: HasPopoverModel) {
-        self.popoverModel = hasPopoverModel.popoverModel
+    init(responder: UIResponder) {
+        self.popoverModel = responder.popoverModel
     }
     
     /**

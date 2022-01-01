@@ -371,10 +371,10 @@ public struct Popover: Identifiable {
         /// Indicates whether the popover can be dragged.
         public var isDraggingEnabled: Bool {
             get {
-                popoverModel.popoversDraggable
+                popoverModel?.popoversDraggable ?? false
             }
             set {
-                popoverModel.popoversDraggable = newValue
+                popoverModel?.popoversDraggable = newValue
             }
         }
         
@@ -384,12 +384,43 @@ public struct Popover: Identifiable {
         /// The `PopoverContainerViewController` presenting this `Popover`, or `nil` if the popover is currently not being presented.
         internal var presentedPopoverViewController: PopoverContainerViewController?
         
+        private var popoverModel: PopoverModel? {
+            presentedPopoverViewController?.popoverModel
+        }
+        
         /// Create a context for the popover. You shouldn't need to use this - it's done automatically when you create a new popover.
         public init() {
             changeSink = objectWillChange.sink { [weak self] in
                 guard let self = self else { return }
                 self.attributes.onContextChange?(self)
             }
+        }
+        
+        /**
+         Replace a popover with another popover smoothly.
+         
+         This is what `.popover(selection:tag:attributes:view:)` in SwiftUI uses.
+         */
+        public func replace(_ oldPopover: Popover, with newPopover: Popover) {
+            popoverModel?.replace(oldPopover, with: newPopover)
+        }
+        
+        /**
+         Get a currently-presented popover with a tag. Returns `nil` if no popover with the tag was found.
+         - parameter tag: The tag of the popover to look for.
+         */
+        public func popover(tagged tag: String) -> Popover? {
+            return popoverModel?.popover(tagged: tag)
+        }
+        
+        /**
+         Get the saved frame of a frame-tagged view. You must first set the frame using `.frameTag(_:)`.
+         - parameter tag: The tag that you used for the frame.
+         
+         - Returns: The frame of a frame-tagged view, or `nil` if no view with the tag exists.
+         */
+        public func frameTagged(_ tag: String) -> CGRect {
+            return popoverModel?.frameTagged(tag) ?? .zero
         }
         
     }
