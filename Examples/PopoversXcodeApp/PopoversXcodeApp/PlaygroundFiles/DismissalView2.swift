@@ -14,7 +14,7 @@ struct DismissalView2: View {
     @EnvironmentObject var windowSceneModel: WindowSceneModel
     
     var body: some View {
-        WindowReader { (window) in
+        FrameTagReader { (proxy) in
             ExampleRow(
                 image: "xmark",
                 title: "Advanced Dismissal 2",
@@ -38,7 +38,7 @@ struct DismissalView2: View {
                     $0.tag = "Advanced Dismissal 1"
                     $0.dismissal.excludedFrames = {
                         [
-                            window.frameTagged("Frame-Tagged View")
+                            proxy.frameTagged("Frame-Tagged View")
                         ]
                     }
                 }
