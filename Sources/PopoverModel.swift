@@ -10,9 +10,12 @@ import Combine
 import SwiftUI
 
 /**
- The view model for all presented popovers.
+ The view model for presented popovers within a window.
+ 
+ Each view model is scoped to a window, which retains the view model. Presenting or otherwise managing a popover
+ automatically scopes to interactions to the window of the current view hiearchy.
  */
-public class PopoverModel: ObservableObject {
+class PopoverModel: ObservableObject {
     
     /// The currently-presented popovers. The oldest are in front, the newest at the end.
     @Published var popovers = [Popover]()
