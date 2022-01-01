@@ -378,12 +378,19 @@ public struct Popover: Identifiable {
             }
         }
         
+        /// The bounds of the window in which the `Popover` is being presented, or the `zero` frame if the popover has
+        /// not been presented yet.
+        public var windowBounds: CGRect {
+            presentedPopoverViewController?.view.window?.bounds ?? .zero
+        }
+        
         /// For the SwiftUI `.popover` view modifier - set `$present` to false when this is called.
         internal var dismissed: (() -> Void)?
         
         /// The `PopoverContainerViewController` presenting this `Popover`, or `nil` if the popover is currently not being presented.
         internal var presentedPopoverViewController: PopoverContainerViewController?
         
+        /// The `PopoverModel` managing the `Popover`. Sourced from the `presentedPopoverViewController`.
         private var popoverModel: PopoverModel? {
             presentedPopoverViewController?.popoverModel
         }
@@ -512,9 +519,7 @@ public extension Popover {
     
     /// Calculate if the popover should be dismissed via drag **or** animated to another position (if using `.relative` positioning with multiple anchors). Called when the user stops dragging the popover.
     func positionChanged(to point: CGPoint) {
-        guard let window = context.presentedPopoverViewController?.view.window else { return }
-        
-        let windowBounds = window.bounds
+        let windowBounds = context.windowBounds
         
         if
             attributes.dismissal.mode.contains(.dragDown),
