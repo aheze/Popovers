@@ -77,6 +77,9 @@ extension Popover {
             /// Inject the transaction into the new popover, so following frame calculations are animated smoothly.
             newPopover.context.transaction = transaction
             
+            /// Use the same `UIViewController` presenting the previous popover, so we animate the popover in the same container.
+            newPopover.context.presentedPopoverViewController = oldContext.presentedPopoverViewController
+            
             /// Use same ID so that SwiftUI animates the change.
             newPopover.context.id = oldContext.id
             
