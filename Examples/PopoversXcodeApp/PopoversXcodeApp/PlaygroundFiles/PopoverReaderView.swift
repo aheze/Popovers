@@ -11,7 +11,6 @@ import Popovers
 
 struct PopoverReaderView: View {
     @State var present = false
-    @EnvironmentObject var windowSceneModel: WindowSceneModel
     
     var body: some View {
         ExampleRow(
@@ -55,14 +54,12 @@ struct PopoverReaderView: View {
                 .shadow(radius: 1)
             }
         } background: {
-            PopoverReaderViewBackground(windowSceneModel: windowSceneModel)
+            PopoverReaderViewBackground()
         }
     }
 }
 
 struct PopoverReaderViewBackground: View {
-    @ObservedObject var windowSceneModel: WindowSceneModel
-    
     var body: some View {
         PopoverReader { context in
             Color.blue.opacity(0.1)

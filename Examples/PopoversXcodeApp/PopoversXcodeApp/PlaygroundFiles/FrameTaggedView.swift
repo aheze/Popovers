@@ -12,7 +12,6 @@ import Popovers
 
 struct FrameTaggedView: View {
     @State var present = false
-    @EnvironmentObject var windowSceneModel: WindowSceneModel
     
     var body: some View {
         ExampleRow(
@@ -24,14 +23,13 @@ struct FrameTaggedView: View {
         }
         .frameTag("Frame-Tagged View")
         .popover(present: $present) {
-            FrameTaggedPopover(windowSceneModel: windowSceneModel)
+            FrameTaggedPopover()
                 .frame(maxWidth: 300)
         }
     }
 }
 
 struct FrameTaggedPopover: View {
-    @ObservedObject var windowSceneModel: WindowSceneModel
     @State var savedFrame = CGRect.zero
     
     var body: some View {

@@ -11,7 +11,6 @@ import Popovers
 
 struct TipView: View {
     @State var present = false
-    @EnvironmentObject var windowSceneModel: WindowSceneModel
     
     var body: some View {
         Button {

@@ -19,15 +19,6 @@ public struct Popovers {
         return model
     }()
     
-    /// The popovers that are currently presented.
-    public static var current: [Popover] {
-        get {
-            model.popovers
-        } set {
-            model.popovers = newValue
-        }
-    }
-    
     /**
      Enable or disable popover dragging globally.
      

@@ -11,7 +11,6 @@ import Popovers
 
 struct DismissalView2: View {
     @State var present = false
-    @EnvironmentObject var windowSceneModel: WindowSceneModel
     
     var body: some View {
         FrameTagReader { (proxy) in

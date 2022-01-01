@@ -17,9 +17,6 @@ public class PopoverModel: ObservableObject {
     /// The currently-presented popovers. The oldest are in front, the newest at the end.
     @Published var popovers = [Popover]()
     
-    /// The current active window.
-    @Published var activeWindowScene: UIWindowScene?
-    
     /// Determines is the popovers can be dragged.
     @Published var popoversDraggable = true
     
