@@ -1,6 +1,7 @@
 import SwiftUI
 import UIKit
 
+/// Reads the `UIWindow` that is managing the hosting of some SwiftUI content.
 struct WindowReader<Content>: View where Content: View {
     
     private let content: (UIWindow) -> Content
