@@ -22,26 +22,13 @@ struct FrameTagModifier: ViewModifier {
     /// The name of the frame.
     let tag: String
     
-    /// Keep a reference to the frame, in case the window scene changes and `frameTags` needs to be updated.
-    @State var frame = CGRect.zero
-    
     func body(content: Content) -> some View {
-        WindowReader { (window) in
+        FrameTagReader { (proxy) in
             content
                 .frameReader { frame in
-                    self.frame = frame
-                    saveFrame(in: window)
+                    proxy.save(frame, for: tag)
                 }
         }
-    }
-    
-    /// Save the frame to the popover model.
-    func saveFrame(in window: UIWindow) {
-        /// Create a new tag key.
-        let frameTag = FrameTag(tag: tag)
-        
-        /// Save the frame.
-        window.popoverModel.frameTags[frameTag] = frame
     }
     
 }

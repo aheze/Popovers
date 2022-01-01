@@ -41,9 +41,4 @@ public struct Popovers {
         }
     }
     
-    /// Remove all saved frames for `.popover(selection:tag:attributes:view:)`. Call this method when you present another view where the frames don't apply.
-    public static func clearSavedFrames() {
-        model.selectionFrameTags.removeAll()
-    }
-    
 }

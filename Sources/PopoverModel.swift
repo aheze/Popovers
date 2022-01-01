@@ -29,7 +29,7 @@ public class PopoverModel: ObservableObject {
     /**
      Store frames of popover source views when presented using `.popover(selection:tag:attributes:view:)`. These frames are then used as excluded frames for dismissal.
      
-     To opt out of this behavior, set `attributes.dismissal.excludedFrames` manually. To clear this array (usually when you present another view where the frames don't apply), call `Popovers.clearSavedFrames()`.
+     To opt out of this behavior, set `attributes.dismissal.excludedFrames` manually. To clear this array (usually when you present another view where the frames don't apply), use a `FrameTagReader` to call `FrameTagProxy.clearSavedFrames()`.
      */
     @Published var selectionFrameTags: [FrameTag: CGRect] = [:]
     
