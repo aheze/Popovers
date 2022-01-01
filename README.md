@@ -157,7 +157,7 @@ struct ContentView: View {
 }
 ```
 
-In UIKit, create a `Popover` instance, then present with `Popovers.present(_:)`. You should also set the source frame.
+In UIKit, create a `Popover` instance, then present with `UIViewController.present(_:)`. You should also set the source frame.
 
 ```swift
 import SwiftUI
@@ -170,7 +170,8 @@ class ViewController: UIViewController {
         popover.attributes.sourceFrame = { [weak button] in
             button.windowFrame()
         }
-        Popovers.present(popover) /// here!
+        
+        present(popover) /// here!
     }
 }
 
@@ -242,7 +243,7 @@ popover.attributes.position = .absolute(
     originAnchor: .bottom,
     popoverAnchor: .topLeft
 )
-Popovers.present(popover)
+present(popover)    // where `self` is a `UIViewController`
 ```
 </td>
 </tr>
@@ -256,7 +257,12 @@ Tag popovers to access them later from anywhere. This is useful for updating exi
 $0.tag = "Your Tag"
 
 /// Access it later.
-let popover = Popovers.popovers(tagged: "Your Tag")
+let popover = popover(tagged: "Your Tag")   // where `self` is a `UIView` or `UIViewController`
+
+/// Or from a SwiftUI View, use a `PopoverReader`:
+PopoverReader { (context) in
+    context.popover(tagged: "Your Tag")
+}
 ```
 
 **Note:** When you use the `.popover(selection:tag:attributes:view:)` modifier, this `tag` is automatically set to what you provide in the parameter.
@@ -433,7 +439,7 @@ Use the <code>.popover(selection:tag:attributes:view:)</code> modifier.
 UIKit
 </strong>
 <br>
-Get the existing popover using <code>Popovers.popover(tagged:)</code>, then call <code>Popovers.replace(_:with:)</code>.
+Get the existing popover using <code>UIResponder.popover(tagged:)</code>, then call <code>UIResponder.replace(_:with:)</code>.
 </td>
 </tr>
   
@@ -477,10 +483,10 @@ struct ContentView: View {
     newPopover.attributes.dismissal.excludedFrames = { [weak button2] in [button2.windowFrame()] }
     newPopover.attributes.tag = "Popover 1"
     
-    if let oldPopover = Popovers.popover(tagged: "Popover 2") {
-        Popovers.replace(oldPopover, with: newPopover)
+    if let oldPopover = popover(tagged: "Popover 2") {
+        replace(oldPopover, with: newPopover)
     } else {
-        Popovers.present(newPopover) /// Present if the old popover doesn't exist.
+        present(newPopover) /// Present if the old popover doesn't exist.
     }
 }
 @IBAction func button2Pressed(_ sender: Any) {
@@ -489,10 +495,10 @@ struct ContentView: View {
     newPopover.attributes.dismissal.excludedFrames = { [weak button1] in [button1.windowFrame()] }
     newPopover.attributes.tag = "Popover 2"
     
-    if let oldPopover = Popovers.popover(tagged: "Popover 1") {
-        Popovers.replace(oldPopover, with: newPopover)
+    if let oldPopover = popover(tagged: "Popover 1") {
+        replace(oldPopover, with: newPopover)
     } else {
-        Popovers.present(newPopover)
+        present(newPopover)
     }
 }
 ```
@@ -563,7 +569,7 @@ This reads the popover's context, which contains its frame, attributes, and vari
     PopoverReader { context in
         Path {
             $0.move(to: context.frame.point(at: .bottom))
-            $0.addLine(to: Popovers.windowBounds.point(at: .bottom))
+            $0.addLine(to: context.windowBounds.point(at: .bottom))
         }
         .stroke(Color.blue, lineWidth: 4)
     }
@@ -582,13 +588,20 @@ Text("This is a view")
 
 /// ...
 
-.popover(
-    present: $present,
-    attributes: {
-        $0.sourceFrame = Popovers.frameTagged("Your Tag Name")
-    }
-)
+FrameTagReader { (proxy) in
+    
+    /// ... your view here
+    
+    .popover(
+        present: $present,
+        attributes: {
+            $0.sourceFrame = proxy.frameTagged("Your Tag Name")
+        }
+    )
+}
 ```
+
+You may also access tagged frames via the `Popover.Context.frameTagged(_:)` function, when using a `PopoverReader`.
 
 ### 📄 Templates
 Get started quickly with some templates. All of them are inside [`PopoverTemplates.swift`](Source/PopoverTemplates.swift) with example usage in the example app.
@@ -685,74 +698,10 @@ struct ContentView: View {
 </table>
 
 ### Supporting Multiple Screens • [*`v1.0.4`*](https://github.com/aheze/Popovers/releases/tag/1.0.4)
-Popovers comes with built-in support for multiple screens (represented by [`UIWindowScene`](https://developer.apple.com/documentation/uikit/uiwindowscene)).
-
-<img src="Assets/SupportingMultipleScreens.png" width=200 alt="2 screens side by side with a popover in each.">
-
-Here's a couple things to keep in mind.
-- Popovers are tied to window scenes. This way, tapping on one side of the screen won't interfere or dismiss popovers on the other side.
-- Set a popover's window scene with `attributes.windowScene`. By default, this is `UIApplication.shared.keyWindow?.windowScene`, which is enough for basic multi-screen support.
-- Each screen will only show the popovers with the same `windowScene`.
-- If your app has multiple screens enabled (all SwiftUI apps by default), methods like `Popovers.popover(tagged:)` require specifying the window scene:
-
-```swift
-/// Get a currently-presented popover in the window scene.
-Popovers.popover(tagged: "Your Tag Name", in: yourWindowScene)
-
-
-/// Tag a frame (SwiftUI) in the window scene.
-Text("Hello").frameTag("Your Frame Tag Name", in: yourWindowScene)
-
-/// Get a tagged frame (SwiftUI) in the window scene.
-Popovers.frameTagged("Your Frame Tag Name", in: yourWindowScene)
-```
-
-However, getting a view's window scene in SwiftUI is tricky. My [current workaround](https://github.com/aheze/Popovers/blob/5fcaa9d9eb2ed077cd43e323b5a772a04bd6e1be/Sources/PopoverFrameTag.swift#L68) is embedding a `UIViewRepresentable` and reading its window scene. This is not completely reliable — if anyone has a better method, please [let me know](https://github.com/aheze/Popovers/issues/3).
-
-
-
-```swift
-/// Help me fix in https://github.com/aheze/Popovers/issues/3
-
-WindowGroup {
-    ContentView()
-        .injectWindowScene() /// Make the window scene available to all subviews. Not ideal, but it works (usually).
-}
-
-struct ContentView: View {
-    @EnvironmentObject var windowSceneModel: WindowSceneModel
-
-    /// ... 
-
-    Text("Hello").frameTag("Your Frame Tag Name", in: windowSceneModel.windowScene)
-}
-```
-
+Popovers comes with built-in support for multiple screens. Just present your popover within your view hiearchy, and the popover will appear in the appropriate window.
 
 ### Popover Hierarchy
 To bring a popover to front, just attach [`.zIndex(_:)`](https://developer.apple.com/documentation/swiftui/view/zindex(_:)). A higher index will bring it forwards.
-
-### Popover Not Animating At First?
-Make sure the library is set up by calling `Popovers.prepare()` when your app starts.
-
-```swift
-import SwiftUI
-import Popovers
-
-@main
-struct YourApp: App {
-    @Environment(\.scenePhase) private var scenePhase
-    
-    var body: some Scene {
-        WindowGroup {
-            ContentView()
-        }
-        .onChange(of: scenePhase) { _ in
-            Popovers.prepare() /// Make sure Popovers is ready.
-        }
-    }
-}
-```
 
 
 ## Community

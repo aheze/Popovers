@@ -76,7 +76,6 @@
 		3CBD879927755E5F005BBA48 /* DismissView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DismissView.swift; sourceTree = "<group>"; };
 		3CBD879A27755E5F005BBA48 /* PresentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PresentView.swift; sourceTree = "<group>"; };
 		CA04D304277B3488004E8FF6 /* PresentWithinSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresentWithinSheet.swift; sourceTree = "<group>"; };
-		CA04D309277C9632004E8FF6 /* Popovers */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Popovers; path = ../..; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,7 +93,6 @@
 		3CBD874327755E19005BBA48 = {
 			isa = PBXGroup;
 			children = (
-				CA04D309277C9632004E8FF6 /* Popovers */,
 				3CBD874E27755E19005BBA48 /* PopoversXcodeApp */,
 				3CBD874D27755E19005BBA48 /* Products */,
 			);
