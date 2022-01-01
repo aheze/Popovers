@@ -10,20 +10,20 @@ import Combine
 import SwiftUI
 
 /**
- The view model for all presented popovers. Access it via `Popovers.model`.
+ The view model for all presented popovers.
  */
 public class PopoverModel: ObservableObject {
     
-    /// The currently-presented popovers. The oldest are in front, the newest at the end. Access this via `Popovers.current`.
+    /// The currently-presented popovers. The oldest are in front, the newest at the end.
     @Published var popovers = [Popover]()
     
     /// The current active window.
     @Published var activeWindowScene: UIWindowScene?
     
-    /// Determines is the popovers can be dragged. Access this via `Popovers.draggingEnabled`.
+    /// Determines is the popovers can be dragged.
     @Published var popoversDraggable = true
     
-    /// Store the frames of views (for excluding popover dismissal or source frames). Access this via `Popovers.popover(tagged:)`.
+    /// Store the frames of views (for excluding popover dismissal or source frames).
     @Published var frameTags: [FrameTag: CGRect] = [:]
     
     /**
@@ -58,6 +58,19 @@ public class PopoverModel: ObservableObject {
         popovers.removeAll { (candidate) in
             candidate == popoverToRemove
         }
+    }
+    
+    /// Get the index in the for a popover. Returns `nil` if the popover is not in the array.
+    func index(of popover: Popover) -> Int? {
+        return popovers.firstIndex(of: popover)
+    }
+    
+    /**
+     Get a currently-presented popover with a tag. Returns `nil` if no popover with the tag was found.
+     - parameter tag: The tag of the popover to look for.
+     */
+    func popover(tagged tag: String) -> Popover? {
+        return popovers.first(where: { $0.attributes.tag == tag })
     }
     
     /**

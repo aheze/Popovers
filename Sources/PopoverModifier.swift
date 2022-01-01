@@ -82,7 +82,7 @@ struct PopoverModifier: ViewModifier {
                             if case .absolute(_, _) = attributes.position {
                                 return sourceFrame ?? .zero
                             } else {
-                                return Popovers.safeWindowFrame
+                                return window.safeAreaLayoutGuide.layoutFrame
                             }
                         }
                         
@@ -173,89 +173,90 @@ struct MultiPopoverModifier: ViewModifier {
     }
     
     func body(content: Content) -> some View {
-        content
-        
-        /// Read the frame of the source view.
-            .frameReader { frame in
-                
-                /// Save the frame for now, until the selection changes (by that time, the window scene should be ready).
-                sourceFrame = frame
-            }
-        
-        /// `$selection` was changed, determine if the popover should be presented, animated, or dismissed.
-            .onDataChange(of: selection) { (oldSelection, newSelection) in
-                
-                /// Get the current window scene.
-                let windowScene = UIApplication.shared.currentWindowScene
-                
-                /// Make sure the view's parent window scene exists.
-                if let windowScene = windowScene {
+        WindowReader { (window) in
+            content
+            
+            /// Read the frame of the source view.
+                .frameReader { frame in
                     
-                    /// Create a new tag key.
-                    let frameTag = FrameTag(tag: tag, windowScene: windowScene)
-                    
-                    /// Save the frame in `selectionFrameTags` to provide `excludedFrames`.
-                    Popovers.model.selectionFrameTags[frameTag] = sourceFrame
+                    /// Save the frame for now, until the selection changes (by that time, the window scene should be ready).
+                    sourceFrame = frame
                 }
-                
-                /// If the new selection is nil, dismiss the popover.
-                guard newSelection != nil else {
-                    if let popover = popover {
-                        popover.dismiss()
+            
+            /// `$selection` was changed, determine if the popover should be presented, animated, or dismissed.
+                .onDataChange(of: selection) { (oldSelection, newSelection) in
+                    
+                    /// Get the current window scene.
+                    let windowScene = UIApplication.shared.currentWindowScene
+                    
+                    /// Make sure the view's parent window scene exists.
+                    if let windowScene = windowScene {
+                        
+                        /// Create a new tag key.
+                        let frameTag = FrameTag(tag: tag, windowScene: windowScene)
+                        
+                        /// Save the frame in `selectionFrameTags` to provide `excludedFrames`.
+                        Popovers.model.selectionFrameTags[frameTag] = sourceFrame
                     }
-                    return
-                }
-                
-                /// New selection is this popover, so present.
-                if newSelection == tag {
-                    var attributes = Popover.Attributes()
                     
-                    /// Set the attributes' tag as `self.tag`.
-                    attributes.tag = tag
+                    /// If the new selection is nil, dismiss the popover.
+                    guard newSelection != nil else {
+                        if let popover = popover {
+                            popover.dismiss()
+                        }
+                        return
+                    }
                     
-                    /**
-                     Provide the other views' frames excluded frames.
-                     This makes sure that the popover isn't dismissed when you tap outside to present another popover.
-                     To opt-out, set `attributes.dismissal.excludedFrames` manually.
-                     */
-                    attributes.dismissal.excludedFrames = { Array(Popovers.model.selectionFrameTags.values) }
-                    
-                    /// Set the source frame.
-                    attributes.sourceFrame = {
-                        if case .absolute(_, _) = attributes.position {
-                            return sourceFrame ?? .zero
+                    /// New selection is this popover, so present.
+                    if newSelection == tag {
+                        var attributes = Popover.Attributes()
+                        
+                        /// Set the attributes' tag as `self.tag`.
+                        attributes.tag = tag
+                        
+                        /**
+                         Provide the other views' frames excluded frames.
+                         This makes sure that the popover isn't dismissed when you tap outside to present another popover.
+                         To opt-out, set `attributes.dismissal.excludedFrames` manually.
+                         */
+                        attributes.dismissal.excludedFrames = { Array(Popovers.model.selectionFrameTags.values) }
+                        
+                        /// Set the source frame.
+                        attributes.sourceFrame = {
+                            if case .absolute(_, _) = attributes.position {
+                                return sourceFrame ?? .zero
+                            } else {
+                                return window.safeAreaLayoutGuide.layoutFrame
+                            }
+                        }
+                        
+                        /// Build the attributes.
+                        buildAttributes(&attributes)
+                        
+                        let popover = Popover(
+                            attributes: attributes,
+                            view: { view },
+                            background: { background }
+                        )
+                        
+                        /// Listen to the `dismissed` callback.
+                        popover.context.dismissed = {
+                            self.selection = nil
+                        }
+                        
+                        /// Store a reference to the popover.
+                        self.popover = popover
+                        
+                        /// If an old selection with the same tag exists, animate the change.
+                        if let oldSelection = oldSelection, let oldPopover = window.popover(tagged: oldSelection) {
+                            oldPopover.replace(with: popover)
                         } else {
-                            return Popovers.safeWindowFrame
+                            /// Otherwise, present the popover.
+                            popover.present(in: window)
                         }
                     }
-                    
-                    /// Build the attributes.
-                    buildAttributes(&attributes)
-                    
-                    let popover = Popover(
-                        attributes: attributes,
-                        view: { view },
-                        background: { background }
-                    )
-                    
-                    /// Listen to the `dismissed` callback.
-                    popover.context.dismissed = {
-                        self.selection = nil
-                    }
-                    
-                    /// Store a reference to the popover.
-                    self.popover = popover
-                    
-                    /// If an old selection with the same tag exists, animate the change.
-                    if let oldSelection = oldSelection, let oldPopover = Popovers.popover(tagged: oldSelection) {
-                        Popovers.replace(oldPopover, with: popover)
-                    } else {
-                        
-                        /// Otherwise, present the popover.
-                        Popovers.present(popover)
-                    }
                 }
-            }
+        }
     }
 }
 

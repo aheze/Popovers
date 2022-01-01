@@ -420,6 +420,8 @@ public extension Popover {
     
     /// Calculate the popover's frame based on it's size and position.
     func getFrame(from size: CGSize?) -> CGRect {
+        guard let window = context.presentedPopoverViewController?.view.window else { return .zero }
+        
         switch attributes.position {
         case .absolute(let originAnchor, let popoverAnchor):
             var popoverFrame = attributes.position.absoluteFrame(
@@ -431,13 +433,7 @@ public extension Popover {
             
             let screenEdgePadding = attributes.screenEdgePadding
             
-            let safeWindowFrame: CGRect
-            if let window = context.presentedPopoverViewController?.view.window {
-                safeWindowFrame = window.safeAreaLayoutGuide.layoutFrame
-            } else {
-                safeWindowFrame = Popovers.safeWindowFrame
-            }
-            
+            let safeWindowFrame = window.safeAreaLayoutGuide.layoutFrame
             let maxX = safeWindowFrame.maxX - screenEdgePadding.right
             let maxY = safeWindowFrame.maxY - screenEdgePadding.bottom
             
@@ -478,13 +474,17 @@ public extension Popover {
     
     /// Calculate if the popover should be dismissed via drag **or** animated to another position (if using `.relative` positioning with multiple anchors). Called when the user stops dragging the popover.
     func positionChanged(to point: CGPoint) {
+        guard let window = context.presentedPopoverViewController?.view.window else { return }
+        
+        let windowBounds = window.bounds
+        
         if
             attributes.dismissal.mode.contains(.dragDown),
-            point.y >= Popovers.windowBounds.height - Popovers.windowBounds.height * self.attributes.dismissal.dragDismissalProximity
+            point.y >= windowBounds.height - windowBounds.height * self.attributes.dismissal.dragDismissalProximity
         {
             if attributes.dismissal.dragMovesPopoverOffScreen {
                 var newFrame = context.staticFrame
-                newFrame.origin.y = Popovers.windowBounds.height
+                newFrame.origin.y = windowBounds.height
                 context.staticFrame = newFrame
                 context.frame = newFrame
             }
@@ -493,7 +493,7 @@ public extension Popover {
         }
         if
             attributes.dismissal.mode.contains(.dragUp),
-            point.y <= Popovers.windowBounds.height * self.attributes.dismissal.dragDismissalProximity
+            point.y <= windowBounds.height * self.attributes.dismissal.dragDismissalProximity
         {
             if attributes.dismissal.dragMovesPopoverOffScreen {
                 var newFrame = context.staticFrame

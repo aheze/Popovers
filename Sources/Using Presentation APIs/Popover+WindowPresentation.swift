@@ -1,6 +1,34 @@
 import SwiftUI
 import UIKit
 
+extension UIViewController {
+    
+    public func present(_ popoverToPresent: Popover) {
+        guard let window = view.window else { return }
+        popoverToPresent.present(in: window)
+    }
+    
+    public func replace(_ oldPopover: Popover, with newPopover: Popover) {
+        oldPopover.replace(with: newPopover)
+    }
+    
+    public func popover(tagged tag: String) -> Popover? {
+        guard let popoverViewController = popoverViewController else { return nil }
+        
+        let model = popoverViewController.popoverModel
+        return model.popover(tagged: tag)
+    }
+    
+}
+
+extension UIWindow {
+    
+    public func popover(tagged tag: String) -> Popover? {
+        return rootViewController?.popoverViewController?.popover(tagged: tag)
+    }
+    
+}
+
 extension Popover {
     
     func present(in window: UIWindow) {
@@ -62,6 +90,37 @@ extension Popover {
         }
     }
     
+    public func replace(with newPopover: Popover) {
+        guard let popoverContainerViewController = context.presentedPopoverViewController else { return }
+        
+        let model = popoverContainerViewController.popoverModel
+        
+        /// Get the index of the previous popover.
+        if let oldPopoverIndex = model.index(of: self) {
+
+            /// Get the old popover's context.
+            let oldContext = model.popovers[oldPopoverIndex].context
+            
+            /// Create a new transaction for the replacing animation.
+            let transaction = Transaction(animation: newPopover.attributes.presentation.animation)
+            
+            /// Inject the transaction into the new popover, so following frame calculations are animated smoothly.
+            newPopover.context.transaction = transaction
+            
+            /// Use same ID so that SwiftUI animates the change.
+            newPopover.context.id = oldContext.id
+            
+            withTransaction(transaction) {
+                
+                /// Temporarily use the same size for a smooth animation.
+                newPopover.setSize(oldContext.size)
+                
+                /// Replace the old popover with the new popover.
+                model.popovers[oldPopoverIndex] = newPopover
+            }
+        }
+    }
+    
 }
 
 private extension UIViewController {
@@ -71,6 +130,14 @@ private extension UIViewController {
             return presented.topmostViewController
         } else {
             return self
+        }
+    }
+    
+    var popoverViewController: PopoverContainerViewController? {
+        if let candidate = self as? PopoverContainerViewController {
+            return candidate
+        } else {
+            return presentedViewController?.popoverViewController
         }
     }
     

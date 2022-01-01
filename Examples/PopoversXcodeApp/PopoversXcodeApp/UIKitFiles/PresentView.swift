@@ -112,7 +112,7 @@ class PresentViewController: UIViewController {
                 .frame(maxWidth: 200, maxHeight: 100)
         }
         
-        Popovers.present(popover)
+        present(popover)
     }
 }
 
