@@ -51,12 +51,14 @@ extension Popover {
         let model = presentingViewController.popoverModel
         let dismissalTransaction = transaction ?? Transaction(animation: attributes.dismissal.animation)
         
+        context.onDisappear = {
+            if model.popovers.isEmpty {
+                presentingViewController.dismiss(animated: false)
+            }
+        }
+        
         withTransaction(dismissalTransaction) {
             model.remove(self)
-            
-            if model.popovers.isEmpty {
-                presentingViewController.dismiss(animated: true)
-            }
         }
     }
     

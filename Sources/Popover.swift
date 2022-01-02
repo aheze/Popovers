@@ -387,6 +387,9 @@ public struct Popover: Identifiable {
         /// For the SwiftUI `.popover` view modifier - set `$present` to false when this is called.
         internal var dismissed: (() -> Void)?
         
+        /// Invoked by the SwiftUI container view when the view has disappeared.
+        internal var onDisappear: (() -> Void)?
+        
         /// The `PopoverContainerViewController` presenting this `Popover`, or `nil` if the popover is currently not being presented.
         internal var presentedPopoverViewController: PopoverContainerViewController?
         

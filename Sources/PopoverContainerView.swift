@@ -34,7 +34,11 @@ struct PopoverContainerView: View {
                 popover.background
                 
                 /// Show the popover's main content view.
-                popover.view
+                popover
+                    .view
+                    .onDisappear {
+                        popover.context.onDisappear?()
+                    }
                 
                 /// Hide the popover until its size has been calculated.
                     .opacity(popover.context.size != nil ? 1 : 0)
