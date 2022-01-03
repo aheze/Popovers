@@ -2,23 +2,23 @@ import SwiftUI
 import UIKit
 
 /// Reads the `UIWindow` that is managing the hosting of some SwiftUI content.
-struct WindowReader<Content>: View where Content: View {
+public struct WindowReader<Content: View>: View {
     
-    private let content: (UIWindow) -> Content
-    @State private var window: UIWindow?
+    public let view: (UIWindow) -> Content
+    @State var window: UIWindow?
     
-    init(@ViewBuilder _ content: @escaping (UIWindow) -> Content) {
-        self.content = content
+    public init(@ViewBuilder view: @escaping (UIWindow) -> Content) {
+        self.view = view
     }
-    
-    var body: some View {
-        ZStack {
+    public var body: some View {
+        VStack(spacing: 0) {
             if let window = window {
-                content(window)
+                view(window)
             }
             
             WindowHandlerRepresentable(binding: $window)
                 .allowsHitTesting(false)
+                .frame(width: 0, height: 0)
         }
     }
     
@@ -38,10 +38,10 @@ struct WindowReader<Content>: View where Content: View {
     
     private class WindowHandler: UIView {
         
-        private let binding: Binding<UIWindow?>
+        @Binding var windowFinder: UIWindow?
         
         init(binding: Binding<UIWindow?>) {
-            self.binding = binding
+            self._windowFinder = binding
             
             super.init(frame: .zero)
             self.backgroundColor = .clear
@@ -53,7 +53,8 @@ struct WindowReader<Content>: View where Content: View {
         
         override func didMoveToWindow() {
             super.didMoveToWindow()
-            binding.wrappedValue = window
+            
+            windowFinder = window
         }
         
     }

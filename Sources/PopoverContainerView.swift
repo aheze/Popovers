@@ -36,6 +36,7 @@ struct PopoverContainerView: View {
                 /// Show the popover's main content view.
                 popover
                     .view
+                    .border(.blue)
                     .onDisappear {
                         popover.context.onDisappear?()
                     }
