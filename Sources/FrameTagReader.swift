@@ -12,7 +12,7 @@ public struct FrameTagReader<Content>: View where Content: View {
     
     public var body: some View {
         WindowReader { (window) in
-            let proxy = FrameTagProxy(responder: window ?? UIWindow())
+            let proxy = FrameTagProxy(responder: window)
             content(proxy)
         }
     }
