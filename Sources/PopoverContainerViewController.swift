@@ -13,6 +13,9 @@ import SwiftUI
  */
 public class PopoverContainerViewController: UIViewController {
     
+    /// The `UIView` used to handle gesture interactions for popovers.
+    private var popoverGestureContainerView: PopoverGestureContainer?
+    
     /**
      Create a new `PopoverContainerViewController`. This is automatically managed.
      */
@@ -37,7 +40,7 @@ public class PopoverContainerViewController: UIViewController {
         /**
          Instantiate the base `view`.
          */
-        view = PopoverGestureContainer(windowAvailable: { [unowned self] (window) in
+        popoverGestureContainerView = PopoverGestureContainer(windowAvailable: { [unowned self] (window) in
             /// Embed `PopoverContainerView` in a view controller.
             let popoverContainerView = PopoverContainerView(popoverModel: popoverModel)
                 .environment(\.window, window)
@@ -52,13 +55,29 @@ public class PopoverContainerViewController: UIViewController {
             hostingController.didMove(toParent: self)
         })
         
+        view = popoverGestureContainerView
         view.backgroundColor = .clear
         view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+    }
+    
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        /// Use the presenting view controller's view as the next element in the gesture container's responder chain
+        /// when a hit test indicates no popover was tapped.
+        popoverGestureContainerView?.presentingViewGestureTarget = presentingViewController?.view
+    }
+    
+    public override func didMove(toParent parent: UIViewController?) {
+        super.didMove(toParent: parent)
     }
     
     private class PopoverGestureContainer: UIView {
         
         private let windowAvailable: (UIWindow) -> Void
+        
+        /// The `UIView` to forward hit tests to when a check fails in this view.
+        weak var presentingViewGestureTarget: UIView?
         
         init(windowAvailable: @escaping (UIWindow) -> Void) {
             self.windowAvailable = windowAvailable
@@ -149,8 +168,8 @@ public class PopoverContainerViewController: UIViewController {
                 dismissPopoverIfNecessary(popoverToDismiss: popover)
             }
             
-            /// The touch did not hit any popover, so pass it through.
-            return nil
+            /// The touch did not hit any popover, so pass it through to the hit testing target.
+            return presentingViewGestureTarget?.hitTest(point, with: event)
         }
         
     }
