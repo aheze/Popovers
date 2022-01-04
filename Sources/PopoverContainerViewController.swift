@@ -18,7 +18,7 @@ public class PopoverContainerViewController: UIViewController {
      */
     public init() {
         super.init(nibName: nil, bundle: nil)
-        self.modalPresentationStyle = .overCurrentContext
+        self.modalPresentationStyle = .overFullScreen
     }
     
     required init?(coder: NSCoder) {
