@@ -37,9 +37,11 @@ public class PopoverContainerViewController: UIViewController {
         /**
          Instantiate the base `view`.
          */
-        view = PopoverGestureContainer(windowAvailable: { [unowned self] in
+        view = PopoverGestureContainer(windowAvailable: { [unowned self] (window) in
             /// Embed `PopoverContainerView` in a view controller.
             let popoverContainerView = PopoverContainerView(popoverModel: popoverModel)
+                .environment(\.window, window)
+            
             let hostingController = UIHostingController(rootView: popoverContainerView)
             hostingController.view.frame = view.bounds
             hostingController.view.backgroundColor = .clear
@@ -56,9 +58,9 @@ public class PopoverContainerViewController: UIViewController {
     
     private class PopoverGestureContainer: UIView {
         
-        private let windowAvailable: () -> Void
+        private let windowAvailable: (UIWindow) -> Void
         
-        init(windowAvailable: @escaping () -> Void) {
+        init(windowAvailable: @escaping (UIWindow) -> Void) {
             self.windowAvailable = windowAvailable
             super.init(frame: .zero)
         }
@@ -70,8 +72,8 @@ public class PopoverContainerViewController: UIViewController {
         override func didMoveToWindow() {
             super.didMoveToWindow()
             
-            if window != nil {            
-                windowAvailable()
+            if let window = window {
+                windowAvailable(window)
             }
         }
         

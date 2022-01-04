@@ -6,14 +6,17 @@ public struct WindowReader<Content: View>: View {
     
     public let view: (UIWindow) -> Content
     @State var window: UIWindow?
+    @Environment(\.window) var environmentWindow
     
     public init(@ViewBuilder view: @escaping (UIWindow) -> Content) {
         self.view = view
     }
+    
     public var body: some View {
         VStack(spacing: 0) {
-            if let window = window {
+            if let window = window ?? environmentWindow {
                 view(window)
+                    .environment(\.window, window)
             }
             
             WindowHandlerRepresentable(binding: $window)
