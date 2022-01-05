@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'Popovers'
-  s.version          = '1.0.4'
+  s.version          = '1.1.0'
   s.summary          = 'A library to present popovers.'
 
   s.description      = <<-DESC
