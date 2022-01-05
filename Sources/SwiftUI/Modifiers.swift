@@ -1,5 +1,5 @@
 //
-//  PopoverModifier.swift
+//  Modifiers.swift
 //  Popovers
 //
 //  Created by A. Zheng (github.com/aheze) on 12/23/21.
@@ -186,12 +186,9 @@ struct MultiPopoverModifier: ViewModifier {
             /// `$selection` was changed, determine if the popover should be presented, animated, or dismissed.
                 .onDataChange(of: selection) { (oldSelection, newSelection) in
                     let model = window.popoverModel
-                        
-                    /// Create a new tag key.
-                    let frameTag = FrameTag(tag: tag)
                     
                     /// Save the frame in `selectionFrameTags` to provide `excludedFrames`.
-                    model.selectionFrameTags[frameTag] = sourceFrame
+                    model.selectionFrameTags[tag] = sourceFrame
                     
                     /// If the new selection is nil, dismiss the popover.
                     guard newSelection != nil else {

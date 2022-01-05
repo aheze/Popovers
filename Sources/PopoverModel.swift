@@ -24,14 +24,14 @@ class PopoverModel: ObservableObject {
     @Published var popoversDraggable = true
     
     /// Store the frames of views (for excluding popover dismissal or source frames).
-    @Published var frameTags: [FrameTag: CGRect] = [:]
+    @Published var frameTags: [String: CGRect] = [:]
     
     /**
      Store frames of popover source views when presented using `.popover(selection:tag:attributes:view:)`. These frames are then used as excluded frames for dismissal.
      
      To opt out of this behavior, set `attributes.dismissal.excludedFrames` manually. To clear this array (usually when you present another view where the frames don't apply), use a `FrameTagReader` to call `FrameTagProxy.clearSavedFrames()`.
      */
-    @Published var selectionFrameTags: [FrameTag: CGRect] = [:]
+    @Published var selectionFrameTags: [String: CGRect] = [:]
     
     /// Force the container view to update.
     func refresh() {
@@ -101,8 +101,7 @@ class PopoverModel: ObservableObject {
     }
     
     func frameTagged(_ tag: String) -> CGRect {
-        let frameTag = FrameTag(tag: tag)
-        let frame = frameTags[frameTag]
+        let frame = frameTags[tag]
         return frame ?? .zero
     }
     

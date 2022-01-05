@@ -10,10 +10,9 @@ import SwiftUI
 
 /**
  Read the popover's context from within its `view` or `background`.
- 
  Use this just like `GeometryReader`.
  
- **Warning:** This **must** be placed inside a popover's `view` or `background`.
+  **Warning:** This must be placed inside a popover's `view` or `background`.
  */
 public struct PopoverReader<Content: View>: View {
     
@@ -35,7 +34,12 @@ public struct PopoverReader<Content: View>: View {
     }
 }
 
-/// Reads the `UIWindow` that hosts some SwiftUI content.
+/**
+ Read the current `UIWindow` that hosts the view.
+ Use this just like `GeometryReader`.
+ 
+  **Warning:** Do **not** place this inside a popover's `view` or its `background`.
+ */
 public struct WindowReader<Content: View>: View {
     
     /// Your SwiftUI view.
@@ -102,23 +106,3 @@ public struct WindowReader<Content: View>: View {
     }
 }
 
-
-
-
-/// Access tagged frames within the window's coordinate space. When inside a popover, use
-//public struct FrameTagReader<Content>: View where Content: View {
-//    
-//    private let content: (FrameTagProxy) -> Content
-//    
-//    public init(@ViewBuilder _ content: @escaping (FrameTagProxy) -> Content) {
-//        self.content = content
-//    }
-//    
-//    public var body: some View {
-//        WindowReader { (window) in
-//            let proxy = FrameTagProxy(responder: window)
-//            content(proxy)
-//        }
-//    }
-//    
-//}

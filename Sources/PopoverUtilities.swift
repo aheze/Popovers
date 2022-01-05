@@ -74,7 +74,7 @@ struct ContentSizeReaderPreferenceKey: PreferenceKey {
     static func reduce(value: inout CGSize, nextValue: () -> CGSize) { value = nextValue() }
 }
 
-/// Create a UIColor from a hex code.
+
 public extension UIColor {
     
     /**

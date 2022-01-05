@@ -412,23 +412,6 @@ public struct Popover: Identifiable {
         }
         
         /**
-         Replace a popover with another popover smoothly.
-         
-         This is what `.popover(selection:tag:attributes:view:)` in SwiftUI uses.
-         */
-//        public func replace(_ oldPopover: Popover, with newPopover: Popover) {
-//            popoverModel?.replace(oldPopover, with: newPopover)
-//        }
-        
-        /**
-         Get a currently-presented popover with a tag. Returns `nil` if no popover with the tag was found.
-         - parameter tag: The tag of the popover to look for.
-         */
-//        public func popover(tagged tag: String) -> Popover? {
-//            return popoverModel?.popover(tagged: tag)
-//        }
-        
-        /**
          Get the saved frame of a frame-tagged view. You must first set the frame using `.frameTag(_:)`.
          - parameter tag: The tag that you used for the frame.
          - Returns: The frame of a frame-tagged view, or `nil` if no view with the tag exists.
