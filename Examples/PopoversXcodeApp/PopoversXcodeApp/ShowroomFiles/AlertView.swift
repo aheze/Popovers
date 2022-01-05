@@ -6,13 +6,13 @@
 //  Copyright © 2021 A. Zheng. All rights reserved.
 //
 
-import SwiftUI
 import Popovers
+import SwiftUI
 
 struct AlertView: View {
     @State var present = false
     @State var expanding = false
-    
+
     var body: some View {
         Button {
             present = true
@@ -20,7 +20,7 @@ struct AlertView: View {
             ExampleShowroomRow(color: UIColor(hex: 0xFF4700)) {
                 HStack {
                     ExampleImage("exclamationmark.triangle.fill", color: UIColor(hex: 0xFF4700))
-                    
+
                     Text("Alert")
                         .fontWeight(.medium)
                 }
@@ -33,7 +33,7 @@ struct AlertView: View {
                 $0.rubberBandingMode = .none
                 $0.position = .relative(
                     popoverAnchors: [
-                        .center
+                        .center,
                     ]
                 )
                 $0.presentation.animation = .easeOut(duration: 0.15)
@@ -42,8 +42,8 @@ struct AlertView: View {
                     withAnimation(.easeIn(duration: 0.15)) {
                         expanding = true
                     }
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {              
-                        withAnimation(.easeOut(duration: 0.4)) { 
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        withAnimation(.easeOut(duration: 0.4)) {
                             expanding = false
                         }
                     }
@@ -60,24 +60,24 @@ struct AlertView: View {
 struct AlertViewPopover: View {
     @Binding var present: Bool
     @Binding var expanding: Bool
-    
+
     /// the initial animation
     @State var scaled = true
-    
+
     var body: some View {
         VStack(spacing: 0) {
             VStack(spacing: 6) {
                 Text("Alert!")
                     .fontWeight(.medium)
                     .multilineTextAlignment(.center)
-                
+
                 Text("Popovers has used your location 2000 times in the past 7 days.")
                     .multilineTextAlignment(.center)
             }
             .padding()
-            
+
             Divider()
-            
+
             Button {
                 present = false
             } label: {
@@ -93,7 +93,7 @@ struct AlertViewPopover: View {
         .scaleEffect(expanding ? 1.05 : 1)
         .scaleEffect(scaled ? 2 : 1)
         .opacity(scaled ? 0 : 1)
-        .onAppear { 
+        .onAppear {
             withAnimation(.spring(
                 response: 0.4,
                 dampingFraction: 0.9,

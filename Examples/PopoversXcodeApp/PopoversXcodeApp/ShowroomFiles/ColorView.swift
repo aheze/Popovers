@@ -6,21 +6,21 @@
 //  Copyright © 2021 A. Zheng. All rights reserved.
 //
 
-import SwiftUI
 import Popovers
+import SwiftUI
 
 class ColorViewModel: ObservableObject {
-    @Published var selectedColor: UIColor = UIColor(hex: 0x00aeef)
+    @Published var selectedColor: UIColor = .init(hex: 0x00AEEF)
     @Published var alpha: CGFloat = 1
 }
 
-struct ColorViewConstants {
+enum ColorViewConstants {
     static var sliderHeight = CGFloat(40)
     static var cornerRadius = CGFloat(12)
-    
+
     /// padding outside all items
     static var padding = CGFloat(12)
-    
+
     /// space between items
     static var spacing = CGFloat(10)
 }
@@ -28,7 +28,7 @@ struct ColorViewConstants {
 struct ColorView: View {
     @State var present = false
     @StateObject var model = ColorViewModel()
-    
+
     var body: some View {
         Button {
             present = true
@@ -37,7 +37,7 @@ struct ColorView: View {
                 HStack {
                     ExampleImage("eyedropper", color: model.selectedColor)
                         .opacity(model.alpha)
-                    
+
                     Text("Color Picker")
                         .fontWeight(.medium)
                 }
@@ -58,18 +58,17 @@ struct ColorView: View {
     }
 }
 
-
 struct ColorViewPopover: View {
     @ObservedObject var model: ColorViewModel
-    
+
     var body: some View {
         VStack {
             Text("Choose a color")
                 .foregroundColor(.white)
-            
+
             PaletteView(selectedColor: $model.selectedColor)
                 .cornerRadius(ColorViewConstants.cornerRadius)
-            
+
             OpacitySlider(value: $model.alpha, color: model.selectedColor)
                 .frame(height: ColorViewConstants.sliderHeight)
                 .cornerRadius(ColorViewConstants.cornerRadius)
@@ -79,11 +78,10 @@ struct ColorViewPopover: View {
         .background(
             ZStack {
                 PopoverTemplates.VisualEffectView(.systemUltraThinMaterialDark)
-                UIColor(hex: 0x0070a3).color.opacity(0.5)
+                UIColor(hex: 0x0070A3).color.opacity(0.5)
             }
         )
         .cornerRadius(16)
-        
     }
 }
 
@@ -100,7 +98,7 @@ struct PaletteView: View {
                 PaletteButton(color: UIColor(hex: 0x0036FF), selectedColor: $selectedColor)
             }
             .aspectRatio(6, contentMode: .fit)
-            
+
             HStack(spacing: 0) {
                 PaletteButton(color: UIColor(hex: 0xFF7700), selectedColor: $selectedColor)
                 PaletteButton(color: UIColor(hex: 0xFFD200), selectedColor: $selectedColor)
@@ -138,17 +136,17 @@ struct PaletteButton: View {
 struct OpacitySlider: View {
     @Binding var value: CGFloat
     let color: UIColor
-    
+
     var body: some View {
-        PopoverReader { (context) in
+        PopoverReader { context in
             GeometryReader { proxy in
                 Color(UIColor.systemBackground).overlay(
                     ZStack {
                         VStack(spacing: 0) {
-                            ForEach(0..<6) { row in
+                            ForEach(0 ..< 6) { row in
                                 HStack(spacing: 0) {
-                                    ForEach(0..<30) { column in
-                                        
+                                    ForEach(0 ..< 30) { column in
+
                                         let offset = row % 2 == 0 ? 1 : 0
                                         if (offset + column) % 2 == 0 {
                                             Color.clear
@@ -160,50 +158,49 @@ struct OpacitySlider: View {
                                 .aspectRatio(30, contentMode: .fill)
                             }
                         }
-                        
+
                         LinearGradient(colors: [.clear, .white], startPoint: .leading, endPoint: .trailing)
                             .colorMultiply(color.color)
                     }
                 )
-                
+
                 /// slider thumb
-                    .overlay(
-                        Color.clear.overlay(
-                            
-                            ZStack {
-                                RoundedRectangle(cornerRadius: 6)
-                                    .fill(UIColor.systemBackground.color)
-                                
-                                RoundedRectangle(cornerRadius: 6)
-                                    .fill(color.withAlphaComponent(value).color)
-                                
-                                RoundedRectangle(cornerRadius: 6)
-                                    .strokeBorder(Color.white, lineWidth: 2)
-                            }
-                                .padding(6)
-                                .frame(width: ColorViewConstants.sliderHeight, height: ColorViewConstants.sliderHeight)
-                            
-                            /// pin thumb to right of stretching `clear` container
-                            , alignment: .trailing
-                        )
-                        /// set frame of stretching `clear` container
-                            .frame(
-                                width: ColorViewConstants.sliderHeight + value * (proxy.size.width - ColorViewConstants.sliderHeight)
-                            )
-                        , alignment: .leading)
-                    .highPriorityGesture(
-                        DragGesture(minimumDistance: 0)
-                            .onChanged { value in
-                                self.value = min(max(0, CGFloat(value.location.x / proxy.size.width)), 1)
-                                context.isDraggingEnabled = false
-                            }
-                            .onEnded { _ in
-                                context.isDraggingEnabled = true
-                            }
+                .overlay(
+                    Color.clear.overlay(
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 6)
+                                .fill(UIColor.systemBackground.color)
+
+                            RoundedRectangle(cornerRadius: 6)
+                                .fill(color.withAlphaComponent(value).color)
+
+                            RoundedRectangle(cornerRadius: 6)
+                                .strokeBorder(Color.white, lineWidth: 2)
+                        }
+                        .padding(6)
+                        .frame(width: ColorViewConstants.sliderHeight, height: ColorViewConstants.sliderHeight),
+
+                        /// pin thumb to right of stretching `clear` container
+                        alignment: .trailing
                     )
-        }
+                    /// set frame of stretching `clear` container
+                    .frame(
+                        width: ColorViewConstants.sliderHeight + value * (proxy.size.width - ColorViewConstants.sliderHeight)
+                    ),
+                    alignment: .leading
+                )
+                .highPriorityGesture(
+                    DragGesture(minimumDistance: 0)
+                        .onChanged { value in
+                            self.value = min(max(0, CGFloat(value.location.x / proxy.size.width)), 1)
+                            context.isDraggingEnabled = false
+                        }
+                        .onEnded { _ in
+                            context.isDraggingEnabled = true
+                        }
+                )
+            }
         }
         .drawingGroup() /// prevent thumb from disappearing when offset to show words
     }
 }
-

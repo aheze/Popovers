@@ -6,12 +6,12 @@
 //  Copyright © 2021 A. Zheng. All rights reserved.
 //
 
-import SwiftUI
 import Popovers
+import SwiftUI
 
 struct TipView: View {
     @State var present = false
-    
+
     var body: some View {
         Button {
             present = true
@@ -19,7 +19,7 @@ struct TipView: View {
             ExampleShowroomRow(color: UIColor(hex: 0xF6FF00)) {
                 HStack {
                     ExampleImage("lightbulb.fill", color: UIColor(hex: 0xF6FF00))
-                    
+
                     Text("Tip")
                         .fontWeight(.medium)
                 }
@@ -39,21 +39,20 @@ struct TipView: View {
             TipViewPopover()
         } background: {
             PopoverReader { context in
-                
+
                 PopoverTemplates.CurveConnector(
                     start: context.frame.point(at: .bottom),
                     end: context.window.frameTagged("TipView").point(at: .top)
                 )
-                    .stroke(
-                        Color(UIColor(hex: 0xFFAD46)),
-                        style: .init(
-                            lineWidth: 3,
-                            lineCap: .round,
-                            lineJoin: .round
-                        )
+                .stroke(
+                    Color(UIColor(hex: 0xFFAD46)),
+                    style: .init(
+                        lineWidth: 3,
+                        lineCap: .round,
+                        lineJoin: .round
                     )
-                
-                
+                )
+
                 Circle()
                     .fill(Color(UIColor(hex: 0xFFAD46)))
                     .frame(width: 16, height: 16)

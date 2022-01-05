@@ -6,13 +6,13 @@
 //  Copyright © 2021 A. Zheng. All rights reserved.
 //
 
-import SwiftUI
 import Popovers
+import SwiftUI
 
 struct SelectionView: View {
     @State var present = false
     @State var selection: String?
-    
+
     var body: some View {
         ExampleRow(
             image: "checkmark.circle.fill",
@@ -26,14 +26,14 @@ struct SelectionView: View {
             attributes: {
                 $0.position = .relative(
                     popoverAnchors: [
-                        .center
+                        .center,
                     ]
                 )
             }
         ) {
             VStack {
                 Text("Up until now, all the popovers were presented using `$present`. If you have multiple related popovers, use `$selection` + `tag` instead for a smooth animation.")
-                
+
                 HStack {
                     SelectionViewButton(selection: $selection, tag: "0")
                     SelectionViewButton(selection: $selection, tag: "1")
@@ -55,10 +55,11 @@ struct SelectionView: View {
         }
     }
 }
+
 struct SelectionViewButton: View {
     @Binding var selection: String?
     let tag: String
-    
+
     var body: some View {
         Button {
             selection = tag
@@ -70,7 +71,7 @@ struct SelectionViewButton: View {
             tag: tag
         ) {
             HStack {
-                ForEach(0..<(1 + (Int(tag) ?? 0)), id: \.self) { index in
+                ForEach(0 ..< (1 + (Int(tag) ?? 0)), id: \.self) { index in
                     Color.blue
                         .frame(width: 30, height: 30)
                         .cornerRadius(8)
@@ -88,4 +89,3 @@ struct SelectionViewButton: View {
         }
     }
 }
-

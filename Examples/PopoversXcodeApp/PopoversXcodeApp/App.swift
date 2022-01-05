@@ -6,14 +6,14 @@
 //  Copyright © 2021 A. Zheng. All rights reserved.
 //
 
-import SwiftUI
 import Popovers
+import SwiftUI
 
 @main
 struct PopoversPlaygroundApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()   
+            ContentView()
         }
     }
 }

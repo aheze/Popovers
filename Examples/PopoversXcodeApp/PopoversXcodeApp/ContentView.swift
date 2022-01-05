@@ -6,8 +6,8 @@
 //  Copyright © 2021 A. Zheng. All rights reserved.
 //
 
-import SwiftUI
 import Popovers
+import SwiftUI
 
 /**
  Welcome to the Popovers example app!
@@ -18,7 +18,7 @@ import Popovers
     - Thanks for checking out Popovers! - aheze
  */
 struct ContentView: View {
-    var body: some View {    
+    var body: some View {
         NavigationView {
             ScrollView {
                 LazyVGrid(
@@ -31,7 +31,7 @@ struct ContentView: View {
                     Color.clear.frame(height: 100)
                 }
                 .padding()
-            }            
+            }
             .background(Color(uiColor: .secondarySystemBackground))
             .navigationTitle("Popovers")
             .modifier(ContentViewToolbar())

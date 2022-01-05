@@ -6,13 +6,13 @@
 //  Copyright © 2021 A. Zheng. All rights reserved.
 //
 
-import SwiftUI
 import Popovers
+import SwiftUI
 
 struct MenuView: View {
     @State var present = false
     @State var iconName = "list.bullet"
-    
+
     var body: some View {
         Button {
             present = true
@@ -20,7 +20,7 @@ struct MenuView: View {
             ExampleShowroomRow(color: UIColor(hex: 0xFF00AB)) {
                 HStack {
                     ExampleImage(iconName, color: UIColor(hex: 0xFF00AB))
-                    
+
                     Text("Context Menu")
                         .fontWeight(.medium)
                 }
@@ -28,7 +28,7 @@ struct MenuView: View {
         }
         .simultaneousGesture(
             LongPressGesture(minimumDuration: 0.5, maximumDistance: 60)
-                .onEnded { value in
+                .onEnded { _ in
                     present = true
                 }
         )
@@ -51,7 +51,7 @@ struct MenuView: View {
 struct MenuViewPopover: View {
     @Binding var present: Bool
     @Binding var iconName: String
-    
+
     var body: some View {
         PopoverTemplates.Menu {
             PopoverTemplates.MenuButton(title: "Change Icon To List", image: "list.bullet") {

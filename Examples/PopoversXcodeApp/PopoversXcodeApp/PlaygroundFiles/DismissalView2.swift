@@ -6,12 +6,12 @@
 //  Copyright © 2021 A. Zheng. All rights reserved.
 //
 
-import SwiftUI
 import Popovers
+import SwiftUI
 
 struct DismissalView2: View {
     @State var present = false
-    
+
     var body: some View {
         WindowReader { window in
             ExampleRow(
@@ -37,7 +37,7 @@ struct DismissalView2: View {
                     $0.tag = "Advanced Dismissal 1"
                     $0.dismissal.excludedFrames = {
                         [
-                            window.frameTagged("Frame-Tagged View")
+                            window.frameTagged("Frame-Tagged View"),
                         ]
                     }
                 }
@@ -50,11 +50,11 @@ struct DismissalView2: View {
 
 struct DismissalPopover2: View {
     @Binding var present: Bool
-    
+
     var body: some View {
         VStack(alignment: .leading) {
             Text("This popover can be dismissed by tapping outside. Except...")
-            
+
             HStack {
                 ExampleImage("minus.square.fill", color: 0xCB9400)
                 Text("The Frame-Tagged View is excluded from auto dismissal.")

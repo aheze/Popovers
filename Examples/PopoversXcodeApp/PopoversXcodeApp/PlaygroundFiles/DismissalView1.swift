@@ -6,13 +6,13 @@
 //  Copyright © 2021 A. Zheng. All rights reserved.
 //
 
-import SwiftUI
 import Popovers
+import SwiftUI
 
 struct DismissalView1: View {
     @State var present = false
     @State var expanding = false
-    
+
     var body: some View {
         ExampleRow(
             image: "xmark",
@@ -27,7 +27,7 @@ struct DismissalView1: View {
                 $0.sourceFrameInset = UIEdgeInsets(16)
                 $0.position = .relative(
                     popoverAnchors: [
-                        .center
+                        .center,
                     ]
                 )
                 $0.dismissal.mode = .dragDown
@@ -36,8 +36,8 @@ struct DismissalView1: View {
                     withAnimation(.easeIn(duration: 0.15)) {
                         expanding = true
                     }
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {              
-                        withAnimation(.easeOut(duration: 0.4)) { 
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        withAnimation(.easeOut(duration: 0.4)) {
                             expanding = false
                         }
                     }
@@ -53,14 +53,14 @@ struct DismissalView1: View {
 struct DismissalPopover1: View {
     @Binding var present: Bool
     @Binding var expanding: Bool
-    
+
     var body: some View {
         VStack(alignment: .leading) {
             HStack {
                 Text("Drag down or tap \(Image(systemName: "xmark.circle.fill")) to dismiss.")
-                
+
                 Spacer()
-                
+
                 Button {
                     present = false
                 } label: {
@@ -72,17 +72,17 @@ struct DismissalPopover1: View {
                         .cornerRadius(16)
                 }
             }
-            
+
             HStack {
                 ExampleImage("hand.tap.fill", color: 0xCB9400)
                 Text("By default, tapping outside a popover dismisses it.")
             }
-            
+
             HStack {
                 ExampleImage("circle.slash", color: 0xCB9400)
                 Text("This popover's dismiss mode is `.dragDown` and bounces when `onTapOutside` is called.")
             }
-            
+
             HStack {
                 ExampleImage("curlybraces", color: 0xCB9400)
                 Text("You can always dismiss popovers by setting `$presented` to false.")

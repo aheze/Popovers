@@ -6,12 +6,12 @@
 //  Copyright © 2021 A. Zheng. All rights reserved.
 //
 
-import SwiftUI
 import Popovers
+import SwiftUI
 
 struct StandardView: View {
     @State var present = false
-    
+
     var body: some View {
         Button {
             present = true
@@ -19,7 +19,7 @@ struct StandardView: View {
             ExampleShowroomRow(color: UIColor(hex: 0x474747)) {
                 HStack {
                     ExampleImage("arrowtriangle.down.fill", color: UIColor(hex: 0x474747))
-                    
+
                     Text("Standard")
                         .fontWeight(.medium)
                 }

@@ -6,8 +6,8 @@
 //  Copyright © 2021 A. Zheng. All rights reserved.
 //
 
-import SwiftUI
 import Popovers
+import SwiftUI
 
 struct ColorPickerView: View {
     @State var color = UIColor.systemBlue.cgColor
@@ -20,11 +20,11 @@ struct ExampleRow: View {
     let image: String
     let title: String
     let color: UInt
-    let action: (() -> Void)
-    
+    let action: () -> Void
+
     var body: some View {
         Button(action: action) {
-            HStack {     
+            HStack {
                 Image(systemName: image)
                     .font(.system(size: 19, weight: .medium))
                     .frame(width: 40, height: 40)
@@ -37,7 +37,7 @@ struct ExampleRow: View {
                             .strokeBorder(Color.white, lineWidth: 1.5)
                             .opacity(0.8)
                     }
-                
+
                 Text(title)
                     .fontWeight(.medium)
             }
@@ -56,18 +56,17 @@ struct ExampleRow: View {
                                 Gradient.Stop(
                                     color: Color(uiColor: UIColor(hex: color)),
                                     location: 1
-                                )
+                                ),
                             ],
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
                         )
-                            .aspectRatio(contentMode: .fill)
+                        .aspectRatio(contentMode: .fill)
                     }
             )
-            
+
             .cornerRadius(16)
             .foregroundColor(.primary)
-            
         }
     }
 }
@@ -75,16 +74,17 @@ struct ExampleRow: View {
 struct ExampleImage: View {
     let imageName: String
     let color: UIColor
-    
-    init(_ imageName: String, color: UInt = 0x00aeef) {
+
+    init(_ imageName: String, color: UInt = 0x00AEEF) {
         self.imageName = imageName
         self.color = UIColor(hex: color)
     }
+
     init(_ imageName: String, color: UIColor) {
         self.imageName = imageName
         self.color = color
     }
-    
+
     var body: some View {
         Image(systemName: imageName)
             .foregroundColor(.white)
@@ -94,7 +94,7 @@ struct ExampleImage: View {
                 LinearGradient(
                     colors: [
                         Color(uiColor: color),
-                        Color(uiColor: color.offset(by: 0.06))
+                        Color(uiColor: color.offset(by: 0.06)),
                     ],
                     startPoint: .bottom,
                     endPoint: .top
@@ -102,10 +102,11 @@ struct ExampleImage: View {
             )
             .cornerRadius(10)
     }
-    
+
     static var tip: ExampleImage {
         ExampleImage("lightbulb", color: 0x00C300)
     }
+
     static var warning: ExampleImage {
         ExampleImage("exclamationmark.triangle.fill", color: 0xEBD43D)
     }
@@ -115,6 +116,7 @@ extension UIColor {
     var color: Color {
         return Color(uiColor: self)
     }
+
     static func == (l: UIColor, r: UIColor) -> Bool {
         var r1: CGFloat = 0
         var g1: CGFloat = 0
@@ -136,13 +138,12 @@ func == (l: UIColor?, r: UIColor?) -> Bool {
     return l == r
 }
 
-
 /// get a gradient color
 extension UIColor {
     func offset(by offset: CGFloat) -> UIColor {
-        let (h, s, b, a) = self.hsba
+        let (h, s, b, a) = hsba
         var newHue = h - offset
-        
+
         /// make it go back to positive
         while newHue <= 0 {
             newHue += 1
@@ -150,7 +151,7 @@ extension UIColor {
         let normalizedHue = newHue.truncatingRemainder(dividingBy: 1)
         return UIColor(hue: normalizedHue, saturation: s, brightness: b, alpha: a)
     }
-    
+
     var hsba: (h: CGFloat, s: CGFloat, b: CGFloat, a: CGFloat) {
         var h: CGFloat = 0, s: CGFloat = 0, b: CGFloat = 0, a: CGFloat = 0
         self.getHue(&h, saturation: &s, brightness: &b, alpha: &a)

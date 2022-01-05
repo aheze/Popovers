@@ -6,13 +6,12 @@
 //  Copyright © 2021 A. Zheng. All rights reserved.
 //
 
-
-import SwiftUI
 import Popovers
+import SwiftUI
 
 struct BasicView: View {
     @State var present = false
-    
+
     var body: some View {
         ExampleRow(
             image: "square",

@@ -6,13 +6,13 @@
 //  Copyright © 2021 A. Zheng. All rights reserved.
 //
 
-import SwiftUI
 import Popovers
+import SwiftUI
 
 struct NotificationView: View {
     @State var present = false
     @State var presentingUUID = UUID()
-    
+
     var body: some View {
         Button {
             present = true
@@ -20,7 +20,7 @@ struct NotificationView: View {
             ExampleShowroomRow(color: UIColor(hex: 0x8228FF)) {
                 HStack {
                     ExampleImage("bell.fill", color: UIColor(hex: 0x8228FF))
-                    
+
                     Text("Notification")
                         .fontWeight(.medium)
                 }
@@ -32,7 +32,7 @@ struct NotificationView: View {
                 $0.sourceFrameInset = UIEdgeInsets(16)
                 $0.position = .relative(
                     popoverAnchors: [
-                        .top
+                        .top,
                     ]
                 )
                 $0.presentation.transition = .move(edge: .top)
@@ -42,7 +42,7 @@ struct NotificationView: View {
             }
         ) {
             NotificationViewPopover()
-                .onAppear { 
+                .onAppear {
                     presentingUUID = UUID()
                     let currentID = presentingUUID
                     DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
@@ -57,7 +57,7 @@ struct NotificationView: View {
 
 struct NotificationViewPopover: View {
     var body: some View {
-        HStack {                   
+        HStack {
             ExampleImage("bell.fill", color: UIColor(hex: 0x8228FF))
             Text("This is a notification.")
             Spacer()

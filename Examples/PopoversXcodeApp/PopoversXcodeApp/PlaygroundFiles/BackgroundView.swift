@@ -6,12 +6,12 @@
 //  Copyright © 2021 A. Zheng. All rights reserved.
 //
 
-import SwiftUI
 import Popovers
+import SwiftUI
 
 struct BackgroundView: View {
     @State var present = false
-    
+
     var body: some View {
         ExampleRow(
             image: "checkerboard.rectangle",
@@ -23,7 +23,7 @@ struct BackgroundView: View {
         .popover(present: $present) {
             VStack(alignment: .leading) {
                 Text("You can put anything you want in the background.")
-                
+
                 HStack {
                     ExampleImage("circle", color: 0x5DCB72)
                     Text("This popover has a `Color.green` background.")

@@ -6,14 +6,14 @@
 //  Copyright © 2021 A. Zheng. All rights reserved.
 //
 
-import SwiftUI
 import Popovers
+import SwiftUI
 import WebKit
 
 struct ContentViewToolbar: ViewModifier {
     @State var presentInfo = false
     @State var presentDocumentation = false
-    
+
     func body(content: Content) -> some View {
         content
             .toolbar {
@@ -39,7 +39,7 @@ struct ContentViewToolbar: ViewModifier {
                         }
                         .frame(maxWidth: 400)
                     }
-                    
+
                     Button {
                         presentDocumentation = true
                     } label: {
@@ -50,7 +50,7 @@ struct ContentViewToolbar: ViewModifier {
                         attributes: {
                             $0.position = .relative(
                                 popoverAnchors: [
-                                    .center
+                                    .center,
                                 ]
                             )
                             $0.dismissal.mode = [.tapOutside]
@@ -74,20 +74,19 @@ struct ContentViewToolbar_Previews: PreviewProvider {
     }
 }
 
-
 struct InfoView: View {
     let uiColor = UIColor(hex: 0x007EEF)
     let color = Color(uiColor: UIColor(hex: 0x007EEF))
-    
+
     var body: some View {
         VStack(spacing: 12) {
             Text("Welcome to Popovers!")
                 .font(.title2.bold())
                 .padding(.top, 8)
-            
+
             Text("Popovers is a library that presents popovers. Check it out in this demo playground!")
                 .multilineTextAlignment(.center)
-            
+
             InfoRowContainer(color: UIColor(hex: 0x007EEF)) {
                 InfoRow(
                     title: "Incredibly Easy",
@@ -104,7 +103,7 @@ struct InfoView: View {
                     description: "Popovers was designed with advanced usage in mind.",
                     image: "slider.horizontal.3"
                 )
-                
+
                 InfoRow(
                     title: "Need Help?",
                     description: "Open an issue on [GitHub](https://github.com/aheze/Popovers/issues) or join the [Discord server](https://discord.com/invite/Pmq8fYcus2).",
@@ -118,7 +117,7 @@ struct InfoView: View {
 struct InfoRowContainer<Content: View>: View {
     var color: UIColor = .systemBlue
     @ViewBuilder var view: Content
-    
+
     var body: some View {
         VStack(spacing: 16) {
             view
@@ -140,12 +139,12 @@ struct InfoRowContainer<Content: View>: View {
                     LinearGradient(
                         colors: [
                             Color(uiColor: color.offset(by: 0.2)),
-                            Color(uiColor: color)
+                            Color(uiColor: color),
                         ],
                         startPoint: .topLeading,
                         endPoint: .bottomTrailing
                     )
-                        .aspectRatio(contentMode: .fill)
+                    .aspectRatio(contentMode: .fill)
                 }
         )
         .cornerRadius(16)
@@ -157,12 +156,12 @@ struct InfoRow: View {
     var title: String
     var description: String
     var image: String
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(title)
                 .bold()
-            
+
             Text(.init(description))
         }
         .padding(.trailing, 36)
@@ -176,7 +175,7 @@ struct InfoRow: View {
 struct InfoImage: View {
     var image: String
     var color: UIColor
-    
+
     var body: some View {
         Image(systemName: image)
             .foregroundColor(.white)
@@ -188,7 +187,7 @@ struct InfoImage: View {
                         LinearGradient(
                             colors: [
                                 Color(uiColor: color.offset(by: 0.2)),
-                                Color(uiColor: color)
+                                Color(uiColor: color),
                             ],
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
@@ -197,7 +196,6 @@ struct InfoImage: View {
             }
     }
 }
-
 
 struct InfoView_Previews: PreviewProvider {
     static var previews: some View {
@@ -208,19 +206,19 @@ struct InfoView_Previews: PreviewProvider {
 struct DocumentationView: View {
     @Binding var present: Bool
     @State var ready = false
-    
+
     var body: some View {
         VStack(spacing: 0) {
             HStack {
                 Text("Documentation")
                     .fontWeight(.medium)
-                
+
                 Link(destination: URL(string: "https://github.com/aheze/popovers")!) {
                     Image(systemName: "arrow.up.right.square")
                 }
-                
+
                 Spacer()
-                
+
                 Button {
                     present = false
                 } label: {
@@ -235,9 +233,9 @@ struct DocumentationView: View {
             .padding()
             .frame(maxWidth: .infinity)
             .background(.regularMaterial)
-            
+
             Divider()
-            
+
             WebView(ready: $ready, url: URL(string: "https://github.com/aheze/Popovers")!)
         }
         .opacity(ready ? 1 : 0)
@@ -258,29 +256,28 @@ struct DocumentationView: View {
 struct WebView: UIViewRepresentable {
     @Binding var ready: Bool
     var url: URL
-    
+
     func makeCoordinator() -> WebView.Coordinator {
         Coordinator(self)
     }
-    
+
     func makeUIView(context: Context) -> WKWebView {
         let view = WKWebView()
         view.navigationDelegate = context.coordinator
         view.load(URLRequest(url: url))
         return view
     }
-    
-    func updateUIView(_ uiView: WKWebView, context: Context) {
-    }
-    
+
+    func updateUIView(_: WKWebView, context _: Context) {}
+
     class Coordinator: NSObject, WKNavigationDelegate {
         let parent: WebView
-        
+
         init(_ parent: WebView) {
             self.parent = parent
         }
-        
-        func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+
+        func webView(_: WKWebView, didFinish _: WKNavigation!) {
             withAnimation {
                 parent.ready = true
             }

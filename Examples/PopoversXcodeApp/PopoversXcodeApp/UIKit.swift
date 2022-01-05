@@ -12,7 +12,7 @@ struct UIKit: View {
     var body: some View {
         Section(
             header:
-                Text("UIKit")
+            Text("UIKit")
                 .foregroundColor(.secondary)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.top, 12)
@@ -30,7 +30,7 @@ struct UIKit: View {
 struct ExampleUIKitRow<Content: View>: View {
     let color: UIColor
     @ViewBuilder var view: Content
-    
+
     var body: some View {
         view
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -50,12 +50,12 @@ struct ExampleUIKitRow<Content: View>: View {
                         LinearGradient(
                             colors: [
                                 Color(uiColor: color),
-                                Color(uiColor: .black)
+                                Color(uiColor: .black),
                             ],
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
                         )
-                            .aspectRatio(contentMode: .fill)
+                        .aspectRatio(contentMode: .fill)
                     }
             )
             .cornerRadius(16)

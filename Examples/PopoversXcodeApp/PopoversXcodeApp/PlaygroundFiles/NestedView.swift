@@ -6,12 +6,12 @@
 //  Copyright © 2021 A. Zheng. All rights reserved.
 //
 
-import SwiftUI
 import Popovers
+import SwiftUI
 
 struct NestedView: View {
     @State var present = false
-    
+
     var body: some View {
         ExampleRow(
             image: "pip",
@@ -28,7 +28,7 @@ struct NestedView: View {
 
 struct NestedViewPopover: View {
     @State var present = false
-    
+
     var body: some View {
         Button {
             present = true
@@ -48,6 +48,5 @@ struct NestedViewPopover: View {
                     NestedViewPopover()
                 }
         }
-        
     }
 }

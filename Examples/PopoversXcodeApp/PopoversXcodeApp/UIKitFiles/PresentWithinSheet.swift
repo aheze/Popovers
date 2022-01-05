@@ -3,9 +3,8 @@ import SwiftUI
 import UIKit
 
 struct PresentWithinSheet: View {
-    
     @State var present = false
-    
+
     var body: some View {
         Button {
             present = true
@@ -13,7 +12,7 @@ struct PresentWithinSheet: View {
             ExampleUIKitRow(color: UIColor(hex: 0x6900EF)) {
                 HStack {
                     ExampleImage("rectangle.stack", color: UIColor(hex: 0x7106AD))
-                    
+
                     Text("Popover from Sheet")
                         .fontWeight(.medium)
                 }
@@ -25,11 +24,10 @@ struct PresentWithinSheet: View {
             }
         }
     }
-    
+
     struct PresentWithinSheetView: View {
-        
         @State var isPopoverPresented = false
-        
+
         var body: some View {
             VStack {
                 Text("Popovers can even be shown from view controllers presented as sheets.")
@@ -45,7 +43,7 @@ struct PresentWithinSheet: View {
                 PopoverTemplates.Container {
                     VStack {
                         Text("Popover inside a sheet!")
-                        
+
                         Button {
                             isPopoverPresented = false
                         } label: {
@@ -56,5 +54,4 @@ struct PresentWithinSheet: View {
             }
         }
     }
-    
 }

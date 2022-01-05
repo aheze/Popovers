@@ -6,12 +6,12 @@
 //  Copyright © 2021 A. Zheng. All rights reserved.
 //
 
-import SwiftUI
 import Popovers
+import SwiftUI
 
 struct CustomizedView: View {
     @State var present = false
-    
+
     var body: some View {
         ExampleRow(
             image: "slider.horizontal.3",
@@ -28,17 +28,17 @@ struct CustomizedView: View {
         ) {
             VStack(alignment: .leading) {
                 Text("You can customize popovers by providing attributes.")
-                
+
                 HStack {
                     ExampleImage("hand.draw", color: 0x285FF5)
                     Text("For this popover, rubber banding is only enabled on the y-axis.")
                 }
             }
-                .padding()
-                .background(.background)
-                .cornerRadius(12)
-                .shadow(radius: 1)
-                .frame(maxWidth: 300)
+            .padding()
+            .background(.background)
+            .cornerRadius(12)
+            .shadow(radius: 1)
+            .frame(maxWidth: 300)
         }
     }
 }

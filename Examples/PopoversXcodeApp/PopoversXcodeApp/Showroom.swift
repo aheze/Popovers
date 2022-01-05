@@ -6,14 +6,14 @@
 //  Copyright © 2021 A. Zheng. All rights reserved.
 //
 
-import SwiftUI
 import Popovers
+import SwiftUI
 
 struct Showroom: View {
     var body: some View {
         Section(
             header:
-                Text("Showroom")
+            Text("Showroom")
                 .foregroundColor(.secondary)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.top, 12)
@@ -27,7 +27,6 @@ struct Showroom: View {
                 NotificationView()
                 MenuView()
                 StandardView()
-                
             }
         }
     }
@@ -44,7 +43,7 @@ struct Line: View {
 struct ExampleShowroomRow<Content: View>: View {
     var color: UIColor = .systemBlue
     @ViewBuilder var view: Content
-    
+
     var body: some View {
         view
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -64,12 +63,12 @@ struct ExampleShowroomRow<Content: View>: View {
                         LinearGradient(
                             colors: [
                                 Color(uiColor: color.offset(by: 0.2)),
-                                Color(uiColor: color)
+                                Color(uiColor: color),
                             ],
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
                         )
-                            .aspectRatio(contentMode: .fill)
+                        .aspectRatio(contentMode: .fill)
                     }
             )
             .cornerRadius(16)

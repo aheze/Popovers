@@ -6,12 +6,12 @@
 //  Copyright © 2021 A. Zheng. All rights reserved.
 //
 
-import SwiftUI
 import Popovers
+import SwiftUI
 
 struct TutorialView: View {
     @State var present = false
-    
+
     var body: some View {
         Button {
             present = true
@@ -19,7 +19,7 @@ struct TutorialView: View {
             ExampleShowroomRow(color: UIColor(hex: 0x00B900)) {
                 HStack {
                     ExampleImage("questionmark.circle.fill", color: UIColor(hex: 0x00B900))
-                    
+
                     Text("Tutorial")
                         .fontWeight(.medium)
                 }
@@ -30,17 +30,17 @@ struct TutorialView: View {
             attributes: {
                 $0.position = .relative(
                     popoverAnchors: [
-                        .center
+                        .center,
                     ]
                 )
-                
+
                 let animation = Animation.spring(
                     response: 0.6,
                     dampingFraction: 0.8,
                     blendDuration: 1
                 )
                 let transition = AnyTransition.move(edge: .bottom).combined(with: .opacity)
-                
+
                 $0.presentation.animation = animation
                 $0.presentation.transition = transition
                 $0.dismissal.mode = [.dragDown, .tapOutside]
@@ -55,13 +55,13 @@ struct TutorialView: View {
 struct TutorialViewPopover: View {
     @Binding var present: Bool
     @State var selection: String?
-    
+
     var body: some View {
         VStack {
             VStack(spacing: 14) {
                 HStack {
                     Spacer()
-                    
+
                     Button {
                         present = false
                     } label: {
@@ -73,16 +73,16 @@ struct TutorialViewPopover: View {
                             .cornerRadius(19)
                     }
                 }
-                
+
                 Text("Welcome!")
                     .font(.system(size: 36))
                     .fontWeight(.bold)
-                
+
                 Text("[Find](https://getfind.app) is an app to find text in real life. Here's a short tutorial to get you started.")
                     .accentColor(.blue)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 16)
-                
+
                 Button {
                     withAnimation(.spring()) {
                         selection = "Step 1"
@@ -98,10 +98,9 @@ struct TutorialViewPopover: View {
                 .padding(.top, 6)
             }
             .padding(24)
-            
+
             PhoneView {
                 VStack(spacing: 24) {
-                    
                     /// top rectangle
                     Button {
                         withAnimation(.spring()) {
@@ -128,10 +127,10 @@ struct TutorialViewPopover: View {
                         tag: "Step 1",
                         attributes: {
                             $0.position = .absolute(
-                                originAnchor: .left, 
+                                originAnchor: .left,
                                 popoverAnchor: .right
                             )
-                            
+
                             /// account for the scale effect
                             /// try to avoid scale effect whenever possible, since it screws up the source frame
                             /// here I've added a hardcoded offset
@@ -141,8 +140,7 @@ struct TutorialViewPopover: View {
                         TutorialViewPopoverDetails(selection: $selection, step: 1)
                             .zIndex(1)
                     }
-                    
-                    
+
                     Button {
                         withAnimation(.spring()) {
                             selection = nil
@@ -152,7 +150,7 @@ struct TutorialViewPopover: View {
                             .foregroundColor(.white)
                             .font(.system(size: 48))
                             .padding()
-                            .background(                         
+                            .background(
                                 PopoverTemplates.VisualEffectView(.systemChromeMaterialDark)
                             )
                             .cornerRadius(16)
@@ -167,7 +165,7 @@ struct TutorialViewPopover: View {
                         tag: "Step 2",
                         attributes: {
                             $0.position = .absolute(
-                                originAnchor: .right, 
+                                originAnchor: .right,
                                 popoverAnchor: .left
                             )
                         }
@@ -175,18 +173,17 @@ struct TutorialViewPopover: View {
                         TutorialViewPopoverDetails(selection: $selection, step: 2)
                             .zIndex(1)
                     }
-                    
+
                     Spacer()
                 }
             }
             .clipped()
             .opacity(selection == nil ? 0.6 : 1)
-            
+
             /// try to avoid scale effect
             /// this time, I've added some offset to cancel it out
             .scaleEffect(selection == nil ? 0.9 : 1, anchor: .bottom)
             .allowsHitTesting(selection != nil)
-            
         }
         .background(.regularMaterial)
         .cornerRadius(16)
@@ -229,7 +226,7 @@ struct TutorialViewPopoverDetails: View {
                     .background(.white.opacity(0.2))
                     .cornerRadius(10)
                 }
-                
+
                 Button {
                     withAnimation(.spring()) {
                         selection = nil
@@ -249,7 +246,6 @@ struct TutorialViewPopoverDetails: View {
                 }
             }
             .foregroundColor(.white)
-            
         }
         .frame(width: 260)
     }
@@ -274,7 +270,6 @@ struct PhoneView<Content: View>: View {
                 .frame(maxHeight: .infinity)
                 .cornerRadius(36)
                 .overlay {
-                    
                     /// phone content
                     view
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -282,7 +277,7 @@ struct PhoneView<Content: View>: View {
                             LinearGradient(
                                 colors: [
                                     Color(uiColor: .systemBlue),
-                                    Color(uiColor: .systemTeal)
+                                    Color(uiColor: .systemTeal),
                                 ],
                                 startPoint: .bottom,
                                 endPoint: .top

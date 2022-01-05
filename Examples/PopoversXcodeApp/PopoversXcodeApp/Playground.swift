@@ -6,14 +6,14 @@
 //  Copyright © 2021 A. Zheng. All rights reserved.
 //
 
-import SwiftUI
 import Popovers
+import SwiftUI
 
 struct Playground: View {
     var body: some View {
         Section(
             header:
-                Text("Playground")
+            Text("Playground")
                 .foregroundColor(.secondary)
                 .frame(maxWidth: .infinity, alignment: .leading)
         ) {
@@ -31,7 +31,7 @@ struct Playground: View {
                 BackgroundView()
                 PopoverReaderView()
             }
-            
+
             Group {
                 NestedView()
                 SelectionView()

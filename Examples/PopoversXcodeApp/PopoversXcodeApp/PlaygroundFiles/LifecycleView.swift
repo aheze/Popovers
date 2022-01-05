@@ -6,13 +6,12 @@
 //  Copyright © 2021 A. Zheng. All rights reserved.
 //
 
-
-import SwiftUI
 import Popovers
+import SwiftUI
 
 struct LifecycleView: View {
     @State var present = false
-    
+
     var body: some View {
         ExampleRow(
             image: "arrow.triangle.2.circlepath",
@@ -36,12 +35,12 @@ struct LifecycleView: View {
         ) {
             VStack(alignment: .leading) {
                 Text("You can change the presentation and dismissal animations.")
-                
+
                 HStack {
                     ExampleImage("hare.fill", color: 0xFF7200)
                     Text("It boings in.")
                 }
-                
+
                 HStack {
                     ExampleImage("train.side.front.car", color: 0xFF7200)
                     Text("It slides out.")
