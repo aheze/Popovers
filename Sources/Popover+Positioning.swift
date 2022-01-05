@@ -1,5 +1,5 @@
 //
-//  PopoverPosition.swift
+//  Popover+Positioning.swift
 //  Popovers
 //
 //  Created by A. Zheng (github.com/aheze) on 12/23/21.
@@ -12,10 +12,9 @@ import SwiftUI
  Extensions for popover positioning.
  */
 public extension CGRect {
-    
     /// The point at an anchor.
     /**
-  
+
          topLeft              top              topRight
                 X──────────────X──────────────X
                 |                             |
@@ -25,58 +24,57 @@ public extension CGRect {
                 |                             |
                 X──────────────X──────────────X
          bottomLeft          bottom         bottomRight
-     
+
      */
     func point(at anchor: Popover.Attributes.Position.Anchor) -> CGPoint {
         switch anchor {
         case .topLeft:
-            return self.origin
+            return origin
         case .top:
             return CGPoint(
-                x: self.origin.x + self.width / 2,
-                y: self.origin.y
+                x: origin.x + width / 2,
+                y: origin.y
             )
         case .topRight:
             return CGPoint(
-                x: self.origin.x + self.width,
-                y: self.origin.y
+                x: origin.x + width,
+                y: origin.y
             )
         case .right:
             return CGPoint(
-                x: self.origin.x + self.width,
-                y: self.origin.y + self.height / 2
+                x: origin.x + width,
+                y: origin.y + height / 2
             )
         case .bottomRight:
             return CGPoint(
-                x: self.origin.x + self.width,
-                y: self.origin.y + self.height
+                x: origin.x + width,
+                y: origin.y + height
             )
         case .bottom:
             return CGPoint(
-                x: self.origin.x + self.width / 2,
-                y: self.origin.y + self.height
+                x: origin.x + width / 2,
+                y: origin.y + height
             )
         case .bottomLeft:
             return CGPoint(
-                x: self.origin.x,
-                y: self.origin.y + self.height
+                x: origin.x,
+                y: origin.y + height
             )
         case .left:
             return CGPoint(
-                x: self.origin.x,
-                y: self.origin.y + self.height / 2
+                x: origin.x,
+                y: origin.y + height / 2
             )
         case .center:
             return CGPoint(
-                x: self.origin.x + self.width / 2,
-                y: self.origin.y + self.height / 2
+                x: origin.x + width / 2,
+                y: origin.y + height / 2
             )
         }
     }
 }
 
 public extension Popover.Attributes.Position {
-    
     /**
      Get the frame of a popover if it's position is `.absolute`.
      - parameter originAnchor: The popover's origin anchor.
@@ -90,10 +88,9 @@ public extension Popover.Attributes.Position {
         originFrame: CGRect,
         popoverSize: CGSize
     ) -> CGRect {
-        
         /// Get the origin point from the origin frame.
         let popoverOrigin = originFrame.point(at: originAnchor)
-        
+
         /// Adjust `popoverOrigin` to account for `popoverAnchor.`
         switch popoverAnchor {
         case .topLeft:
@@ -143,7 +140,7 @@ public extension Popover.Attributes.Position {
             )
         }
     }
-    
+
     /**
      Get the origin of a popover if it's position is `.relative`. The origin is the top-left of the popover within a container frame.
      - parameter popoverAnchor: The popover's position within the container frame.
@@ -203,7 +200,7 @@ public extension Popover.Attributes.Position {
             )
         }
     }
-    
+
     /**
      Get the closest anchor to a point, if the popover's anchor is `.relative`.
      - parameter popoverAnchors: The popover's possible positions within the container frame.
@@ -224,7 +221,7 @@ public extension Popover.Attributes.Position {
                 containerFrame: containerFrame,
                 popoverSize: popoverSize
             )
-            
+
             /// Comparing distances, so no need to square the distance (saves processing power).
             let distance = CGPointDistanceSquared(from: targetPoint, to: origin)
             if distance < closestDistance {
@@ -232,10 +229,10 @@ public extension Popover.Attributes.Position {
                 closestDistance = distance
             }
         }
-        
+
         return closestAnchor
     }
-    
+
     /**
      Get the frame of a popover if it's position is `.relative`.
      - parameter selectedAnchor: The popover's position within the container frame.
@@ -252,18 +249,16 @@ public extension Popover.Attributes.Position {
             containerFrame: containerFrame,
             popoverSize: popoverSize
         )
-        
+
         let frame = CGRect(origin: origin, size: popoverSize)
         return frame
     }
 }
 
-
 public extension Popover.Attributes.Position.Anchor {
-    
     /// Convert an `Anchor` to UIKit's `UnitPoint`.
     /**
-  
+
          topLeft              top              topRight
                 X──────────────X──────────────X
                 |                             |
@@ -273,7 +268,7 @@ public extension Popover.Attributes.Position.Anchor {
                 |                             |
                 X──────────────X──────────────X
          bottomLeft          bottom         bottomRight
-     
+
      */
     var unitPoint: UnitPoint {
         switch self {
@@ -291,7 +286,7 @@ public extension Popover.Attributes.Position.Anchor {
             return .bottom
         case .bottomLeft:
             return .bottomLeading
-        case .left:           
+        case .left:
             return .leading
         case .center:
             return .center

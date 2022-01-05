@@ -7,13 +7,11 @@
 //
 
 import SwiftUI
-import Combine
 
 public extension UIView {
-    
     /// Convert a view's frame to global coordinates, which are needed for `sourceFrame` and `excludedFrames.`
     func windowFrame() -> CGRect {
-        return self.convert(self.bounds, to: nil)
+        return convert(bounds, to: nil)
     }
 }
 
@@ -27,62 +25,56 @@ public extension Optional where Wrapped: UIView {
     }
 }
 
-
 public extension View {
-    
     /// Read a view's frame. From https://stackoverflow.com/a/66822461/14351818
     func frameReader(rect: @escaping (CGRect) -> Void) -> some View {
-        return self
-            .background(
-                GeometryReader { geometry in
-                    Color.clear
-                        .preference(key: ContentFrameReaderPreferenceKey.self, value: geometry.frame(in: .global))
-                        .onPreferenceChange(ContentFrameReaderPreferenceKey.self) { newValue in
-                            DispatchQueue.main.async {
-                                rect(newValue)
-                            }
+        return background(
+            GeometryReader { geometry in
+                Color.clear
+                    .preference(key: ContentFrameReaderPreferenceKey.self, value: geometry.frame(in: .global))
+                    .onPreferenceChange(ContentFrameReaderPreferenceKey.self) { newValue in
+                        DispatchQueue.main.async {
+                            rect(newValue)
                         }
-                }
-                    .hidden()
-            )
+                    }
+            }
+            .hidden()
+        )
     }
-    
+
     /// Read a view's size. From https://stackoverflow.com/a/66822461/14351818
     func sizeReader(size: @escaping (CGSize) -> Void) -> some View {
-        return self
-            .background(
-                GeometryReader { geometry in
-                    Color.clear
-                        .preference(key: ContentSizeReaderPreferenceKey.self, value: geometry.size)
-                        .onPreferenceChange(ContentSizeReaderPreferenceKey.self) { newValue in
-                            DispatchQueue.main.async {
-                                size(newValue)
-                            }
+        return background(
+            GeometryReader { geometry in
+                Color.clear
+                    .preference(key: ContentSizeReaderPreferenceKey.self, value: geometry.size)
+                    .onPreferenceChange(ContentSizeReaderPreferenceKey.self) { newValue in
+                        DispatchQueue.main.async {
+                            size(newValue)
                         }
-                }
-                    .hidden()
-            )
+                    }
+            }
+            .hidden()
+        )
     }
 }
 
 struct ContentFrameReaderPreferenceKey: PreferenceKey {
-    static var defaultValue: CGRect { get { return CGRect() } }
+    static var defaultValue: CGRect { return CGRect() }
     static func reduce(value: inout CGRect, nextValue: () -> CGRect) { value = nextValue() }
 }
 
 struct ContentSizeReaderPreferenceKey: PreferenceKey {
-    static var defaultValue: CGSize { get { return CGSize() } }
+    static var defaultValue: CGSize { return CGSize() }
     static func reduce(value: inout CGSize, nextValue: () -> CGSize) { value = nextValue() }
 }
 
-/// Create a UIColor from a hex code.
 public extension UIColor {
-    
     /**
      Create a UIColor from a hex code.
-     
+
      Example:
-     
+
          let color = UIColor(hex: 0x00aeef)
      */
     convenience init(hex: UInt, alpha: CGFloat = 1) {
@@ -102,26 +94,23 @@ struct FrameRectModifier: ViewModifier {
         content
             .frame(width: rect.width, height: rect.height, alignment: .topLeading)
             .position(x: rect.origin.x + rect.width / 2, y: rect.origin.y + rect.height / 2)
-        
     }
 }
 
 public extension View {
     /// Position a view using a rectangular frame.
     func frame(rect: CGRect) -> some View {
-        return self.modifier(FrameRectModifier(rect: rect))
+        return modifier(FrameRectModifier(rect: rect))
     }
 }
 
-
 /// For easier CGPoint math
 public extension CGPoint {
-    
     /// Add 2 CGPoints.
     static func + (left: CGPoint, right: CGPoint) -> CGPoint {
         return CGPoint(x: left.x + right.x, y: left.y + right.y)
     }
-    
+
     /// Subtract 2 CGPoints.
     static func - (left: CGPoint, right: CGPoint) -> CGPoint {
         return CGPoint(x: left.x - right.x, y: left.y - right.y)
@@ -136,18 +125,16 @@ public func CGPointDistanceSquared(from: CGPoint, to: CGPoint) -> CGFloat {
 public extension Shape {
     /// Fill and stroke a shape at the same time. https://www.hackingwithswift.com/quick-start/swiftui/how-to-fill-and-stroke-shapes-at-the-same-time
     func fill<Fill: ShapeStyle, Stroke: ShapeStyle>(_ fillStyle: Fill, strokeBorder strokeStyle: Stroke, lineWidth: CGFloat = 1) -> some View {
-        self
-            .stroke(strokeStyle, lineWidth: lineWidth)
-            .background(self.fill(fillStyle))
+        stroke(strokeStyle, lineWidth: lineWidth)
+            .background(fill(fillStyle))
     }
 }
 
 public extension InsettableShape {
     /// Fill and stroke a shape at the same time. https://www.hackingwithswift.com/quick-start/swiftui/how-to-fill-and-stroke-shapes-at-the-same-time
     func fill<Fill: ShapeStyle, Stroke: ShapeStyle>(_ fillStyle: Fill, strokeBorder strokeStyle: Stroke, lineWidth: CGFloat = 1) -> some View {
-        self
-            .strokeBorder(strokeStyle, lineWidth: lineWidth)
-            .background(self.fill(fillStyle))
+        strokeBorder(strokeStyle, lineWidth: lineWidth)
+            .background(fill(fillStyle))
     }
 }
 
@@ -161,7 +148,7 @@ public extension UIEdgeInsets {
             right = newValue
         }
     }
-    
+
     /// Set the top and bottom insets.
     var vertical: CGFloat {
         get {
@@ -171,7 +158,7 @@ public extension UIEdgeInsets {
             bottom = newValue
         }
     }
-    
+
     /// Create equal insets on all 4 sides.
     init(_ inset: CGFloat) {
         self = UIEdgeInsets(top: inset, left: inset, bottom: inset, right: inset)
@@ -183,16 +170,16 @@ struct ChangeObserver<Content: View, Value: Equatable>: View {
     let content: Content
     let value: Value
     let action: (Value, Value) -> Void
-    
+
     init(value: Value, action: @escaping (Value, Value) -> Void, content: @escaping () -> Content) {
         self.value = value
         self.action = action
         self.content = content()
         _oldValue = State(initialValue: value)
     }
-    
+
     @State private var oldValue: Value
-    
+
     var body: some View {
         if oldValue != value {
             DispatchQueue.main.async {
@@ -204,10 +191,9 @@ struct ChangeObserver<Content: View, Value: Equatable>: View {
     }
 }
 
-extension View {
-    
+public extension View {
     /// Detect changes in bindings (fallback of `.onChange` for iOS 13+).
-    public func onDataChange<Value: Equatable>(
+    func onDataChange<Value: Equatable>(
         of value: Value,
         perform action: @escaping (_ oldValue: Value, _ newValue: Value) -> Void
     ) -> some View {

@@ -140,68 +140,68 @@ struct OpacitySlider: View {
     let color: UIColor
     
     var body: some View {
-        
-        GeometryReader { proxy in
-            Color(UIColor.systemBackground).overlay(
-                ZStack {
-                    VStack(spacing: 0) {
-                        ForEach(0..<6) { row in
-                            HStack(spacing: 0) {
-                                ForEach(0..<30) { column in
-                                    
-                                    let offset = row % 2 == 0 ? 1 : 0
-                                    if (offset + column) % 2 == 0 {
-                                        Color.clear
-                                    } else {
-                                        UIColor.label.color.opacity(0.15)
+        PopoverReader { (context) in
+            GeometryReader { proxy in
+                Color(UIColor.systemBackground).overlay(
+                    ZStack {
+                        VStack(spacing: 0) {
+                            ForEach(0..<6) { row in
+                                HStack(spacing: 0) {
+                                    ForEach(0..<30) { column in
+                                        
+                                        let offset = row % 2 == 0 ? 1 : 0
+                                        if (offset + column) % 2 == 0 {
+                                            Color.clear
+                                        } else {
+                                            UIColor.label.color.opacity(0.15)
+                                        }
                                     }
                                 }
+                                .aspectRatio(30, contentMode: .fill)
                             }
-                            .aspectRatio(30, contentMode: .fill)
                         }
+                        
+                        LinearGradient(colors: [.clear, .white], startPoint: .leading, endPoint: .trailing)
+                            .colorMultiply(color.color)
                     }
-                    
-                    LinearGradient(colors: [.clear, .white], startPoint: .leading, endPoint: .trailing)
-                        .colorMultiply(color.color)
-                }
-            )
-            
-            /// slider thumb
-                .overlay(
-                    Color.clear.overlay(
-                        
-                        ZStack {
-                            RoundedRectangle(cornerRadius: 6)
-                                .fill(UIColor.systemBackground.color)
-                            
-                            RoundedRectangle(cornerRadius: 6)
-                                .fill(color.withAlphaComponent(value).color)
-                            
-                            RoundedRectangle(cornerRadius: 6)
-                                .strokeBorder(Color.white, lineWidth: 2)
-                        }
-                            .padding(6)
-                            .frame(width: ColorViewConstants.sliderHeight, height: ColorViewConstants.sliderHeight)
-                        
-                        /// pin thumb to right of stretching `clear` container
-                        , alignment: .trailing
-                    )
-                    /// set frame of stretching `clear` container
-                        .frame(
-                            width: ColorViewConstants.sliderHeight + value * (proxy.size.width - ColorViewConstants.sliderHeight)
-                        )
-                    , alignment: .leading)
-                .highPriorityGesture(
-                    DragGesture(minimumDistance: 0)
-                        .onChanged { value in
-                            self.value = min(max(0, CGFloat(value.location.x / proxy.size.width)), 1)
-                            Popovers.draggingEnabled = false
-                        }
-                        .onEnded { _ in 
-                            Popovers.draggingEnabled = true 
-                            
-                        }
                 )
+                
+                /// slider thumb
+                    .overlay(
+                        Color.clear.overlay(
+                            
+                            ZStack {
+                                RoundedRectangle(cornerRadius: 6)
+                                    .fill(UIColor.systemBackground.color)
+                                
+                                RoundedRectangle(cornerRadius: 6)
+                                    .fill(color.withAlphaComponent(value).color)
+                                
+                                RoundedRectangle(cornerRadius: 6)
+                                    .strokeBorder(Color.white, lineWidth: 2)
+                            }
+                                .padding(6)
+                                .frame(width: ColorViewConstants.sliderHeight, height: ColorViewConstants.sliderHeight)
+                            
+                            /// pin thumb to right of stretching `clear` container
+                            , alignment: .trailing
+                        )
+                        /// set frame of stretching `clear` container
+                            .frame(
+                                width: ColorViewConstants.sliderHeight + value * (proxy.size.width - ColorViewConstants.sliderHeight)
+                            )
+                        , alignment: .leading)
+                    .highPriorityGesture(
+                        DragGesture(minimumDistance: 0)
+                            .onChanged { value in
+                                self.value = min(max(0, CGFloat(value.location.x / proxy.size.width)), 1)
+                                context.isDraggingEnabled = false
+                            }
+                            .onEnded { _ in
+                                context.isDraggingEnabled = true
+                            }
+                    )
+        }
         }
         .drawingGroup() /// prevent thumb from disappearing when offset to show words
     }

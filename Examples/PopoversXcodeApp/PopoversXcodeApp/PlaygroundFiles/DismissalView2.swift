@@ -11,38 +11,39 @@ import Popovers
 
 struct DismissalView2: View {
     @State var present = false
-    @EnvironmentObject var windowSceneModel: WindowSceneModel
     
     var body: some View {
-        ExampleRow(
-            image: "xmark",
-            title: "Advanced Dismissal 2",
-            color: 0xCB9400
-        ) {
-            present = true
-        }
-        .popover(
-            present: $present,
-            attributes: {
-                $0.sourceFrameInset = UIEdgeInsets(16)
-                $0.position = .relative(
-                    popoverAnchors: [
-                        .left,
-                        .right,
-                        .bottom,
-                        .top,
-                    ]
-                )
-                $0.dismissal.mode = .tapOutside
-                $0.tag = "Advanced Dismissal 1"
-                $0.dismissal.excludedFrames = {
-                    [
-                        Popovers.frameTagged("Frame-Tagged View", in: windowSceneModel.windowScene)
-                    ]
-                }
+        WindowReader { window in
+            ExampleRow(
+                image: "xmark",
+                title: "Advanced Dismissal 2",
+                color: 0xCB9400
+            ) {
+                present = true
             }
-        ) {
-            DismissalPopover2(present: $present)
+            .popover(
+                present: $present,
+                attributes: {
+                    $0.sourceFrameInset = UIEdgeInsets(16)
+                    $0.position = .relative(
+                        popoverAnchors: [
+                            .left,
+                            .right,
+                            .bottom,
+                            .top,
+                        ]
+                    )
+                    $0.dismissal.mode = .tapOutside
+                    $0.tag = "Advanced Dismissal 1"
+                    $0.dismissal.excludedFrames = {
+                        [
+                            window.frameTagged("Frame-Tagged View")
+                        ]
+                    }
+                }
+            ) {
+                DismissalPopover2(present: $present)
+            }
         }
     }
 }

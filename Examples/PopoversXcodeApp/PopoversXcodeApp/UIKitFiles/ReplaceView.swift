@@ -124,18 +124,17 @@ class ReplaceViewController: UIViewController {
         attributes.sourceFrame = { [weak button1] in
             button1.windowFrame()
         }
-        attributes.windowScene = view.window?.windowScene
         
         let newPopover = Popover(attributes: attributes) {
             ReplaceViewPopoverRepresentable()
                 .frame(maxWidth: 200, maxHeight: 100)
         }
-        if let oldPopover = Popovers.popover(tagged: "A Popover") {
+        if let oldPopover = popover(tagged: "A Popover") {
             /// popover exists, replace it
-            Popovers.replace(oldPopover, with: newPopover)
+            replace(oldPopover, with: newPopover)
         } else {
             /// popover doesn't exist, present
-            Popovers.present(newPopover)
+            present(newPopover)
         }
     }
     
@@ -148,18 +147,17 @@ class ReplaceViewController: UIViewController {
         attributes.sourceFrame = { [weak button2] in
             button2.windowFrame()
         }
-        attributes.windowScene = view.window?.windowScene
         
         let newPopover = Popover(attributes: attributes) {
             ReplaceViewPopoverRepresentable()
                 .frame(maxWidth: 200, maxHeight: 100)
         }
-        if let oldPopover = Popovers.popover(tagged: "A Popover") {
+        if let oldPopover = popover(tagged: "A Popover") {
             /// popover exists, replace it
-            Popovers.replace(oldPopover, with: newPopover)
+            replace(oldPopover, with: newPopover)
         } else {
             /// popover doesn't exist, present
-            Popovers.present(newPopover)
+            present(newPopover)
         }
     }
 }
