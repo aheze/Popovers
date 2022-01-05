@@ -49,7 +49,7 @@ class DismissViewController: UIViewController {
         let label = UILabel()
         label.text = """
             Super simple.
-                >    popover.dismiss()
+                >    self.dismiss(popover)
         """
         label.numberOfLines = 0
         label.textAlignment = .left
@@ -124,7 +124,7 @@ class DismissViewController: UIViewController {
 
     @objc func dismissButtonPressed() {
         if let popover = popover(tagged: "Dismissal Popover") {
-            popover.dismiss()
+            dismiss(popover)
         }
     }
 }

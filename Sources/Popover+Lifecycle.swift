@@ -132,13 +132,18 @@ extension UIResponder {
     public func replace(_ oldPopover: Popover, with newPopover: Popover) {
         oldPopover.replace(with: newPopover)
     }
+    
+    /// Dismiss a popover. Convenience method for `Popover.dismiss(transaction:)`.
+    public func dismiss(_ popover: Popover) {
+        popover.dismiss()
+    }
 }
 
 extension UIViewController {
     /// Present a `Popover` using this `UIViewController` as its presentation context.
-    public func present(_ popoverToPresent: Popover) {
+    public func present(_ popover: Popover) {
         guard let window = view.window else { return }
-        popoverToPresent.present(in: window)
+        popover.present(in: window)
     }
 
     /// Get the frontmost view controller.
