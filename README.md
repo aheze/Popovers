@@ -86,7 +86,7 @@ Notification
 </table>
 
 ## Example
-I wrote the example app with Swift Playgrounds 4, so you can run it right on your iPad. If you're using a Mac, download the Xcode version. [Download for Swift Playgrounds 4](https://github.com/aheze/Popovers/raw/main/Examples/PopoversPlaygroundApp.swiftpm.zip) • [Download for Xcode](https://github.com/aheze/Popovers/raw/main/Examples/PopoversXcodeApp.zip)
+I wrote the example app with Swift Playgrounds 4, so you can run it right on your iPad. If you're using a Mac, download the Xcode version. [Download for Swift Playgrounds 4](https://github.com/aheze/Popovers/raw/1d31c39e10594ae3099e84d49c0debb6349c5703/Examples/PopoversPlaygroundApp.swiftpm.zip) • [Download for Xcode](https://github.com/aheze/Popovers/raw/1d31c39e10594ae3099e84d49c0debb6349c5703/Examples/PopoversXcodeApp.zip)
 
 ![Example app](Assets/ExampleApp.png)
 
