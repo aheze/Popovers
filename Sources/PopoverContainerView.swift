@@ -25,7 +25,7 @@ struct PopoverContainerView: View {
         /// All frames are calculated from the origin at the top-left, so use `.topLeading`.
         ZStack(alignment: .topLeading) {
             /// Loop over the popovers.
-            ForEach(getPopovers(), id: \.1.id) { _, popover in
+            ForEach(popoverModel.popovers) { popover in
 
                 /// Show the popover's background.
                 popover.background
@@ -122,12 +122,6 @@ struct PopoverContainerView: View {
             }
         }
         .edgesIgnoringSafeArea(.all) /// All calculations are done from the screen bounds.
-    }
-
-    /// Create an array of indices + popovers for easier indexing.
-    func getPopovers() -> [(Int, Popover)] {
-        let popovers = popoverModel.popovers
-        return Array(zip(popovers.indices, popovers))
     }
 
     /**
