@@ -54,10 +54,10 @@ class ReplaceViewController: UIViewController {
         label.text = """
             This is what the "$selection + tag" popover in SwiftUI uses under the hood.
         
-            1. Get the currently presented popover
+            1. Get the currently presented popover.
                 >    if let oldPopover = Popovers.popover(tagged: "A Popover") {
-            2. Replace it
-                >    Popovers.replace(oldPopover, with: newPopover)
+            2. Replace it.
+                >    self.replace(oldPopover, with: newPopover)
         """
         label.numberOfLines = 0
         label.textAlignment = .left

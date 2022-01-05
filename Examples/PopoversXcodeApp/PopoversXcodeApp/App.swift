@@ -11,8 +11,6 @@ import Popovers
 
 @main
 struct PopoversPlaygroundApp: App {
-    @Environment(\.scenePhase) private var scenePhase
-    
     var body: some Scene {
         WindowGroup {
             ContentView()   

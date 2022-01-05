@@ -26,13 +26,13 @@ struct PresentWithinSheet: View {
         }
     }
     
-    private struct PresentWithinSheetView: View {
+    struct PresentWithinSheetView: View {
         
         @State var isPopoverPresented = false
         
         var body: some View {
             VStack {
-                Text("Popovers can be shown from a view controller presented as a sheet.")
+                Text("Popovers can even be shown from view controllers presented as sheets.")
                 Button {
                     isPopoverPresented = true
                 } label: {
@@ -55,7 +55,6 @@ struct PresentWithinSheet: View {
                 }
             }
         }
-        
     }
     
 }
