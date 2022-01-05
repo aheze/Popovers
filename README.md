@@ -86,7 +86,7 @@ Notification
 </table>
 
 ## Example
-I wrote the example app with Swift Playgrounds 4, so you can run it right on your iPad. If you're using a Mac, download the Xcode version. [Download for Swift Playgrounds 4](https://github.com/aheze/Popovers/raw/1d31c39e10594ae3099e84d49c0debb6349c5703/Examples/PopoversPlaygroundApp.swiftpm.zip) • [Download for Xcode](https://github.com/aheze/Popovers/raw/1d31c39e10594ae3099e84d49c0debb6349c5703/Examples/PopoversXcodeApp.zip)
+I wrote the example app with Swift Playgrounds 4, so you can run it right on your iPad. If you're using a Mac, download the Xcode version. [Download for Swift Playgrounds 4](https://github.com/aheze/Popovers/raw/main/Examples/PopoversPlaygroundsApp.swiftpm.zip) • [Download for Xcode](https://github.com/aheze/Popovers/raw/main/Examples/PopoversXcodeApp.zip)
 
 ![Example app](Assets/ExampleApp.png)
 
@@ -157,7 +157,7 @@ struct ContentView: View {
 }
 ```
 
-In UIKit, create a `Popover` instance, then present with `Popovers.present(_:)`. You should also set the source frame.
+In UIKit, create a `Popover` instance, then present with `UIViewController.present(_:)`. You should also set the source frame.
 
 ```swift
 import SwiftUI
@@ -170,7 +170,8 @@ class ViewController: UIViewController {
         popover.attributes.sourceFrame = { [weak button] in
             button.windowFrame()
         }
-        Popovers.present(popover) /// here!
+        
+        present(popover) /// here!
     }
 }
 
@@ -190,8 +191,8 @@ struct PopoverView: View {
 <br>
 
 ## Customization
-| [🔖](https://github.com/aheze/Popovers#tag--string)  | [💠](https://github.com/aheze/Popovers#position--position)  | [⬜](https://github.com/aheze/Popovers#source-frame-----cgrect)  | [🔲](https://github.com/aheze/Popovers#source-frame-inset--uiedgeinsets)  | [⏹](https://github.com/aheze/Popovers#screen-edge-padding--uiedgeinsets)  | [🟩](https://github.com/aheze/Popovers#presentation--presentation)  | [🟥](https://github.com/aheze/Popovers#dismissal--dismissal)  | [🎾](https://github.com/aheze/Popovers#rubber-banding-mode--rubberbandingmode)  | [🛑](https://github.com/aheze/Popovers#rubber-banding-mode--rubberbandingmode)  | [🪟](https://github.com/aheze/Popovers#window-scene--uiwindowscene--v104)  | [👉](https://github.com/aheze/Popovers#on-tap-outside-----void)  | [🎈](https://github.com/aheze/Popovers#on-dismiss-----void)  | [🔰](https://github.com/aheze/Popovers#on-context-change--context---void)  |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| [🔖](https://github.com/aheze/Popovers#tag--string)  | [💠](https://github.com/aheze/Popovers#position--position)  | [⬜](https://github.com/aheze/Popovers#source-frame-----cgrect)  | [🔲](https://github.com/aheze/Popovers#source-frame-inset--uiedgeinsets)  | [⏹](https://github.com/aheze/Popovers#screen-edge-padding--uiedgeinsets)  | [🟩](https://github.com/aheze/Popovers#presentation--presentation)  | [🟥](https://github.com/aheze/Popovers#dismissal--dismissal)  | [🎾](https://github.com/aheze/Popovers#rubber-banding-mode--rubberbandingmode)  | [🛑](https://github.com/aheze/Popovers#rubber-banding-mode--rubberbandingmode)  | [👉](https://github.com/aheze/Popovers#on-tap-outside-----void)  | [🎈](https://github.com/aheze/Popovers#on-dismiss-----void)  | [🔰](https://github.com/aheze/Popovers#on-context-change--context---void)  |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 
 Customize popovers through the `Attributes` struct. Pretty much everything is customizable, including positioning, animations, and dismissal behavior.
 
@@ -242,7 +243,7 @@ popover.attributes.position = .absolute(
     originAnchor: .bottom,
     popoverAnchor: .topLeft
 )
-Popovers.present(popover)
+present(popover) /// Where `self` is a `UIViewController`.
 ```
 </td>
 </tr>
@@ -256,7 +257,12 @@ Tag popovers to access them later from anywhere. This is useful for updating exi
 $0.tag = "Your Tag"
 
 /// Access it later.
-let popover = Popovers.popovers(tagged: "Your Tag")
+let popover = popover(tagged: "Your Tag") /// Where `self` is a `UIView` or `UIViewController`.
+
+/// If inside a SwiftUI View, use a `WindowReader`:
+WindowReader { window in
+    let popover = window.popover(tagged: "Your Tag")
+}
 ```
 
 **Note:** When you use the `.popover(selection:tag:attributes:view:)` modifier, this `tag` is automatically set to what you provide in the parameter.
@@ -395,10 +401,6 @@ Set this to true to prevent underlying views from being pressed.
 
 <img src="Assets/BlocksBackgroundTouches.png" width=300 alt="Popover overlaid over some buttons. Tapping on the buttons has no effect.">
 
-### 🪟 Window Scene • `UIWindowScene?` • [*`v1.0.4`*](https://github.com/aheze/Popovers/releases/tag/1.0.4)
-The window scene that the popover is tied to. By default, this is set to `UIApplication.shared.keyWindow?.windowScene`, which fully provides single window support and basic multi-window support on iPad. See [Supporting Multiple Screens](https://github.com/aheze/Popovers#supporting-multiple-screens--v104) for more details.
-
-
 ### 👉 On Tap Outside • `(() -> Void)?`
 A closure that's called whenever the user taps outside the popover.
 
@@ -433,7 +435,7 @@ Use the <code>.popover(selection:tag:attributes:view:)</code> modifier.
 UIKit
 </strong>
 <br>
-Get the existing popover using <code>Popovers.popover(tagged:)</code>, then call <code>Popovers.replace(_:with:)</code>.
+Get the existing popover using <code>UIResponder.popover(tagged:)</code>, then call <code>UIResponder.replace(_:with:)</code>.
 </td>
 </tr>
   
@@ -477,10 +479,10 @@ struct ContentView: View {
     newPopover.attributes.dismissal.excludedFrames = { [weak button2] in [button2.windowFrame()] }
     newPopover.attributes.tag = "Popover 1"
     
-    if let oldPopover = Popovers.popover(tagged: "Popover 2") {
-        Popovers.replace(oldPopover, with: newPopover)
+    if let oldPopover = popover(tagged: "Popover 2") {
+        replace(oldPopover, with: newPopover)
     } else {
-        Popovers.present(newPopover) /// Present if the old popover doesn't exist.
+        present(newPopover) /// Present if the old popover doesn't exist.
     }
 }
 @IBAction func button2Pressed(_ sender: Any) {
@@ -489,10 +491,10 @@ struct ContentView: View {
     newPopover.attributes.dismissal.excludedFrames = { [weak button1] in [button1.windowFrame()] }
     newPopover.attributes.tag = "Popover 2"
     
-    if let oldPopover = Popovers.popover(tagged: "Popover 1") {
-        Popovers.replace(oldPopover, with: newPopover)
+    if let oldPopover = popover(tagged: "Popover 1") {
+        replace(oldPopover, with: newPopover)
     } else {
-        Popovers.present(newPopover)
+        present(newPopover)
     }
 }
 ```
@@ -554,7 +556,7 @@ var popover = Popover {
 
 
 ### 📖 Popover Reader
-This reads the popover's context, which contains its frame, attributes, and various other properties. It's kind of like [`GeometryReader`](https://www.hackingwithswift.com/quick-start/swiftui/how-to-provide-relative-sizes-using-geometryreader), but cooler. You can put it in the popover's view or its background.
+This reads the popover's context, which contains its frame, window, attributes, and various other properties. It's kind of like [`GeometryReader`](https://www.hackingwithswift.com/quick-start/swiftui/how-to-provide-relative-sizes-using-geometryreader), but cooler. You can put it in the popover's view or its background.
 
 ```swift
 .popover(present: $present) {
@@ -563,7 +565,7 @@ This reads the popover's context, which contains its frame, attributes, and vari
     PopoverReader { context in
         Path {
             $0.move(to: context.frame.point(at: .bottom))
-            $0.addLine(to: Popovers.windowBounds.point(at: .bottom))
+            $0.addLine(to: context.windowBounds.point(at: .bottom))
         }
         .stroke(Color.blue, lineWidth: 4)
     }
@@ -578,17 +580,21 @@ Popovers provides a mechanism for tagging and reading SwiftUI view frames. You c
 
 ```swift
 Text("This is a view")
-    .frameTag("Your Tag Name")
+    .frameTag("Your Tag Name") /// Adds a tag inside the window.
 
 /// ...
 
-.popover(
-    present: $present,
-    attributes: {
-        $0.sourceFrame = Popovers.frameTagged("Your Tag Name")
-    }
-)
+WindowReader { window in
+    Text("Click me!")
+    .popover(
+        present: $present,
+        attributes: {
+            $0.sourceFrame = window.frameTagged("Your Tag Name") /// Retrieves a tag from the window.
+        }
+    )
+}
 ```
+
 
 ### 📄 Templates
 Get started quickly with some templates. All of them are inside [`PopoverTemplates.swift`](Source/PopoverTemplates.swift) with example usage in the example app.
@@ -684,75 +690,22 @@ struct ContentView: View {
 </tr>
 </table>
 
-### Supporting Multiple Screens • [*`v1.0.4`*](https://github.com/aheze/Popovers/releases/tag/1.0.4)
-Popovers comes with built-in support for multiple screens (represented by [`UIWindowScene`](https://developer.apple.com/documentation/uikit/uiwindowscene)).
-
-<img src="Assets/SupportingMultipleScreens.png" width=200 alt="2 screens side by side with a popover in each.">
-
-Here's a couple things to keep in mind.
-- Popovers are tied to window scenes. This way, tapping on one side of the screen won't interfere or dismiss popovers on the other side.
-- Set a popover's window scene with `attributes.windowScene`. By default, this is `UIApplication.shared.keyWindow?.windowScene`, which is enough for basic multi-screen support.
-- Each screen will only show the popovers with the same `windowScene`.
-- If your app has multiple screens enabled (all SwiftUI apps by default), methods like `Popovers.popover(tagged:)` require specifying the window scene:
+### Supporting Multiple Screens • [*`v1.1.0`*](https://github.com/aheze/Popovers/releases/tag/1.1.0)
+Popovers comes with built-in support for multiple screens, but retrieving frame tags requires a reference to the hosting window. You can get this via `WindowReader` or `PopoverReader`'s context.
 
 ```swift
-/// Get a currently-presented popover in the window scene.
-Popovers.popover(tagged: "Your Tag Name", in: yourWindowScene)
+/// Note: Don't use this inside a popover's `view` or `background`.
+WindowReader { window in 
 
-
-/// Tag a frame (SwiftUI) in the window scene.
-Text("Hello").frameTag("Your Frame Tag Name", in: yourWindowScene)
-
-/// Get a tagged frame (SwiftUI) in the window scene.
-Popovers.frameTagged("Your Frame Tag Name", in: yourWindowScene)
-```
-
-However, getting a view's window scene in SwiftUI is tricky. My [current workaround](https://github.com/aheze/Popovers/blob/5fcaa9d9eb2ed077cd43e323b5a772a04bd6e1be/Sources/PopoverFrameTag.swift#L68) is embedding a `UIViewRepresentable` and reading its window scene. This is not completely reliable — if anyone has a better method, please [let me know](https://github.com/aheze/Popovers/issues/3).
-
-
-
-```swift
-/// Help me fix in https://github.com/aheze/Popovers/issues/3
-
-WindowGroup {
-    ContentView()
-        .injectWindowScene() /// Make the window scene available to all subviews. Not ideal, but it works (usually).
 }
 
-struct ContentView: View {
-    @EnvironmentObject var windowSceneModel: WindowSceneModel
-
-    /// ... 
-
-    Text("Hello").frameTag("Your Frame Tag Name", in: windowSceneModel.windowScene)
+PopoverReader { context in
+    let window = context.window
 }
 ```
-
 
 ### Popover Hierarchy
 To bring a popover to front, just attach [`.zIndex(_:)`](https://developer.apple.com/documentation/swiftui/view/zindex(_:)). A higher index will bring it forwards.
-
-### Popover Not Animating At First?
-Make sure the library is set up by calling `Popovers.prepare()` when your app starts.
-
-```swift
-import SwiftUI
-import Popovers
-
-@main
-struct YourApp: App {
-    @Environment(\.scenePhase) private var scenePhase
-    
-    var body: some Scene {
-        WindowGroup {
-            ContentView()
-        }
-        .onChange(of: scenePhase) { _ in
-            Popovers.prepare() /// Make sure Popovers is ready.
-        }
-    }
-}
-```
 
 
 ## Community
