@@ -54,10 +54,15 @@ class PopoverModel: ObservableObject {
         refresh()
     }
 
+    /// Adds a `Popover` to this model/
+    func add(_ popover: Popover) {
+        popovers.append(popover)
+    }
+    
     /// Removes a `Popover` from this model.
-    func remove(_ popoverToRemove: Popover) {
+    func remove(_ popover: Popover) {
         popovers.removeAll { candidate in
-            candidate == popoverToRemove
+            candidate == popover
         }
     }
 
@@ -99,12 +104,8 @@ class PopoverModel: ObservableObject {
     }
 
     /// Access this with `UIResponder.frameTagged(_:)` if inside a `WindowReader`, or `Popover.Context.frameTagged(_:)` if inside a `PopoverReader.`
-    func frameTagged(_ tag: String) -> CGRect {
+    func frame(tagged tag: String) -> CGRect {
         let frame = frameTags[tag]
         return frame ?? .zero
-    }
-
-    func replace(_ oldPopover: Popover, with newPopover: Popover) {
-        oldPopover.replace(with: newPopover)
     }
 }

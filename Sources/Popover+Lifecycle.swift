@@ -1,5 +1,5 @@
 //
-//  Popover+Presentation.swift
+//  Popover+Lifecycle.swift
 //  Popovers
 //
 //  Created by A. Zheng (github.com/aheze) on 1/4/22.
@@ -39,19 +39,24 @@ public extension Popover {
 
         context.presentedPopoverViewController = popoverViewController
 
-        /// If we've prepared a new controller to present, then do so.
-        /// This isn't animated as we perform the popover animation inside the container view instead - the view
-        /// controller hosts the container that animates.
+        /**
+         Add the popover to the container view.
+         */
         let displayPopover: () -> Void = {
             withTransaction(transaction) {
-                /// Add the popover to the container view.
-                model.popovers.append(self)
+                model.add(self)
             }
         }
 
         if presentingViewController === popoverViewController {
             displayPopover()
         } else {
+            
+            /**
+             If we've prepared a new controller to present, then do so.
+             This isn't animated as we perform the popover animation inside the container view instead -
+             the view controller hosts the container that animates.
+             */
             presentingViewController?.present(popoverViewController, animated: false, completion: displayPopover)
         }
     }
@@ -119,6 +124,13 @@ public extension Popover {
                 model.popovers[oldPopoverIndex] = newPopover
             }
         }
+    }
+}
+
+extension UIResponder {
+    /// Replace a popover with another popover. Convenience method for `Popover.replace(with:)`.
+    public func replace(_ oldPopover: Popover, with newPopover: Popover) {
+        oldPopover.replace(with: newPopover)
     }
 }
 

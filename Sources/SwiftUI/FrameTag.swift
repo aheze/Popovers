@@ -47,7 +47,7 @@ public extension UIResponder {
      - Returns: The frame of a frame-tagged view, or `nil` if no view with the tag exists.
      */
     func frameTagged(_ tag: String) -> CGRect {
-        return popoverModel.frameTagged(tag)
+        return popoverModel.frame(tagged: tag)
     }
 
     /**

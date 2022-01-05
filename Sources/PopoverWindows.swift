@@ -115,18 +115,8 @@ extension UIResponder {
     }
 }
 
-// MARK: - Convenience Popover Functions
 
 public extension UIResponder {
-    /**
-     Replace a popover with another popover smoothly.
-
-     This is what `.popover(selection:tag:attributes:view:)` in SwiftUI uses.
-     */
-    func replace(_ oldPopover: Popover, with newPopover: Popover) {
-        popoverModel.replace(oldPopover, with: newPopover)
-    }
-
     /**
      Get a currently-presented popover with a tag. Returns `nil` if no popover with the tag was found.
      - parameter tag: The tag of the popover to look for.
