@@ -205,6 +205,7 @@ public struct PopoverTemplates {
         public static var edgeCornerRadius = CGFloat(10)
 
         /// Offset the arrow from the sides - otherwise it will overflow out of the corner radius.
+        /// This is multiplied by the `cornerRadius`.
         /**
 
                       /\
@@ -213,7 +214,7 @@ public struct PopoverTemplates {
                         \
              rectangle  |
          */
-        public static var arrowSidePadding = CGFloat(28)
+        public static var arrowSidePadding = CGFloat(1.8)
 
         /// Path for the triangular arrow.
         public func arrowPath() -> Path {
@@ -264,22 +265,22 @@ public struct PopoverTemplates {
             case let .top(arrowAlignment):
                 alignment = arrowAlignment
                 arrowTransform = .init(translationX: rect.midX, y: 0)
-                popoverRadius = (rect.width / 2) - BackgroundWithArrow.arrowSidePadding
+                popoverRadius = (rect.width / 2) - BackgroundWithArrow.arrowSidePadding * cornerRadius
             case let .right(arrowAlignment):
                 alignment = arrowAlignment
                 arrowTransform = .init(rotationAngle: 90.degreesToRadians)
                     .translatedBy(x: rect.midY, y: -rect.maxX)
-                popoverRadius = (rect.height / 2) - BackgroundWithArrow.arrowSidePadding
+                popoverRadius = (rect.height / 2) - BackgroundWithArrow.arrowSidePadding * cornerRadius
             case let .bottom(arrowAlignment):
                 alignment = arrowAlignment
                 arrowTransform = .init(rotationAngle: 180.degreesToRadians)
                     .translatedBy(x: -rect.midX, y: -rect.maxY)
-                popoverRadius = (rect.width / 2) - BackgroundWithArrow.arrowSidePadding
+                popoverRadius = (rect.width / 2) - BackgroundWithArrow.arrowSidePadding * cornerRadius
             case let .left(arrowAlignment):
                 alignment = arrowAlignment
                 arrowTransform = .init(rotationAngle: 270.degreesToRadians)
                     .translatedBy(x: -rect.midY, y: 0)
-                popoverRadius = (rect.height / 2) - BackgroundWithArrow.arrowSidePadding
+                popoverRadius = (rect.height / 2) - BackgroundWithArrow.arrowSidePadding * cornerRadius
             }
 
             switch alignment {
