@@ -33,12 +33,12 @@ struct FrameTaggedPopover: View {
     @State var savedFrame = CGRect.zero
     
     var body: some View {
-        FrameTagReader { (proxy) in
+        WindowReader { window in
             VStack(alignment: .leading) {
                 Text(verbatim: "This is just a view with a saved frame: \(savedFrame).")
                 
                 Button {
-                    savedFrame = proxy.frameTagged("Frame-Tagged View")
+                    savedFrame = window.frameTagged("Frame-Tagged View")
                 } label: {
                     HStack {
                         ExampleImage("square.dashed", color: 0x68BB3D)

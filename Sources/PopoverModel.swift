@@ -12,15 +12,15 @@ import SwiftUI
 /**
  The view model for presented popovers within a window.
  
- Each view model is scoped to a window, which retains the view model. Presenting or otherwise managing a popover
- automatically scopes to interactions to the window of the current view hiearchy.
+ Each view model is scoped to a window, which retains the view model.
+ Presenting or otherwise managing a popover automatically scopes interactions to the window of the current view hierarchy.
  */
 class PopoverModel: ObservableObject {
     
     /// The currently-presented popovers. The oldest are in front, the newest at the end.
     @Published var popovers = [Popover]()
     
-    /// Determines is the popovers can be dragged.
+    /// Determines if the popovers can be dragged.
     @Published var popoversDraggable = true
     
     /// Store the frames of views (for excluding popover dismissal or source frames).
@@ -35,7 +35,9 @@ class PopoverModel: ObservableObject {
     
     /// Force the container view to update.
     func refresh() {
-        objectWillChange.send()
+        DispatchQueue.main.async {
+            self.objectWillChange.send()
+        }
     }
     
     /**
@@ -88,7 +90,7 @@ class PopoverModel: ObservableObject {
                 popover.setSize(popover.context.size)
             } else {
                 
-                /// Must be on the main queue to get a different SwiftUI render loop
+                /// Must be on the main queue to get a different SwiftUI render loop.
                 DispatchQueue.main.async {
                     popover.setSize(popover.context.size)
                 }

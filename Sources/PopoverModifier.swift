@@ -95,8 +95,8 @@ struct PopoverModifier: ViewModifier {
                             background: { background }
                         )
                         
-                        /// Listen to the `dismissed` callback.
-                        popover.context.dismissed = {
+                        /// Listen to the internal `onDismiss` callback.
+                        popover.context.onDismiss = {
                             present = false
                         }
                         
@@ -233,8 +233,8 @@ struct MultiPopoverModifier: ViewModifier {
                             background: { background }
                         )
                         
-                        /// Listen to the `dismissed` callback.
-                        popover.context.dismissed = {
+                        /// Listen to the internal `onDismiss` callback.
+                        popover.context.onDismiss = {
                             self.selection = nil
                         }
                         

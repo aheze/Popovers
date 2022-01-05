@@ -23,10 +23,10 @@ struct FrameTagModifier: ViewModifier {
     let tag: String
     
     func body(content: Content) -> some View {
-        FrameTagReader { (proxy) in
+        WindowReader { window in
             content
                 .frameReader { frame in
-                    proxy.save(frame, for: tag)
+                    window.save(frame, for: tag)
                 }
         }
     }
@@ -46,4 +46,29 @@ public extension View {
         return self.modifier(FrameTagModifier(tag: tag))
     }
     
+}
+
+
+extension UIWindow {
+    
+    /**
+     Get the saved frame of a frame-tagged view. You must first set the frame using `.frameTag(_:)`.
+     - parameter tag: The tag that you used for the frame.
+     
+     - Returns: The frame of a frame-tagged view, or `nil` if no view with the tag exists.
+     */
+    public func frameTagged(_ tag: String) -> CGRect {
+        return popoverModel.frameTagged(tag)
+    }
+    
+    /// Remove all saved frames inside this window for `.popover(selection:tag:attributes:view:)`. Call this method when you present another view where the frames don't apply.
+    public func clearSavedFrames() {
+        popoverModel.selectionFrameTags.removeAll()
+    }
+    
+    /// Save a frame in this window's `frameTags`.
+    func save(_ frame: CGRect, for tag: String) {
+        let frameTag = FrameTag(tag: tag)
+        popoverModel.frameTags[frameTag] = frame
+    }
 }

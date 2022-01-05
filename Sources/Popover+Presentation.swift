@@ -1,9 +1,24 @@
-import SwiftUI
-import UIKit
+//
+//  Popover+Presentation.swift
+//  Popovers
+//
+//  Created by A. Zheng (github.com/aheze) on 1/4/22.
+//  Copyright © 2022 A. Zheng. All rights reserved.
+//
+    
 
+import SwiftUI
+
+/**
+ Present a popover.
+ */
 extension Popover {
     
+    /**
+     Present a popover in a window. It may be easier to use the `UIViewController.present(_:)` convenience method instead.
+     */
     func present(in window: UIWindow) {
+        
         /// Create a transaction for the presentation animation.
         let transaction = Transaction(animation: attributes.presentation.animation)
         
@@ -13,8 +28,10 @@ extension Popover {
         /// Locate the topmost presented `UIViewController` in this window. We'll be presenting on top of this one.
         let presentingViewController = window.rootViewController?.topmostViewController
         
-        /// There may already be a view controller presenting another popover - if so, lets use that.
+        /// There may already be a view controller presenting another popover - if so, let's use that.
         let popoverViewController: PopoverContainerViewController
+        
+        /// Get the popover model that's tied to the window.
         let model = window.popoverModel
         
         if let existingPopoverViewController = presentingViewController as? PopoverContainerViewController {
@@ -37,31 +54,44 @@ extension Popover {
         
         if presentingViewController === popoverViewController {
             displayPopover()
-        } else {        
+        } else {
             presentingViewController?.present(popoverViewController, animated: false, completion: displayPopover)
         }
     }
     
+    /**
+     Dismiss a popover.
+     
+     - parameter transaction: An optional transaction that can be applied for the dismissal animation.
+     */
     public func dismiss(transaction: Transaction? = nil) {
         guard let presentingViewController = context.presentedPopoverViewController else { return }
         
-        context.dismissed?()
+        /// Let the internal SwiftUI modifiers know that the popover was automatically dismissed.
+        context.onDismiss?()
+        
+        /// Let the client know that the popover was automatically dismissed.
         attributes.onDismiss?()
         
         let model = presentingViewController.popoverModel
         let dismissalTransaction = transaction ?? Transaction(animation: attributes.dismissal.animation)
         
+        /// Clean up the container view controller if no more popovers are visible.
         context.onDisappear = {
             if model.popovers.isEmpty {
                 presentingViewController.dismiss(animated: false)
             }
         }
         
+        /// Remove this popover from the view model, dismissing it.
         withTransaction(dismissalTransaction) {
             model.remove(self)
         }
     }
     
+    /**
+     Replace a popover with another popover smoothly.
+     */
     public func replace(with newPopover: Popover) {
         guard let popoverContainerViewController = context.presentedPopoverViewController else { return }
         
@@ -98,8 +128,15 @@ extension Popover {
     
 }
 
-private extension UIViewController {
+extension UIViewController {
     
+    /// Present a `Popover` using this `UIViewController` as its presentation context.
+    public func present(_ popoverToPresent: Popover) {
+        guard let window = view.window else { return }
+        popoverToPresent.present(in: window)
+    }
+    
+    /// Get the frontmost view controller.
     var topmostViewController: UIViewController {
         if let presented = presentedViewController {
             return presented.topmostViewController
@@ -107,5 +144,4 @@ private extension UIViewController {
             return self
         }
     }
-    
 }

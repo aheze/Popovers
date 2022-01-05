@@ -130,12 +130,17 @@ struct PopoverContainerView: View {
         
     }
     
+    /// Create an array of indices + popovers for easier indexing.
     func getPopovers() -> [(Int, Popover)] {
         let popovers = popoverModel.popovers
         return Array(zip(popovers.indices, popovers))
     }
     
-    /// Apply edge padding **only** to the bottom and right - the top and left are set via the frame origin in `Popover.swift`.
+    /**
+     Apply edge padding to squish the available space, preventing screen overflow.
+     
+     Since the popover's top and left are set via the frame origin in `Popover.swift`, only apply padding to the bottom and right.
+     */
     func edgeInsets(for popover: Popover) -> EdgeInsets {
         let horizontalInsets = popover.attributes.screenEdgePadding.left + popover.attributes.screenEdgePadding.right
         let verticalInsets = popover.attributes.screenEdgePadding.top + popover.attributes.screenEdgePadding.bottom

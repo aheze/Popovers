@@ -1,15 +1,25 @@
+//
+//  PopoverModels+Windows.swift
+//  Popovers
+//
+//  Created by A. Zheng (github.com/aheze) on 1/4/22.
+//  Copyright © 2022 A. Zheng. All rights reserved.
+//
+    
+
 import UIKit
 
-/// A map of `PopoverModel`s scoped to
+/// A map of `PopoverModel`s scoped to each window.
 class WindowPopoverModels {
     
     /// The singleton `WindowPopoverMap` instance.
     static let shared = WindowPopoverModels()
     
-    /// Aggregates the collection of models applicable to each `UIWindow` in the application.
-    ///
-    /// `UIWindow` references are weakly retained to avoid us leaking application scenes that have been disposed of
-    /// by iOS, e.g. when dismissed from the multitasking UI or explicitly closed by the app.
+    /**
+     Aggregates the collection of models applicable to each `UIWindow` in the application.
+     
+     `UIWindow` references are weakly retained to avoid us leaking application scenes that have been disposed of by iOS, e.g. when dismissed from the multitasking UI or explicitly closed by the app.
+     */
     private var windowModels = [Weak<UIWindow>: PopoverModel]()
     
     private init() {

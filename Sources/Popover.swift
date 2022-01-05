@@ -340,7 +340,7 @@ public struct Popover: Identifiable {
     }
     
     /**
-     The popover's view model (stores attributes, frame, and other visible traits)
+     The popover's view model (stores attributes, frame, and other visible traits).
      */
     public class Context: Identifiable, ObservableObject {
         
@@ -365,7 +365,7 @@ public struct Popover: Identifiable {
         /// For animation syncing. If this is not nil, the popover is in the middle of a frame refresh.
         public var transaction: Transaction?
         
-        /// Notify when context changed.
+        /// Notify when the context changed.
         public var changeSink: AnyCancellable?
         
         /// Indicates whether the popover can be dragged.
@@ -378,16 +378,21 @@ public struct Popover: Identifiable {
             }
         }
         
-        /// The bounds of the window in which the `Popover` is being presented, or the `zero` frame if the popover has
-        /// not been presented yet.
+        /**
+         The bounds of the window in which the `Popover` is being presented, or the `zero` frame if the popover has not been presented yet.
+         */
         public var windowBounds: CGRect {
             presentedPopoverViewController?.view.window?.bounds ?? .zero
         }
         
-        /// For the SwiftUI `.popover` view modifier - set `$present` to false when this is called.
-        internal var dismissed: (() -> Void)?
+        /**
+         For the SwiftUI `.popover` view modifier - set `$present` to false when this is called.
+         
+         This is for internal use only - use `Popover.Attributes.onDismiss` if you want to know when the popover is dismissed.
+         */
+        internal var onDismiss: (() -> Void)?
         
-        /// Invoked by the SwiftUI container view when the view has disappeared.
+        /// Invoked by the SwiftUI container view when the view has fully disappeared.
         internal var onDisappear: (() -> Void)?
         
         /// The `PopoverContainerViewController` presenting this `Popover`, or `nil` if the popover is currently not being presented.
@@ -411,22 +416,21 @@ public struct Popover: Identifiable {
          
          This is what `.popover(selection:tag:attributes:view:)` in SwiftUI uses.
          */
-        public func replace(_ oldPopover: Popover, with newPopover: Popover) {
-            popoverModel?.replace(oldPopover, with: newPopover)
-        }
+//        public func replace(_ oldPopover: Popover, with newPopover: Popover) {
+//            popoverModel?.replace(oldPopover, with: newPopover)
+//        }
         
         /**
          Get a currently-presented popover with a tag. Returns `nil` if no popover with the tag was found.
          - parameter tag: The tag of the popover to look for.
          */
-        public func popover(tagged tag: String) -> Popover? {
-            return popoverModel?.popover(tagged: tag)
-        }
+//        public func popover(tagged tag: String) -> Popover? {
+//            return popoverModel?.popover(tagged: tag)
+//        }
         
         /**
          Get the saved frame of a frame-tagged view. You must first set the frame using `.frameTag(_:)`.
          - parameter tag: The tag that you used for the frame.
-         
          - Returns: The frame of a frame-tagged view, or `nil` if no view with the tag exists.
          */
         public func frameTagged(_ tag: String) -> CGRect {

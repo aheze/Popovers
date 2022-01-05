@@ -6,7 +6,7 @@ extension UIResponder {
     /// The `PopoverModel` in the current responder chain.
     ///
     /// Each responder chain hosts a single `PopoverModel` at the window level. Each scene containing
-    /// a seperate window will contain its own `PopoverModel`, scoping the layout code to each window.
+    /// a separate window will contain its own `PopoverModel`, scoping the layout code to each window.
     ///
     /// - Important: Attempting to request the `PopoverModel` for a responder not present in the chain is programmer error.
     var popoverModel: PopoverModel {
@@ -50,16 +50,6 @@ extension UIResponder {
      */
     public func popover(tagged tag: String) -> Popover? {
         return popoverModel.popover(tagged: tag)
-    }
-    
-    /**
-     Get the saved frame of a frame-tagged view. You must first set the frame using `.frameTag(_:)`.
-     - parameter tag: The tag that you used for the frame.
-     
-     - Returns: The frame of a frame-tagged view, or `nil` if no view with the tag exists.
-     */
-    public func frameTagged(_ tag: String) -> CGRect {
-        return popoverModel.frameTagged(tag)
     }
     
 }
