@@ -400,7 +400,7 @@ public struct Popover: Identifiable {
 
         /// The `PopoverModel` managing the `Popover`. Sourced from the `presentedPopoverViewController`.
         private var popoverModel: PopoverModel? {
-            presentedPopoverViewController?.popoverModel
+            return presentedPopoverViewController?.popoverModel
         }
 
         /// Create a context for the popover. You shouldn't need to use this - it's done automatically when you create a new popover.

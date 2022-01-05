@@ -33,10 +33,8 @@ class PopoverModel: ObservableObject {
     @Published var selectionFrameTags: [String: CGRect] = [:]
 
     /// Force the container view to update.
-    func refresh() {
-        DispatchQueue.main.async {
-            self.objectWillChange.send()
-        }
+    func update() {
+        self.objectWillChange.send()
     }
 
     /**
@@ -51,7 +49,7 @@ class PopoverModel: ObservableObject {
         }
 
         /// Update all popovers.
-        refresh()
+        update()
     }
 
     /// Adds a `Popover` to this model/
@@ -100,7 +98,7 @@ class PopoverModel: ObservableObject {
             }
         }
 
-        refresh()
+        update()
     }
 
     /// Access this with `UIResponder.frameTagged(_:)` if inside a `WindowReader`, or `Popover.Context.frameTagged(_:)` if inside a `PopoverReader.`
