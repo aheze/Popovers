@@ -42,7 +42,7 @@ struct TipView: View {
                 
                 PopoverTemplates.CurveConnector(
                     start: context.frame.point(at: .bottom),
-                    end: context.frameTagged("TipView").point(at: .top)
+                    end: context.window.frameTagged("TipView").point(at: .top)
                 )
                     .stroke(
                         Color(UIColor(hex: 0xFFAD46)),
@@ -58,7 +58,7 @@ struct TipView: View {
                     .fill(Color(UIColor(hex: 0xFFAD46)))
                     .frame(width: 16, height: 16)
                     .position(
-                        context.frameTagged("TipView").point(at: .top)
+                        context.window.frameTagged("TipView").point(at: .top)
                     )
             }
         }
