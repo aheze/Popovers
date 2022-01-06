@@ -8,7 +8,7 @@ A library to present popovers.
 - Display multiple popovers at the same time with smooth transitions.
 - Supports SwiftUI, UIKit, and multitasking windows on iPadOS.
 - Highly customizable API that's super simple — just add `.popover`.
-- Written in SwiftUI with no dependencies.
+- Written in SwiftUI with 0 dependencies.
 
 ## Showroom
 
@@ -282,7 +282,7 @@ Anchor Reference | `.absolute(originAnchor: .bottom, popoverAnchor: .topLeft)` |
 ![](Assets/Anchors.png) | ![](Assets/Absolute.png) | ![](Assets/Relative.png)
 
 ### ⬜ Source Frame • `(() -> CGRect)`
-This is the frame that the popover attaches to or is placed within, depending on its position. This must be in global window coordinates. Because frames are can change so often, this property is a closure. Whenever the device rotates or some other bounds change happens, the closure will be called.
+This is the frame that the popover attaches to or is placed within, depending on its position. This must be in global window coordinates. Because frames are can change so often, this property is a closure. Whenever the device rotates or some other bounds update happens, the closure will be called.
 
 
 <table>
@@ -292,7 +292,7 @@ This is the frame that the popover attaches to or is placed within, depending on
 SwiftUI
 </strong>
 <br>
-The source frame is automatically set to the parent view. You can still override it if you want.
+By default, the source frame is automatically set to the parent view. Setting this will override it.
 </td>
 <td>
 <strong>
@@ -579,7 +579,7 @@ This reads the popover's context, which contains its frame, window, attributes, 
 | --- |
 
 ### 🏷 Frame Tags
-Popovers provides a mechanism for tagging and reading SwiftUI view frames. You can use this to provide a popover's `sourceFrame` or `excludedFrames`. As convenient as it is, don't use it for anything else, due to possible state issues.
+Popovers includes a mechanism for tagging and reading SwiftUI view frames. You can use this to provide a popover's `sourceFrame` or `excludedFrames`. Also works great when combined with `PopoverReader`, for connecting lines with anchor views.
 
 ```swift
 Text("This is a view")
@@ -708,7 +708,7 @@ PopoverReader { context in
 ```
 
 ### Popover Hierarchy
-To bring a popover to front, just attach [`.zIndex(_:)`](https://developer.apple.com/documentation/swiftui/view/zindex(_:)). A higher index will bring it forwards.
+Manage a popover's z-axis level by attaching [`.zIndex(_:)`](https://developer.apple.com/documentation/swiftui/view/zindex(_:)) to its view. A higher index will bring it forwards.
 
 
 ## Community
@@ -716,7 +716,7 @@ To bring a popover to front, just attach [`.zIndex(_:)`](https://developer.apple
 Popovers is made by [aheze](https://github.com/aheze).
 
 ### Contributing
-All contributions are welcome. Just fork the repo, then make a pull request.
+All contributions are welcome. Just [fork](https://github.com/aheze/Popovers/fork) the repo, then make a pull request.
 
 ### Need Help?
 Open an [issue](https://github.com/aheze/Popovers/issues) or join the [Discord server](https://discord.com/invite/Pmq8fYcus2). You can also ping me on [Twitter](https://twitter.com/aheze0). Or read the source code — there's lots of comments.
