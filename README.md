@@ -8,7 +8,7 @@ A library to present popovers.
 - Display multiple popovers at the same time with smooth transitions.
 - Supports SwiftUI, UIKit, and multitasking windows on iPadOS.
 - Highly customizable API that's super simple — just add `.popover`.
-- Lightweight (~120kb) library with no dependencies.
+- Written in SwiftUI with no dependencies.
 
 ## Showroom
 
@@ -92,7 +92,7 @@ I wrote the example app with Swift Playgrounds 4, so you can run it right on you
 ![Example app](Assets/ExampleApp.png)
 
 ## Installation
-Requires iOS 13+. Popovers can be installed through the Swift Package Manager (recommended) or [Cocoapods](https://cocoapods.org/).
+Requires iOS 13+. Popovers can be installed through the [Swift Package Manager](https://developer.apple.com/documentation/swift_packages/adding_package_dependencies_to_your_app) (recommended) or [Cocoapods](https://cocoapods.org/).
 
 <table>
 <tr>
@@ -134,7 +134,7 @@ pod 'Popovers'
 
 ## Usage
 
-To present a popover in SwiftUI, use the `.popover(present:attributes:view)` modifier. By default, the popover uses the parent view as the source frame.
+To present a popover in SwiftUI, use the `.popover(present:attributes:view)` modifier. By default, the popover uses its parent view as the source frame.
 
 ```swift
 import SwiftUI
@@ -240,12 +240,12 @@ Modify the <code>attributes</code> property.
 var popover = Popover {
     Text("Hi, I'm a popover.")
 }
+
 popover.attributes.position = .absolute(
     originAnchor: .bottom,
     popoverAnchor: .topLeft
 )
 
-/// Where `self` is a `UIViewController`.
 present(popover)
 ```
 </td>
