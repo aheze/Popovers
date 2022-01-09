@@ -69,6 +69,32 @@ struct ContentSizeReaderPreferenceKey: PreferenceKey {
     static func reduce(value: inout CGSize, nextValue: () -> CGSize) { value = nextValue() }
 }
 
+extension UIViewController {
+    func add(childViewController: UIViewController, in view: UIView) {
+        /// Add Child View Controller
+        addChild(childViewController)
+        
+        /// Add Child View as Subview
+        view.addSubview(childViewController.view)
+        
+        childViewController.view.layer.zPosition = .infinity
+        
+        /// Configure Child View
+        childViewController.view.frame = view.bounds
+        childViewController.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        
+        /// Notify Child View Controller
+        childViewController.didMove(toParent: self)
+    }
+    
+    func remove() {
+        /// Notify parent
+        self.willMove(toParent: nil)
+        self.view.removeFromSuperview()
+        self.removeFromParent()
+    }
+}
+
 public extension UIColor {
     /**
      Create a UIColor from a hex code.

@@ -96,9 +96,10 @@ extension UIResponder {
      - Important: Attempting to request the `PopoverModel` for a responder not present in the chain is programmer error.
      */
     var popoverModel: PopoverModel {
-        /// If we're a view, continue to walk up the responder chain until we hit the root view.
-        if let view = self as? UIView, let superview = view.superview {
-            return superview.popoverModel
+        
+        /// If we're a view, get the model from the window.
+        if let view = self as? UIView, let window = view.window {
+            return WindowPopoverModels.shared.popoverModel(for: window)
         }
 
         /// If we're a window, we define the scoping for the model - access it.

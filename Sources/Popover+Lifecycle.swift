@@ -23,42 +23,39 @@ public extension Popover {
         context.transaction = transaction
 
         /// Locate the topmost presented `UIViewController` in this window. We'll be presenting on top of this one.
-        let presentingViewController = window.rootViewController?.topmostViewController
-
-        /// There may already be a view controller presenting another popover - if so, let's use that.
-        let popoverViewController: PopoverContainerViewController
-
-        /// Get the popover model that's tied to the window.
-        let model = window.popoverModel
-
-        if let existingPopoverViewController = presentingViewController as? PopoverContainerViewController {
-            popoverViewController = existingPopoverViewController
-        } else {
-            popoverViewController = PopoverContainerViewController()
+        guard let topmostViewController = window.rootViewController else {
+            print("[Popovers] - No view controller was found.  Please file a bug report (https://github.com/aheze/Popovers/issues)")
+            return
         }
 
-        context.presentedPopoverViewController = popoverViewController
-
-        /**
-         Add the popover to the container view.
-         */
-        let displayPopover: () -> Void = {
+        /// Add the popover to the container view.
+        let addPopover = {
+            /// Get the popover model that's tied to the window.
+            let model = window.popoverModel
+            
             withTransaction(transaction) {
                 model.add(self)
             }
         }
-
-        if presentingViewController === popoverViewController {
-            displayPopover()
+        
+        /// If there is an existing popover container view controller, use it.
+        if let existingPopoverViewController = topmostViewController.children.first(where: { $0 is PopoverContainerViewController }) as? PopoverContainerViewController {
+            context.presentedPopoverViewController = existingPopoverViewController
+            addPopover()
         } else {
+            let newPopoverViewController = PopoverContainerViewController()
+            context.presentedPopoverViewController = newPopoverViewController
+            topmostViewController.add(
+                childViewController: newPopoverViewController,
+                in: topmostViewController.view
+            )
             
-            /**
-             If we've prepared a new controller to present, then do so.
-             This isn't animated as we perform the popover animation inside the container view instead -
-             the view controller hosts the container that animates.
-             */
-            presentingViewController?.present(popoverViewController, animated: false, completion: displayPopover)
+            /// Add a slight delay to ensure the view controller has ben added.
+            DispatchQueue.main.async {
+                addPopover()
+            }
         }
+
     }
 
     /**
@@ -81,7 +78,7 @@ public extension Popover {
         /// Clean up the container view controller if no more popovers are visible.
         context.onDisappear = {
             if model.popovers.isEmpty {
-                presentingViewController.dismiss(animated: false)
+                presentingViewController.remove()
             }
         }
 
