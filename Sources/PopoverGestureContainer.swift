@@ -92,7 +92,7 @@ class PopoverGestureContainer: UIView {
                 let excludedFrames = popover.attributes.dismissal.excludedFrames()
                 if excludedFrames.contains(where: { $0.contains(point) }) {
                     /// The touch hit an excluded view, so don't dismiss it.
-                    continue
+                    return super.hitTest(point, with: event)
                 }
             }
 
@@ -101,7 +101,7 @@ class PopoverGestureContainer: UIView {
         }
 
         /// The touch did not hit any popover, so pass it through to the hit testing target.
-        return super.hitTest(point, with: event)
+        return nil
     }
     
 }
