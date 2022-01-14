@@ -39,21 +39,7 @@ public class PopoverContainerViewController: UIViewController {
         /**
          Instantiate the base `view`.
          */
-        popoverGestureContainerView = PopoverGestureContainer(windowAvailable: { [unowned self] window in
-            /// Embed `PopoverContainerView` in a view controller.
-            let popoverContainerView = PopoverContainerView(popoverModel: popoverModel)
-                .environment(\.window, window)
-
-            let hostingController = UIHostingController(rootView: popoverContainerView)
-            hostingController.view.frame = view.bounds
-            hostingController.view.backgroundColor = .clear
-            hostingController.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-
-            addChild(hostingController)
-            view.addSubview(hostingController.view)
-            hostingController.didMove(toParent: self)
-        })
-
+        popoverGestureContainerView = PopoverGestureContainer()
         view = popoverGestureContainerView
         view.backgroundColor = .clear
         view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -67,31 +53,26 @@ public class PopoverContainerViewController: UIViewController {
         popoverGestureContainerView?.presentingViewGestureTarget = presentingViewController?.view
     }
 
-    override public func didMove(toParent parent: UIViewController?) {
-        super.didMove(toParent: parent)
-    }
-
     private class PopoverGestureContainer: UIView {
-        private let windowAvailable: (UIWindow) -> Void
 
         /// The `UIView` to forward hit tests to when a check fails in this view.
         weak var presentingViewGestureTarget: UIView?
-
-        init(windowAvailable: @escaping (UIWindow) -> Void) {
-            self.windowAvailable = windowAvailable
-            super.init(frame: .zero)
-        }
-
-        @available(*, unavailable)
-        required init?(coder _: NSCoder) {
-            fatalError("init(coder:) has not been implemented")
-        }
 
         override func didMoveToWindow() {
             super.didMoveToWindow()
 
             if let window = window {
-                windowAvailable(window)
+                let popoverContainerView = PopoverContainerView(popoverModel: popoverModel)
+                    .environment(\.window, window)
+                
+                let hostingController = UIHostingController(rootView: popoverContainerView)
+                hostingController.view.frame = bounds
+                hostingController.view.backgroundColor = .clear
+                hostingController.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+
+                addSubview(hostingController.view)
+                setNeedsLayout()
+                layoutIfNeeded()
             }
         }
 
