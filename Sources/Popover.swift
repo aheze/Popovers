@@ -370,7 +370,7 @@ public struct Popover: Identifiable {
         }
 
         public var window: UIWindow {
-            if let window = presentedPopoverViewController?.view.window {
+            if let window = presentedPopoverContainer?.window {
                 return window
             } else {
                 print("This popover is not tied to a window. Please file a bug report (https://github.com/aheze/Popovers/issues)")
@@ -382,7 +382,7 @@ public struct Popover: Identifiable {
          The bounds of the window in which the `Popover` is being presented, or the `zero` frame if the popover has not been presented yet.
          */
         public var windowBounds: CGRect {
-            presentedPopoverViewController?.view.window?.bounds ?? .zero
+            presentedPopoverContainer?.window?.bounds ?? .zero
         }
 
         /**
@@ -395,12 +395,12 @@ public struct Popover: Identifiable {
         /// Invoked by the SwiftUI container view when the view has fully disappeared.
         internal var onDisappear: (() -> Void)?
 
-        /// The `PopoverContainerViewController` presenting this `Popover`, or `nil` if the popover is currently not being presented.
-        internal var presentedPopoverViewController: PopoverContainerViewController?
+        /// The `UIView` presenting this `Popover`, or `nil` if the popover is currently not being presented.
+        internal var presentedPopoverContainer: UIView?
 
         /// The `PopoverModel` managing the `Popover`. Sourced from the `presentedPopoverViewController`.
         private var popoverModel: PopoverModel? {
-            return presentedPopoverViewController?.popoverModel
+            return presentedPopoverContainer?.popoverModel
         }
 
         /// Create a context for the popover. You shouldn't need to use this - it's done automatically when you create a new popover.
@@ -444,7 +444,7 @@ public extension Popover {
 
     /// Calculate the popover's frame based on it's size and position.
     func getFrame(from size: CGSize?) -> CGRect {
-        guard let window = context.presentedPopoverViewController?.view.window else { return .zero }
+        guard let window = context.presentedPopoverContainer?.window else { return .zero }
 
         switch attributes.position {
         case let .absolute(originAnchor, popoverAnchor):
