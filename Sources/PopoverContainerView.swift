@@ -37,8 +37,11 @@ struct PopoverContainerView: View {
                         /// Have VoiceOver read the popover view first, before the dismiss button.
                         .accessibility(sortPriority: 1)
 
-                    /// If a `dismissButtonLabel` was set, show it.
-                    if let dismissButtonLabel = popover.attributes.accessibility.dismissButtonLabel {
+                    /// If VoiceOver is on and a `dismissButtonLabel` was set, show it.
+                    if
+                        UIAccessibility.isVoiceOverRunning,
+                        let dismissButtonLabel = popover.attributes.accessibility.dismissButtonLabel
+                    {
                         Button {
                             popover.dismiss()
                         } label: {

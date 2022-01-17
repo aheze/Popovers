@@ -24,7 +24,7 @@ class PopoverGestureContainer: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
 
-        /// Orientation or screen bounds changed. Update popover frames.
+        /// Orientation or screen bounds changed, so update popover frames.
         popoverModel.updateFrames()
     }
 
@@ -32,9 +32,7 @@ class PopoverGestureContainer: UIView {
         super.didMoveToWindow()
 
         /// There might not be a window yet, but that's fine. Just wait until there's actually a window.
-        guard let window = window else {
-            return
-        }
+        guard let window = window else { return }
 
         /// Create the SwiftUI view that contains all the popovers.
         let popoverContainerView = PopoverContainerView(popoverModel: popoverModel)

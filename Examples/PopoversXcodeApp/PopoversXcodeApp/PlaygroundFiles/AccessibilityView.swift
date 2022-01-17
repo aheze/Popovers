@@ -48,13 +48,19 @@ struct AccessibilityView: View {
 
                         Text("By default, a \(Image(systemName: "xmark.circle.fill")) button will appear next to popovers when VoiceOver is on. You can customize this with `attributes.accessibility.dismissButtonLabel`.")
                     }
+                    
+                    HStack {
+                        ExampleImage.tip
+
+                        Text("If you already have a button that sets `present` to `false`, remove the default dismiss button with `dismissButtonLabel = nil`.")
+                    }
                 }
             }
             .padding()
             .background(.background)
             .cornerRadius(12)
             .shadow(radius: 1)
-            .frame(maxWidth: 300)
+            .frame(maxWidth: 500)
         }
     }
 }
