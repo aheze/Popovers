@@ -34,7 +34,7 @@ class PopoverModel: ObservableObject {
 
     /// Force the container view to update.
     func update() {
-        self.objectWillChange.send()
+        objectWillChange.send()
     }
 
     /**
@@ -56,7 +56,7 @@ class PopoverModel: ObservableObject {
     func add(_ popover: Popover) {
         popovers.append(popover)
     }
-    
+
     /// Removes a `Popover` from this model.
     func remove(_ popover: Popover) {
         popovers.removeAll { candidate in
