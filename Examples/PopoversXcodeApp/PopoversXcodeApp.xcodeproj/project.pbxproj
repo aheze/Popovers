@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3CA34FAC279533E300AC36DF /* AccessibilityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CA34FAB279533E300AC36DF /* AccessibilityView.swift */; };
 		3CBD875E27755E45005BBA48 /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CBD875D27755E45005BBA48 /* App.swift */; };
 		3CBD876527755E50005BBA48 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CBD875F27755E50005BBA48 /* ContentView.swift */; };
 		3CBD876627755E50005BBA48 /* UIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CBD876027755E50005BBA48 /* UIKit.swift */; };
@@ -44,6 +45,7 @@
 
 /* Begin PBXFileReference section */
 		3C6C745127822EE600E039F0 /* Popovers */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Popovers; path = ../..; sourceTree = "<group>"; };
+		3CA34FAB279533E300AC36DF /* AccessibilityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessibilityView.swift; sourceTree = "<group>"; };
 		3CBD874C27755E19005BBA48 /* PopoversXcodeApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PopoversXcodeApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3CBD875D27755E45005BBA48 /* App.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
 		3CBD875F27755E50005BBA48 /* ContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -133,6 +135,7 @@
 				3CBD876F27755E57005BBA48 /* NestedView.swift */,
 				3CBD877027755E57005BBA48 /* SelectionView.swift */,
 				3CBD877127755E57005BBA48 /* BasicView.swift */,
+				3CA34FAB279533E300AC36DF /* AccessibilityView.swift */,
 				3CBD877227755E57005BBA48 /* BackgroundView.swift */,
 				3CBD877327755E57005BBA48 /* RelativePositioningView.swift */,
 				3CBD877427755E57005BBA48 /* PopoverReaderView.swift */,
@@ -269,6 +272,7 @@
 				3CBD876627755E50005BBA48 /* UIKit.swift in Sources */,
 				3CBD877E27755E57005BBA48 /* BackgroundView.swift in Sources */,
 				3CBD876A27755E50005BBA48 /* Showroom.swift in Sources */,
+				3CA34FAC279533E300AC36DF /* AccessibilityView.swift in Sources */,
 				3CBD877F27755E57005BBA48 /* RelativePositioningView.swift in Sources */,
 				3CBD876727755E50005BBA48 /* Utilities.swift in Sources */,
 				3CBD879027755E5B005BBA48 /* VideoView.swift in Sources */,

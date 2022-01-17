@@ -31,12 +31,24 @@ struct PopoverContainerView: View {
                 popover.background
 
                 /// Show the popover's main content view.
-                popover
-                    .view
+                HStack(alignment: .top) {
+                    popover.view
+                    
+                    /// Have VoiceOver read the popover view first, before the dismiss button.
+                        .accessibility(sortPriority: 1)
+                    
+                    /// If a `dismissButtonLabel` was set, show it.
+                    if let dismissButtonLabel = popover.attributes.accessibility.dismissButtonLabel {
+                        Button {
+                            popover.dismiss()
+                        } label: {
+                            dismissButtonLabel
+                        }
+                    }
+                }
                     .onDisappear {
                         popover.context.onDisappear?()
                     }
-
                     /// Hide the popover until its size has been calculated.
                     .opacity(popover.context.size != nil ? 1 : 0)
 

@@ -20,6 +20,7 @@ class PopoverGestureContainer: UIView {
         
         /// Allow resizing.
         self.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        
     }
     
     override func layoutSubviews() {
@@ -32,8 +33,8 @@ class PopoverGestureContainer: UIView {
     override func didMoveToWindow() {
         super.didMoveToWindow()
         
+        /// There might not be a window yet, but that's fine. Just wait until there's actually a window.
         guard let window = window else {
-            print("[Popovers] - `PopoverGestureContainer` does not have a parent window. Please file a bug report (https://github.com/aheze/Popovers/issues).")
             return
         }
         
@@ -62,6 +63,7 @@ class PopoverGestureContainer: UIView {
      The popover container view takes up the entire screen, so normally it would block all touches from going through. This method fixes that.
      */
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        
         /// Make sure the hit event was actually a touch and not a cursor hover or something else.
         guard event.map({ $0.type == .touches }) ?? true else { return nil }
 
@@ -129,6 +131,6 @@ class PopoverGestureContainer: UIView {
     
     /// Boilerplate code.
     required init?(coder: NSCoder) {
-        fatalError("Create `PopoverContainerView` programatically.")
+        fatalError("[Popovers] - Create this view programmatically.")
     }
 }

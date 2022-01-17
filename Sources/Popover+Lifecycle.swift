@@ -28,9 +28,20 @@ public extension Popover {
         /**
          Add the popover to the container view.
          */
-        let displayPopover = {
+        func displayPopover(in container: PopoverGestureContainer) {
             withTransaction(transaction) {
                 model.add(self)
+                
+                /// Stop VoiceOver from reading out background views if `blocksBackgroundTouches` is true.
+                if attributes.blocksBackgroundTouches {
+                    container.accessibilityViewIsModal = true
+                }
+                
+                
+                /// Shift VoiceOver focus to the popover.
+                if attributes.accessibility.shiftFocus {
+                    UIAccessibility.post(notification: .screenChanged, argument: nil)
+                }
             }
         }
         
@@ -40,7 +51,7 @@ public extension Popover {
             container = existingContainer
             
             /// The container is already laid out in the window, so we can go ahead and show the popover.
-            displayPopover()
+            displayPopover(in: container)
         } else {
             container = PopoverGestureContainer(frame: window.bounds)
             
@@ -48,7 +59,9 @@ public extension Popover {
              Wait until the container is present in the view hierarchy before showing the popover,
              otherwise all the layout math will be working with wonky frames.
              */
-            container.onMovedToWindow = displayPopover
+            container.onMovedToWindow = {
+                displayPopover(in: container)
+            }
             
             window.addSubview(container)
         }
@@ -80,6 +93,9 @@ public extension Popover {
                 context.presentedPopoverContainer?.removeFromSuperview()
                 context.presentedPopoverContainer = nil
             }
+            
+            /// If at least one popover has `blocksBackgroundTouches` set to true, stop VoiceOver from reading out background views
+            context.presentedPopoverContainer?.accessibilityViewIsModal = model.popovers.contains { $0.attributes.blocksBackgroundTouches }
         }
 
         /// Remove this popover from the view model, dismissing it.

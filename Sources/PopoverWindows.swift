@@ -111,7 +111,7 @@ extension UIResponder {
             return viewController.view.popoverModel
         }
 
-        fatalError("No `PopoverModel` present in responder chain (\(self)) - has the source view been installed into a window?")
+        fatalError("[Popovers] - No `PopoverModel` present in responder chain (\(self)) - has the source view been installed into a window?")
     }
 }
 
