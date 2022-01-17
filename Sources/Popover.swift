@@ -102,7 +102,7 @@ public struct Popover: Identifiable {
 
         /// Prevent views underneath the popover from being pressed.
         public var blocksBackgroundTouches = false
-        
+
         /// Stores accessibility values.
         public var accessibility = Accessibility()
 
@@ -334,21 +334,19 @@ public struct Popover: Identifiable {
                 public static let none = Mode([])
             }
         }
-        
+
         /// Define VoiceOver behavior.
         public struct Accessibility {
-            
             /// Focus the popover when presented.
             public var shiftFocus = true
-            
+
             /**
              A view that's only shown when VoiceOver is running. Dismisses the popover when tapped.
-             
+
              Tap-outside-to-dismiss is unsupported in VoiceOver, so this provides an alternate method for dismissal.
              */
             public var dismissButtonLabel: AnyView? = defaultDismissButtonLabel
 
-            
             /// Create the default VoiceOver behavior for the popover.
             public init(
                 shiftFocus: Bool = true,
@@ -357,7 +355,7 @@ public struct Popover: Identifiable {
                 self.shiftFocus = shiftFocus
                 self.dismissButtonLabel = dismissButtonLabel?()
             }
-            
+
             /// The default voiceover dismiss button view, an X
             public static let defaultDismissButtonLabel: AnyView = .init(
                 AnyView(
@@ -447,7 +445,9 @@ public struct Popover: Identifiable {
         public init() {
             changeSink = objectWillChange.sink { [weak self] in
                 guard let self = self else { return }
-                self.attributes.onContextChange?(self)
+                DispatchQueue.main.async {
+                    self.attributes.onContextChange?(self)
+                }
             }
         }
     }

@@ -115,7 +115,6 @@ extension UIResponder {
     }
 }
 
-
 public extension UIResponder {
     /**
      Get a currently-presented popover with a tag. Returns `nil` if no popover with the tag was found.

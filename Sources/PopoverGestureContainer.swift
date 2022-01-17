@@ -10,49 +10,47 @@ import SwiftUI
 
 /// A hosting view for `PopoverContainerView` with tap filtering.
 class PopoverGestureContainer: UIView {
-    
     /// A closure to be invoked when this view is inserted into a window's view hierarchy.
     var onMovedToWindow: (() -> Void)?
 
     /// Create a new `PopoverGestureContainer`.
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
+
         /// Allow resizing.
-        self.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        
+        autoresizingMask = [.flexibleWidth, .flexibleHeight]
     }
-    
+
     override func layoutSubviews() {
         super.layoutSubviews()
-        
+
         /// Orientation or screen bounds changed. Update popover frames.
         popoverModel.updateFrames()
     }
-    
+
     override func didMoveToWindow() {
         super.didMoveToWindow()
-        
+
         /// There might not be a window yet, but that's fine. Just wait until there's actually a window.
         guard let window = window else {
             return
         }
-        
+
         /// Create the SwiftUI view that contains all the popovers.
         let popoverContainerView = PopoverContainerView(popoverModel: popoverModel)
             .environment(\.window, window) /// Inject the window.
-        
+
         let hostingController = UIHostingController(rootView: popoverContainerView)
         hostingController.view.frame = bounds
         hostingController.view.backgroundColor = .clear
         hostingController.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        
+
         addSubview(hostingController.view)
-        
+
         /// Ensure the view is laid out so that SwiftUI animations don't stutter.
         setNeedsLayout()
         layoutIfNeeded()
-        
+
         /// Let the presenter know that its window is available.
         onMovedToWindow?()
     }
@@ -63,7 +61,6 @@ class PopoverGestureContainer: UIView {
      The popover container view takes up the entire screen, so normally it would block all touches from going through. This method fixes that.
      */
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-        
         /// Make sure the hit event was actually a touch and not a cursor hover or something else.
         guard event.map({ $0.type == .touches }) ?? true else { return nil }
 
@@ -128,9 +125,10 @@ class PopoverGestureContainer: UIView {
         /// The touch did not hit any popover, so pass it through to the hit testing target.
         return nil
     }
-    
+
     /// Boilerplate code.
-    required init?(coder: NSCoder) {
+    @available(*, unavailable)
+    required init?(coder _: NSCoder) {
         fatalError("[Popovers] - Create this view programmatically.")
     }
 }

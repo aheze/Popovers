@@ -39,22 +39,22 @@ struct AccessibilityView: View {
 
                     HStack {
                         ExampleImage("speaker.wave.2", color: 0x0021FF)
-                        
+
                         Text("By default, VoiceOver will read out the popover when it's presented. You can change this with `attributes.accessibility.shiftFocus`.")
                     }
-                    
+
                     HStack {
                         ExampleImage("hand.thumbsup", color: 0x0021FF)
-                        
+
                         Text("By default, a \(Image(systemName: "xmark.circle.fill")) button will appear next to popovers when VoiceOver is on. You can customize this with `attributes.accessibility.dismissButtonLabel`.")
                     }
                 }
             }
-                .padding()
-                .background(.background)
-                .cornerRadius(12)
-                .shadow(radius: 1)
-                .frame(maxWidth: 300)
+            .padding()
+            .background(.background)
+            .cornerRadius(12)
+            .shadow(radius: 1)
+            .frame(maxWidth: 300)
         }
     }
 }
