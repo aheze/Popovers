@@ -123,6 +123,14 @@ class PopoverGestureContainer: UIView {
         /// The touch did not hit any popover, so pass it through to the hit testing target.
         return nil
     }
+    
+    override func accessibilityPerformEscape() -> Bool {
+        for popover in popoverModel.popovers {
+            popover.dismiss(transaction: nil)
+        }
+        
+        return true
+    }
 
     /// Boilerplate code.
     @available(*, unavailable)
