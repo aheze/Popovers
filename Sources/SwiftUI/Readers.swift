@@ -88,7 +88,7 @@ public struct WindowReader<Content: View>: View {
 
         @available(*, unavailable)
         required init?(coder _: NSCoder) {
-            fatalError("init(coder:) has not been implemented")
+            fatalError("[Popovers] - Create this view programmatically.")
         }
 
         override func didMoveToWindow() {

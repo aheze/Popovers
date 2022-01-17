@@ -103,6 +103,9 @@ public struct Popover: Identifiable {
         /// Prevent views underneath the popover from being pressed.
         public var blocksBackgroundTouches = false
 
+        /// Stores accessibility values.
+        public var accessibility = Accessibility()
+
         /// Called when the user taps outside the popover.
         public var onTapOutside: (() -> Void)?
 
@@ -125,6 +128,7 @@ public struct Popover: Identifiable {
             dismissal: Popover.Attributes.Dismissal = Dismissal(),
             rubberBandingMode: Popover.Attributes.RubberBandingMode = [.xAxis, .yAxis],
             blocksBackgroundTouches: Bool = false,
+            accessibility: Accessibility = Accessibility(),
             onTapOutside: (() -> Void)? = nil,
             onDismiss: (() -> Void)? = nil,
             onContextChange: ((Popover.Context) -> Void)? = nil
@@ -138,6 +142,7 @@ public struct Popover: Identifiable {
             self.dismissal = dismissal
             self.rubberBandingMode = rubberBandingMode
             self.blocksBackgroundTouches = blocksBackgroundTouches
+            self.accessibility = accessibility
             self.onTapOutside = onTapOutside
             self.onDismiss = onDismiss
             self.onContextChange = onContextChange
@@ -329,6 +334,39 @@ public struct Popover: Identifiable {
                 public static let none = Mode([])
             }
         }
+
+        /// Define VoiceOver behavior.
+        public struct Accessibility {
+            /// Focus the popover when presented.
+            public var shiftFocus = true
+
+            /**
+             A view that's only shown when VoiceOver is running. Dismisses the popover when tapped.
+
+             Tap-outside-to-dismiss is unsupported in VoiceOver, so this provides an alternate method for dismissal.
+             */
+            public var dismissButtonLabel: AnyView? = defaultDismissButtonLabel
+
+            /// Create the default VoiceOver behavior for the popover.
+            public init(
+                shiftFocus: Bool = true,
+                dismissButtonLabel: (() -> AnyView)? = { defaultDismissButtonLabel }
+            ) {
+                self.shiftFocus = shiftFocus
+                self.dismissButtonLabel = dismissButtonLabel?()
+            }
+
+            /// The default voiceover dismiss button view, an X
+            public static let defaultDismissButtonLabel: AnyView = .init(
+                AnyView(
+                    Image(systemName: "xmark")
+                        .foregroundColor(.white)
+                        .frame(width: 36, height: 36)
+                        .background(Color.black.opacity(0.25))
+                        .cornerRadius(18)
+                )
+            )
+        }
     }
 
     /**
@@ -373,7 +411,7 @@ public struct Popover: Identifiable {
             if let window = presentedPopoverContainer?.window {
                 return window
             } else {
-                print("This popover is not tied to a window. Please file a bug report (https://github.com/aheze/Popovers/issues)")
+                print("[Popovers] - This popover is not tied to a window. Please file a bug report (https://github.com/aheze/Popovers/issues).")
                 return UIWindow()
             }
         }
@@ -407,7 +445,9 @@ public struct Popover: Identifiable {
         public init() {
             changeSink = objectWillChange.sink { [weak self] in
                 guard let self = self else { return }
-                self.attributes.onContextChange?(self)
+                DispatchQueue.main.async {
+                    self.attributes.onContextChange?(self)
+                }
             }
         }
     }

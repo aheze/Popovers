@@ -31,94 +31,109 @@ struct PopoverContainerView: View {
                 popover.background
 
                 /// Show the popover's main content view.
-                popover
-                    .view
-                    .onDisappear {
-                        popover.context.onDisappear?()
-                    }
+                HStack(alignment: .top) {
+                    popover.view
 
-                    /// Hide the popover until its size has been calculated.
-                    .opacity(popover.context.size != nil ? 1 : 0)
+                        /// Have VoiceOver read the popover view first, before the dismiss button.
+                        .accessibility(sortPriority: 1)
 
-                    /// Apply the presentation and dismissal transitions.
-                    .transition(
-                        .asymmetric(
-                            insertion: popover.attributes.presentation.transition ?? .opacity,
-                            removal: popover.attributes.dismissal.transition ?? .opacity
-                        )
-                    )
-
-                    /// Read the popover's size in the view.
-                    .sizeReader { size in
-                        if let transaction = popover.context.transaction {
-                            /// When `popover.context.size` is nil, the popover was just presented.
-                            if popover.context.size == nil {
-                                popover.setSize(size)
-                                popoverModel.refresh(with: transaction)
-                            } else {
-                                /// Otherwise, the popover is *replacing* a previous popover, so animate it.
-                                withTransaction(transaction) {
-                                    popover.setSize(size)
-                                    popoverModel.refresh(with: transaction)
-                                }
-                            }
-                            popover.context.transaction = nil
+                    /// If VoiceOver is on and a `dismissButtonLabel` was set, show it.
+                    if
+                        UIAccessibility.isVoiceOverRunning,
+                        let dismissButtonLabel = popover.attributes.accessibility.dismissButtonLabel
+                    {
+                        Button {
+                            popover.dismiss()
+                        } label: {
+                            dismissButtonLabel
                         }
                     }
+                }
+                .onDisappear {
+                    popover.context.onDisappear?()
+                }
+                /// Hide the popover until its size has been calculated.
+                .opacity(popover.context.size != nil ? 1 : 0)
 
-                    /// Offset the popover by the gesture's translation, if this current popover is the selected one.
-                    .offset(popoverOffset(for: popover))
-
-                    /// Add the drag gesture.
-                    .simultaneousGesture(
-                        /// `minimumDistance: 2` is enough to allow scroll views to scroll, if one is contained in the popover.
-                        DragGesture(minimumDistance: 2)
-                            .onChanged { value in
-
-                                /// Select the popover for dragging.
-                                if selectedPopover == nil {
-                                    DispatchQueue.main.async {
-                                        selectedPopover = popover
-                                    }
-                                }
-
-                                /// Apply the offset.
-                                applyDraggingOffset(popover: popover, translation: value.translation)
-
-                                /// Update the visual frame to account for the dragging offset.
-                                popover.context.frame = CGRect(
-                                    origin: popover.context.staticFrame.origin + CGPoint(
-                                        x: selectedPopoverOffset.width,
-                                        y: selectedPopoverOffset.height
-                                    ),
-                                    size: popover.context.size ?? .zero
-                                )
-                            }
-                            .onEnded { value in
-
-                                /// The expected dragging end point.
-                                let finalOrigin = CGPoint(
-                                    x: popover.context.staticFrame.origin.x + value.predictedEndTranslation.width,
-                                    y: popover.context.staticFrame.origin.y + value.predictedEndTranslation.height
-                                )
-
-                                /// Recalculate the popover's frame.
-                                withAnimation(.spring()) {
-                                    selectedPopoverOffset = .zero
-
-                                    /// Let the popover know that it finished dragging.
-                                    popover.positionChanged(to: finalOrigin)
-                                    popover.context.frame = popover.context.staticFrame
-                                }
-
-                                /// Unselect the popover.
-                                self.selectedPopover = nil
-                            },
-                        including: popover.attributes.rubberBandingMode.isEmpty
-                            ? .subviews /// Stop gesture and only allow those in the popover's view if dragging is not enabled.
-                            : (popoverModel.popoversDraggable ? .all : .subviews) /// Otherwise, allow dragging - but also check if `popoversDraggable` is true first.
+                /// Apply the presentation and dismissal transitions.
+                .transition(
+                    .asymmetric(
+                        insertion: popover.attributes.presentation.transition ?? .opacity,
+                        removal: popover.attributes.dismissal.transition ?? .opacity
                     )
-                    .padding(edgeInsets(for: popover)) /// Apply edge padding so that the popover doesn't overflow off the screen.
+                )
+
+                /// Read the popover's size in the view.
+                .sizeReader { size in
+                    if let transaction = popover.context.transaction {
+                        /// When `popover.context.size` is nil, the popover was just presented.
+                        if popover.context.size == nil {
+                            popover.setSize(size)
+                            popoverModel.refresh(with: transaction)
+                        } else {
+                            /// Otherwise, the popover is *replacing* a previous popover, so animate it.
+                            withTransaction(transaction) {
+                                popover.setSize(size)
+                                popoverModel.refresh(with: transaction)
+                            }
+                        }
+                        popover.context.transaction = nil
+                    }
+                }
+
+                /// Offset the popover by the gesture's translation, if this current popover is the selected one.
+                .offset(popoverOffset(for: popover))
+
+                /// Add the drag gesture.
+                .simultaneousGesture(
+                    /// `minimumDistance: 2` is enough to allow scroll views to scroll, if one is contained in the popover.
+                    DragGesture(minimumDistance: 2)
+                        .onChanged { value in
+
+                            /// Select the popover for dragging.
+                            if selectedPopover == nil {
+                                DispatchQueue.main.async {
+                                    selectedPopover = popover
+                                }
+                            }
+
+                            /// Apply the offset.
+                            applyDraggingOffset(popover: popover, translation: value.translation)
+
+                            /// Update the visual frame to account for the dragging offset.
+                            popover.context.frame = CGRect(
+                                origin: popover.context.staticFrame.origin + CGPoint(
+                                    x: selectedPopoverOffset.width,
+                                    y: selectedPopoverOffset.height
+                                ),
+                                size: popover.context.size ?? .zero
+                            )
+                        }
+                        .onEnded { value in
+
+                            /// The expected dragging end point.
+                            let finalOrigin = CGPoint(
+                                x: popover.context.staticFrame.origin.x + value.predictedEndTranslation.width,
+                                y: popover.context.staticFrame.origin.y + value.predictedEndTranslation.height
+                            )
+
+                            /// Recalculate the popover's frame.
+                            withAnimation(.spring()) {
+                                selectedPopoverOffset = .zero
+
+                                /// Let the popover know that it finished dragging.
+                                popover.positionChanged(to: finalOrigin)
+                                popover.context.frame = popover.context.staticFrame
+                            }
+
+                            /// Unselect the popover.
+                            self.selectedPopover = nil
+                        },
+                    including: popover.attributes.rubberBandingMode.isEmpty
+                        ? .subviews /// Stop gesture and only allow those in the popover's view if dragging is not enabled.
+                        : (popoverModel.popoversDraggable ? .all : .subviews) /// Otherwise, allow dragging - but also check if `popoversDraggable` is true first.
+                )
+                .padding(edgeInsets(for: popover)) /// Apply edge padding so that the popover doesn't overflow off the screen.
             }
         }
         .edgesIgnoringSafeArea(.all) /// All calculations are done from the screen bounds.
