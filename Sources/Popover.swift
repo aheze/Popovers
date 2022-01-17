@@ -373,7 +373,7 @@ public struct Popover: Identifiable {
             if let window = presentedPopoverContainer?.window {
                 return window
             } else {
-                print("This popover is not tied to a window. Please file a bug report (https://github.com/aheze/Popovers/issues)")
+                print("[Popovers] - This popover is not tied to a window. Please file a bug report (https://github.com/aheze/Popovers/issues).")
                 return UIWindow()
             }
         }

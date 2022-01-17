@@ -1,5 +1,5 @@
 //
-//  PopoverContainerViewController.swift
+//  PopoverGestureContainer.swift
 //  Popovers
 //
 //  Created by A. Zheng (github.com/aheze) on 12/23/21.
@@ -8,29 +8,52 @@
 
 import SwiftUI
 
+/// A hosting view for `PopoverContainerView` with tap filtering.
 class PopoverGestureContainer: UIView {
     
-    /// A closure to be invoked when this view is inserted into a window's view hiearchy.
+    /// A closure to be invoked when this view is inserted into a window's view hierarchy.
     var onMovedToWindow: (() -> Void)?
 
+    /// Create a new `PopoverGestureContainer`.
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        /// Allow resizing.
+        self.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        /// Orientation or screen bounds changed. Update popover frames.
+        popoverModel.updateFrames()
+    }
+    
     override func didMoveToWindow() {
         super.didMoveToWindow()
-
-        if let window = window {
-            let popoverContainerView = PopoverContainerView(popoverModel: popoverModel)
-                .environment(\.window, window)
-            
-            let hostingController = UIHostingController(rootView: popoverContainerView)
-            hostingController.view.frame = bounds
-            hostingController.view.backgroundColor = .clear
-            hostingController.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-
-            addSubview(hostingController.view)
-            setNeedsLayout()
-            layoutIfNeeded()
-            
-            onMovedToWindow?()
+        
+        guard let window = window else {
+            print("[Popovers] - `PopoverGestureContainer` does not have a parent window. Please file a bug report (https://github.com/aheze/Popovers/issues).")
+            return
         }
+        
+        /// Create the SwiftUI view that contains all the popovers.
+        let popoverContainerView = PopoverContainerView(popoverModel: popoverModel)
+            .environment(\.window, window) /// Inject the window.
+        
+        let hostingController = UIHostingController(rootView: popoverContainerView)
+        hostingController.view.frame = bounds
+        hostingController.view.backgroundColor = .clear
+        hostingController.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        
+        addSubview(hostingController.view)
+        
+        /// Ensure the view is laid out so that SwiftUI animations don't stutter.
+        setNeedsLayout()
+        layoutIfNeeded()
+        
+        /// Let the presenter know that its window is available.
+        onMovedToWindow?()
     }
 
     /**
@@ -104,4 +127,8 @@ class PopoverGestureContainer: UIView {
         return nil
     }
     
+    /// Boilerplate code.
+    required init?(coder: NSCoder) {
+        fatalError("Create `PopoverContainerView` programatically.")
+    }
 }

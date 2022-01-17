@@ -28,7 +28,7 @@ public extension Popover {
         /**
          Add the popover to the container view.
          */
-        let displayPopover: () -> Void = {
+        let displayPopover = {
             withTransaction(transaction) {
                 model.add(self)
             }
@@ -44,14 +44,16 @@ public extension Popover {
         } else {
             container = PopoverGestureContainer(frame: window.bounds)
             
-            /// Wait until the container is present in the view hiearchy before showing the popover, otherwise all the
-            /// layout math will be working with wonky frames.
+            /**
+             Wait until the container is present in the view hierarchy before showing the popover,
+             otherwise all the layout math will be working with wonky frames.
+             */
             container.onMovedToWindow = displayPopover
             
             window.addSubview(container)
         }
         
-        /// Hang onto the container for future dismiss/replace actions.
+        /// Hang on to the container for future dismiss/replace actions.
         context.presentedPopoverContainer = container
     }
 
