@@ -27,7 +27,7 @@ struct Showroom: View {
                 NotificationView()
                 MenuView()
                 StandardView()
-                FormPopovers()
+                FormView()
             }
         }
     }

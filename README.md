@@ -1,14 +1,15 @@
 ![Header Image](Assets/Header.png)
 
 # Popovers
-
 A library to present popovers.
+
 - Present **any** view above your app's main content.
 - Attach to source views or use picture-in-picture positioning.
 - Display multiple popovers at the same time with smooth transitions.
 - Supports SwiftUI, UIKit, and multitasking windows on iPadOS.
 - Highly customizable API that's super simple — just add `.popover`.
-- Written in SwiftUI with 0 dependencies.
+- SwiftUI-based core for a lightweight structure. 0 dependencies.
+- It's 2022 and popovers are still kind of boring. Well, not anymore!
 
 ## Showroom
 
@@ -600,7 +601,7 @@ WindowReader { window in
 
 
 ### 📄 Templates
-Get started quickly with some templates. All of them are inside [`PopoverTemplates.swift`](Source/PopoverTemplates.swift) with example usage in the example app.
+Get started quickly with some templates. All of them are inside [`PopoverTemplates.swift`](Sources/PopoverTemplates.swift) with example usage in the example app.
 
 - `AlertButtonStyle` - a button style resembling a system alert.
 - `VisualEffectView` - lets you use UIKit blurs in SwiftUI.
