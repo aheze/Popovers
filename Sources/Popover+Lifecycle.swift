@@ -22,43 +22,51 @@ public extension Popover {
         /// Inject the transaction into the popover, so following frame calculations are animated smoothly.
         context.transaction = transaction
 
-        /// Locate the topmost presented `UIViewController` in this window. We'll be presenting on top of this one.
-        let presentingViewController = window.rootViewController?.topmostViewController
-
-        /// There may already be a view controller presenting another popover - if so, let's use that.
-        let popoverViewController: PopoverContainerViewController
-
         /// Get the popover model that's tied to the window.
         let model = window.popoverModel
-
-        if let existingPopoverViewController = presentingViewController as? PopoverContainerViewController {
-            popoverViewController = existingPopoverViewController
-        } else {
-            popoverViewController = PopoverContainerViewController()
-        }
-
-        context.presentedPopoverViewController = popoverViewController
 
         /**
          Add the popover to the container view.
          */
-        let displayPopover: () -> Void = {
+        func displayPopover(in container: PopoverGestureContainer) {
             withTransaction(transaction) {
                 model.add(self)
+
+                /// Stop VoiceOver from reading out background views if `blocksBackgroundTouches` is true.
+                if attributes.blocksBackgroundTouches {
+                    container.accessibilityViewIsModal = true
+                }
+
+                /// Shift VoiceOver focus to the popover.
+                if attributes.accessibility.shiftFocus {
+                    UIAccessibility.post(notification: .screenChanged, argument: nil)
+                }
             }
         }
 
-        if presentingViewController === popoverViewController {
-            displayPopover()
+        /// Find the existing container view for popovers in this window. If it does not exist, we need to insert one.
+        let container: PopoverGestureContainer
+        if let existingContainer = window.popoverContainerView {
+            container = existingContainer
+
+            /// The container is already laid out in the window, so we can go ahead and show the popover.
+            displayPopover(in: container)
         } else {
-            
+            container = PopoverGestureContainer(frame: window.bounds)
+
             /**
-             If we've prepared a new controller to present, then do so.
-             This isn't animated as we perform the popover animation inside the container view instead -
-             the view controller hosts the container that animates.
+             Wait until the container is present in the view hierarchy before showing the popover,
+             otherwise all the layout math will be working with wonky frames.
              */
-            presentingViewController?.present(popoverViewController, animated: false, completion: displayPopover)
+            container.onMovedToWindow = {
+                displayPopover(in: container)
+            }
+
+            window.addSubview(container)
         }
+
+        /// Hang on to the container for future dismiss/replace actions.
+        context.presentedPopoverContainer = container
     }
 
     /**
@@ -67,7 +75,7 @@ public extension Popover {
      - parameter transaction: An optional transaction that can be applied for the dismissal animation.
      */
     func dismiss(transaction: Transaction? = nil) {
-        guard let presentingViewController = context.presentedPopoverViewController else { return }
+        guard let presentingViewController = context.presentedPopoverContainer else { return }
 
         /// Let the internal SwiftUI modifiers know that the popover was automatically dismissed.
         context.onDismiss?()
@@ -81,8 +89,12 @@ public extension Popover {
         /// Clean up the container view controller if no more popovers are visible.
         context.onDisappear = {
             if model.popovers.isEmpty {
-                presentingViewController.dismiss(animated: false)
+                context.presentedPopoverContainer?.removeFromSuperview()
+                context.presentedPopoverContainer = nil
             }
+
+            /// If at least one popover has `blocksBackgroundTouches` set to true, stop VoiceOver from reading out background views
+            context.presentedPopoverContainer?.accessibilityViewIsModal = model.popovers.contains { $0.attributes.blocksBackgroundTouches }
         }
 
         /// Remove this popover from the view model, dismissing it.
@@ -95,7 +107,7 @@ public extension Popover {
      Replace a popover with another popover smoothly.
      */
     func replace(with newPopover: Popover) {
-        guard let popoverContainerViewController = context.presentedPopoverViewController else { return }
+        guard let popoverContainerViewController = context.presentedPopoverContainer else { return }
 
         let model = popoverContainerViewController.popoverModel
 
@@ -111,7 +123,7 @@ public extension Popover {
             newPopover.context.transaction = transaction
 
             /// Use the same `UIViewController` presenting the previous popover, so we animate the popover in the same container.
-            newPopover.context.presentedPopoverViewController = oldContext.presentedPopoverViewController
+            newPopover.context.presentedPopoverContainer = oldContext.presentedPopoverContainer
 
             /// Use same ID so that SwiftUI animates the change.
             newPopover.context.id = oldContext.id
@@ -127,31 +139,38 @@ public extension Popover {
     }
 }
 
-extension UIResponder {
+public extension UIResponder {
     /// Replace a popover with another popover. Convenience method for `Popover.replace(with:)`.
-    public func replace(_ oldPopover: Popover, with newPopover: Popover) {
+    func replace(_ oldPopover: Popover, with newPopover: Popover) {
         oldPopover.replace(with: newPopover)
     }
-    
+
     /// Dismiss a popover. Convenience method for `Popover.dismiss(transaction:)`.
-    public func dismiss(_ popover: Popover) {
+    func dismiss(_ popover: Popover) {
         popover.dismiss()
     }
 }
 
-extension UIViewController {
+public extension UIViewController {
     /// Present a `Popover` using this `UIViewController` as its presentation context.
-    public func present(_ popover: Popover) {
+    func present(_ popover: Popover) {
         guard let window = view.window else { return }
         popover.present(in: window)
     }
+}
 
-    /// Get the frontmost view controller.
-    var topmostViewController: UIViewController {
-        if let presented = presentedViewController {
-            return presented.topmostViewController
+extension UIView {
+    var popoverContainerView: PopoverGestureContainer? {
+        if let container = self as? PopoverGestureContainer {
+            return container
         } else {
-            return self
+            for subview in subviews {
+                if let container = subview.popoverContainerView {
+                    return container
+                }
+            }
+
+            return nil
         }
     }
 }
