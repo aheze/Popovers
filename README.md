@@ -193,8 +193,8 @@ struct PopoverView: View {
 <br>
 
 ## Customization
-| [🔖](https://github.com/aheze/Popovers#tag--string)  | [💠](https://github.com/aheze/Popovers#position--position)  | [⬜](https://github.com/aheze/Popovers#source-frame-----cgrect)  | [🔲](https://github.com/aheze/Popovers#source-frame-inset--uiedgeinsets)  | [⏹](https://github.com/aheze/Popovers#screen-edge-padding--uiedgeinsets)  | [🟩](https://github.com/aheze/Popovers#presentation--presentation)  | [🟥](https://github.com/aheze/Popovers#dismissal--dismissal)  | [🎾](https://github.com/aheze/Popovers#rubber-banding-mode--rubberbandingmode)  | [🛑](https://github.com/aheze/Popovers#blocks-background-touches--bool)  | [👉](https://github.com/aheze/Popovers#on-tap-outside-----void)  | [🎈](https://github.com/aheze/Popovers#on-dismiss-----void)  | [🔰](https://github.com/aheze/Popovers#on-context-change--context---void)  |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| [🔖](https://github.com/aheze/Popovers#tag--string)  | [💠](https://github.com/aheze/Popovers#position--position)  | [⬜](https://github.com/aheze/Popovers#source-frame-----cgrect)  | [🔲](https://github.com/aheze/Popovers#source-frame-inset--uiedgeinsets)  | [⏹](https://github.com/aheze/Popovers#screen-edge-padding--uiedgeinsets)  | [🟩](https://github.com/aheze/Popovers#presentation--presentation)  | [🟥](https://github.com/aheze/Popovers#dismissal--dismissal)  | [🎾](https://github.com/aheze/Popovers#rubber-banding-mode--rubberbandingmode)  | [🛑](https://github.com/aheze/Popovers#blocks-background-touches--bool)  | [👓](https://github.com/aheze/Popovers#blocks-background-touches--bool)  | [👉](https://github.com/aheze/Popovers#on-tap-outside-----void)  | [🎈](https://github.com/aheze/Popovers#on-dismiss-----void)  | [🔰](https://github.com/aheze/Popovers#on-context-change--context---void)  |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 
 Customize popovers through the `Attributes` struct. Pretty much everything is customizable, including positioning, animations, and dismissal behavior.
 
@@ -420,7 +420,7 @@ $0.accessibility.dismissButtonLabel = defaultDismissButtonLabel /// An X icon wr
 | <img src="Assets/Accessibility.png" width=300 alt="VoiceOver highlights the popover, which has a X button next to id."> |
 | --- |
 
-Tip: You can also use the accessibility escape gesture (a 2-finger z-shaped swipe) to dismiss all popovers.
+Tip: You can also use the accessibility escape gesture (a 2-fingered Z-shape swipe) to dismiss all popovers.
 
 ### 👉 On Tap Outside • `(() -> Void)?`
 A closure that's called whenever the user taps outside the popover.
@@ -744,7 +744,7 @@ Open an [issue](https://github.com/aheze/Popovers/issues) or join the [Discord s
 ```
 MIT License
 
-Copyright (c) 2021 A. Zheng
+Copyright (c) 2022 A. Zheng
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
