@@ -365,6 +365,9 @@ public struct Popover: Identifiable {
                         .background(Color.black.opacity(0.25))
                         .cornerRadius(18)
                 )
+                    .accessibilityElement()
+                    .accessibility(label: Text("Close"))
+                    .accessibility(hint: Text("Dismiss this popover."))
             )
         }
     }
