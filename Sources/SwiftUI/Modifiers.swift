@@ -70,7 +70,7 @@ struct PopoverModifier: ViewModifier {
                 }
 
                 /// Detect a state change in `$present`.
-                .onDataChange(of: present) { _, newValue in
+                .onValueChange(of: present) { _, newValue in
 
                     /// `newValue` is true, so present the popover.
                     if newValue {
@@ -179,7 +179,7 @@ struct MultiPopoverModifier: ViewModifier {
                 }
 
                 /// `$selection` was changed, determine if the popover should be presented, animated, or dismissed.
-                .onDataChange(of: selection) { oldSelection, newSelection in
+                .onValueChange(of: selection) { oldSelection, newSelection in
                     let model = window.popoverModel
 
                     /// Save the frame in `selectionFrameTags` to provide `excludedFrames`.

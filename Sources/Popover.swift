@@ -477,16 +477,16 @@ public extension Popover {
         }
     }
 
-    /// Set the popover's size from SwiftUI. Also update the frame.
-    func setSize(_ size: CGSize?) {
+    /// Updates the popover's frame using its size.
+    func updateFrame(with size: CGSize?) {
+        let frame = calculateFrame(from: size)
         context.size = size
-        let frame = getFrame(from: size)
         context.staticFrame = frame
         context.frame = frame
     }
 
-    /// Calculate the popover's frame based on it's size and position.
-    func getFrame(from size: CGSize?) -> CGRect {
+    /// Calculate the popover's frame based on its size and position.
+    func calculateFrame(from size: CGSize?) -> CGRect {
         guard let window = context.presentedPopoverContainer?.window else { return .zero }
 
         switch attributes.position {

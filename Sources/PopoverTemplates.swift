@@ -568,7 +568,7 @@ public struct PopoverTemplates {
                         model.active = nil
                     }
             )
-            .onDataChange(of: model.selected) { _, _ in
+            .onValueChange(of: model.selected) { _, _ in
                 if
                     let selected = model.selected,
                     selected == menuID.id

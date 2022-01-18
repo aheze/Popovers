@@ -64,17 +64,16 @@ struct PopoverContainerView: View {
                 )
 
                 /// Read the popover's size in the view.
-                .sizeReader { size in
-                    print("size: \(size).. \(popover.context.transaction)")
+                .sizeReader(transaction: popover.context.transaction) { size in
                     if let transaction = popover.context.transaction {
                         /// When `popover.context.size` is nil, the popover was just presented.
                         if popover.context.size == nil {
-                            popover.setSize(size)
+                            popover.updateFrame(with: size)
                             popoverModel.refresh(with: transaction)
                         } else {
                             /// Otherwise, the popover is *replacing* a previous popover, so animate it.
                             withTransaction(transaction) {
-                                popover.setSize(size)
+                                popover.updateFrame(with: size)
                                 popoverModel.refresh(with: transaction)
                             }
                         }

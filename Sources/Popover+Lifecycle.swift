@@ -130,7 +130,7 @@ public extension Popover {
 
             withTransaction(transaction) {
                 /// Temporarily use the same size for a smooth animation.
-                newPopover.setSize(oldContext.size)
+                newPopover.updateFrame(with: oldContext.size)
 
                 /// Replace the old popover with the new popover.
                 model.popovers[oldPopoverIndex] = newPopover

@@ -42,8 +42,12 @@ public extension View {
         )
     }
 
-    /// Read a view's size. From https://stackoverflow.com/a/66822461/14351818
-    func sizeReader(size: @escaping (CGSize) -> Void) -> some View {
+    /**
+     Read a view's size. The closure is called whenever the size itself changes, or the transaction changes (in the event of a screen rotation.)
+     
+     From https://stackoverflow.com/a/66822461/14351818
+     */
+    func sizeReader(transaction: Transaction?, size: @escaping (CGSize) -> Void) -> some View {
         return background(
             GeometryReader { geometry in
                 Color.clear
@@ -53,11 +57,23 @@ public extension View {
                             size(newValue)
                         }
                     }
+                    .onValueChange(of: transaction) { _, _ in
+                        DispatchQueue.main.async {
+                            size(geometry.size)
+                        }
+                    }
             }
             .hidden()
         )
     }
 }
+
+extension Transaction: Equatable {
+    public static func == (lhs: Transaction, rhs: Transaction) -> Bool {
+        lhs.animation == rhs.animation
+    }
+}
+
 
 struct ContentFrameReaderPreferenceKey: PreferenceKey {
     static var defaultValue: CGRect { return CGRect() }
@@ -193,7 +209,7 @@ struct ChangeObserver<Content: View, Value: Equatable>: View {
 
 public extension View {
     /// Detect changes in bindings (fallback of `.onChange` for iOS 13+).
-    func onDataChange<Value: Equatable>(
+    func onValueChange<Value: Equatable>(
         of value: Value,
         perform action: @escaping (_ oldValue: Value, _ newValue: Value) -> Void
     ) -> some View {

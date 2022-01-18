@@ -83,32 +83,19 @@ class PopoverModel: ObservableObject {
      This is called when the device rotates or has a bounds change.
      */
     func updateFrames() {
-        var popoversToUpdate = [Popover]()
-        
+        /**
+         First, update all popovers anyway.
+         
+         For some reason, relative positioning + `.center` doesn't need the rotation animation to complete before having a size change.
+         */
         for popover in popovers {
-            popover.setSize(popover.context.size)
-            
-            if
-                case let .relative(popoverAnchors) = popover.attributes.position,
-                popoverAnchors == [.center]
-            {
-                /// For some reason, relative positioning + `.center` doesn't need the rotation animation to complete before having a size change.
-                popover.setSize(popover.context.size)
-                update()
-            } else {
-                popoversToUpdate.append(popover)
-            }
+            popover.updateFrame(with: popover.context.size)
         }
+        update()
         
-        /// Other popovers need to wait until the rotation has completed before updating.
+        /// Some other popovers need to wait until the rotation has completed before updating.
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            for popover in popoversToUpdate {
-                popover.setSize(popover.context.size)
-            }
-            
-            withAnimation {
-                self.update()
-            }
+            self.refresh(with: Transaction(animation: .default))
         }
     }
 
