@@ -33,7 +33,7 @@ class PopoverModel: ObservableObject {
     @Published var selectionFrameTags: [String: CGRect] = [:]
 
     /// Force the container view to update.
-    func update() {
+    func reload() {
         objectWillChange.send()
     }
 
@@ -49,10 +49,10 @@ class PopoverModel: ObservableObject {
         }
 
         /// Update all popovers.
-        update()
+        reload()
     }
 
-    /// Adds a `Popover` to this model/
+    /// Adds a `Popover` to this model.
     func add(_ popover: Popover) {
         popovers.append(popover)
     }
@@ -82,7 +82,7 @@ class PopoverModel: ObservableObject {
 
      This is called when the device rotates or has a bounds change.
      */
-    func updateFrames() {
+    func updateFramesAfterBoundsChange() {
         /**
          First, update all popovers anyway.
          
@@ -91,10 +91,12 @@ class PopoverModel: ObservableObject {
         for popover in popovers {
             popover.updateFrame(with: popover.context.size)
         }
-        update()
+        
+        /// Reload the container view.
+        reload()
         
         /// Some other popovers need to wait until the rotation has completed before updating.
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + Popovers.frameUpdateDelayAfterBoundsChange) {
             self.refresh(with: Transaction(animation: .default))
         }
     }

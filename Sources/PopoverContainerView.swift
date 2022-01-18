@@ -87,7 +87,7 @@ struct PopoverContainerView: View {
                 /// Add the drag gesture.
                 .simultaneousGesture(
                     /// `minimumDistance: 2` is enough to allow scroll views to scroll, if one is contained in the popover.
-                    DragGesture(minimumDistance: 2)
+                    DragGesture(minimumDistance: Popovers.minimumDragDistance)
                         .onChanged { value in
                             
                             func update() {
