@@ -405,6 +405,22 @@ Set this to true to prevent underlying views from being pressed.
 
 <img src="Assets/BlocksBackgroundTouches.png" width=300 alt="Popover overlaid over some buttons. Tapping on the buttons has no effect.">
 
+### 👓 Accessibility • `Accessibility` • [*`v1.2.0`*](https://github.com/aheze/Popovers/releases/tag/1.2.0)
+Popovers is fully accessible! The `Accessibility` struct provides additional options for how VoiceOver should read out content.
+
+```swift
+/// Default values:
+$0.accessibility.shiftFocus = true
+$0.accessibility.dismissButtonLabel = defaultDismissButtonLabel /// An X icon wrapped in `AnyView?`
+```
+**Shift Focus:** If enabled, VoiceOver will focus the popover as soon as it's presented.
+
+**Dismiss Button Label:** A button next to the popover that appears when VoiceOver is on. By default, this is an <kbd>X</kbd> circle.
+
+| <img src="Assets/Accessibility.png" width=300 alt="VoiceOver highlights the popover, which has a X button next to id."> |
+| --- |
+
+
 ### 👉 On Tap Outside • `(() -> Void)?`
 A closure that's called whenever the user taps outside the popover.
 
