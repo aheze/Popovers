@@ -36,6 +36,10 @@ struct Playground: View {
                 NestedView()
                 SelectionView()
             }
+
+            Group {
+                AccessibilityView()
+            }
         }
     }
 }
