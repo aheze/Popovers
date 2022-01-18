@@ -44,7 +44,7 @@ public extension View {
 
     /**
      Read a view's size. The closure is called whenever the size itself changes, or the transaction changes (in the event of a screen rotation.)
-     
+
      From https://stackoverflow.com/a/66822461/14351818
      */
     func sizeReader(transaction: Transaction?, size: @escaping (CGSize) -> Void) -> some View {
@@ -73,7 +73,6 @@ extension Transaction: Equatable {
         lhs.animation == rhs.animation
     }
 }
-
 
 struct ContentFrameReaderPreferenceKey: PreferenceKey {
     static var defaultValue: CGRect { return CGRect() }

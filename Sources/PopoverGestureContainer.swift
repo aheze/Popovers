@@ -23,7 +23,7 @@ class PopoverGestureContainer: UIView {
 
     override func layoutSubviews() {
         super.layoutSubviews()
-        
+
         /// Orientation or screen bounds changed, so update popover frames.
         popoverModel.updateFramesAfterBoundsChange()
     }
@@ -111,7 +111,6 @@ class PopoverGestureContainer: UIView {
             if popover.attributes.dismissal.mode.contains(.tapOutside) {
                 let excludedFrames = popover.attributes.dismissal.excludedFrames()
                 if excludedFrames.contains(where: { $0.contains(point) }) {
-
                     /**
                      The touch hit an excluded view, so don't dismiss it.
                      However, if the touch hit another popover, block it from passing through.
@@ -131,13 +130,13 @@ class PopoverGestureContainer: UIView {
         /// The touch did not hit any popover, so pass it through to the hit testing target.
         return nil
     }
-    
+
     /// Dismiss all popovers if the accessibility escape gesture was performed.
     override func accessibilityPerformEscape() -> Bool {
         for popover in popoverModel.popovers {
             popover.dismiss()
         }
-        
+
         return true
     }
 

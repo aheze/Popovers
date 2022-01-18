@@ -85,16 +85,16 @@ class PopoverModel: ObservableObject {
     func updateFramesAfterBoundsChange() {
         /**
          First, update all popovers anyway.
-         
+
          For some reason, relative positioning + `.center` doesn't need the rotation animation to complete before having a size change.
          */
         for popover in popovers {
             popover.updateFrame(with: popover.context.size)
         }
-        
+
         /// Reload the container view.
         reload()
-        
+
         /// Some other popovers need to wait until the rotation has completed before updating.
         DispatchQueue.main.asyncAfter(deadline: .now() + Popovers.frameUpdateDelayAfterBoundsChange) {
             self.refresh(with: Transaction(animation: .default))

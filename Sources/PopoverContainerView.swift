@@ -89,11 +89,11 @@ struct PopoverContainerView: View {
                     /// `minimumDistance: 2` is enough to allow scroll views to scroll, if one is contained in the popover.
                     DragGesture(minimumDistance: Popovers.minimumDragDistance)
                         .onChanged { value in
-                            
+
                             func update() {
                                 /// Apply the offset.
                                 applyDraggingOffset(popover: popover, translation: value.translation)
-                                
+
                                 /// Update the visual frame to account for the dragging offset.
                                 popover.context.frame = CGRect(
                                     origin: popover.context.staticFrame.origin + CGPoint(
@@ -103,17 +103,15 @@ struct PopoverContainerView: View {
                                     size: popover.context.size ?? .zero
                                 )
                             }
-                            
+
                             /// Select the popover for dragging.
                             if selectedPopover == nil {
-                                
                                 /// Apply an animation to make up for the `minimumDistance`.
                                 withAnimation(.spring()) {
                                     selectedPopover = popover
                                     update()
                                 }
                             } else {
-                                
                                 /// The user is already dragging, so update the frames immediately.
                                 update()
                             }
@@ -180,9 +178,8 @@ struct PopoverContainerView: View {
 
     /// Apply the additional offset needed if a popover is dragged.
     func applyDraggingOffset(popover: Popover, translation: CGSize) {
-        
         var selectedPopoverOffset = CGSize.zero
-        
+
         /// If `.dragDown` or `.dragUp` is in the popover's dismissal mode, then apply rubber banding.
         func applyVerticalOffset(dragDown: Bool) {
             let condition = dragDown ? translation.height <= 0 : translation.height >= 0
@@ -219,7 +216,7 @@ struct PopoverContainerView: View {
                 selectedPopoverOffset = translation
             }
         }
-        
+
         self.selectedPopoverOffset = selectedPopoverOffset
     }
 
