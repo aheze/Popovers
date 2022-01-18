@@ -132,9 +132,10 @@ class PopoverGestureContainer: UIView {
         return nil
     }
     
+    /// Dismiss all popovers if the accessibility escape gesture was performed.
     override func accessibilityPerformEscape() -> Bool {
         for popover in popoverModel.popovers {
-            popover.dismiss(transaction: nil)
+            popover.dismiss()
         }
         
         return true

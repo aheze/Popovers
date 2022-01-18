@@ -420,6 +420,7 @@ $0.accessibility.dismissButtonLabel = defaultDismissButtonLabel /// An X icon wr
 | <img src="Assets/Accessibility.png" width=300 alt="VoiceOver highlights the popover, which has a X button next to id."> |
 | --- |
 
+Tip: You can also use the accessibility escape gesture (a 2-finger z-shaped swipe) to dismiss all popovers.
 
 ### 👉 On Tap Outside • `(() -> Void)?`
 A closure that's called whenever the user taps outside the popover.
