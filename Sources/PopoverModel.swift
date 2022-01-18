@@ -83,22 +83,33 @@ class PopoverModel: ObservableObject {
      This is called when the device rotates or has a bounds change.
      */
     func updateFrames() {
+        var popoversToUpdate = [Popover]()
+        
         for popover in popovers {
+            popover.setSize(popover.context.size)
+            
             if
                 case let .relative(popoverAnchors) = popover.attributes.position,
                 popoverAnchors == [.center]
             {
-                /// For some reason, relative positioning + `.center` doesn't need to be on the main queue to have a size change.
+                /// For some reason, relative positioning + `.center` doesn't need the rotation animation to complete before having a size change.
                 popover.setSize(popover.context.size)
+                update()
             } else {
-                /// Must be on the main queue to get a different SwiftUI render loop.
-                DispatchQueue.main.async {
-                    popover.setSize(popover.context.size)
-                }
+                popoversToUpdate.append(popover)
             }
         }
-
-        update()
+        
+        /// Other popovers need to wait until the rotation has completed before updating.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            for popover in popoversToUpdate {
+                popover.setSize(popover.context.size)
+            }
+            
+            withAnimation {
+                self.update()
+            }
+        }
     }
 
     /// Access this with `UIResponder.frameTagged(_:)` if inside a `WindowReader`, or `Popover.Context.frameTagged(_:)` if inside a `PopoverReader.`

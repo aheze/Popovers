@@ -23,7 +23,7 @@ class PopoverGestureContainer: UIView {
 
     override func layoutSubviews() {
         super.layoutSubviews()
-
+        
         /// Orientation or screen bounds changed, so update popover frames.
         popoverModel.updateFrames()
     }
