@@ -154,20 +154,20 @@ public extension InsettableShape {
 }
 
 public extension UIEdgeInsets {
-    /// Set the left and right insets.
+    /// The left + right insets.
     var horizontal: CGFloat {
         get {
-            left
+            left + right
         } set {
             left = newValue
             right = newValue
         }
     }
 
-    /// Set the top and bottom insets.
+    /// The top + bottom insets.
     var vertical: CGFloat {
         get {
-            top
+            top + bottom
         } set {
             top = newValue
             bottom = newValue
