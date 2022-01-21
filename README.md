@@ -715,11 +715,11 @@ struct ContentView: View {
 Popovers comes with built-in support for multiple screens, but retrieving frame tags requires a reference to the hosting window. You can get this via `WindowReader` or `PopoverReader`'s context.
 
 ```swift
-/// Note: Don't use this inside a popover's `view` or `background`.
 WindowReader { window in 
 
 }
 
+/// If inside a popover's `view` or `background`, use `PopoverReader` instead.
 PopoverReader { context in
     let window = context.window
 }
