@@ -9,7 +9,7 @@ A library to present popovers.
 - Supports SwiftUI, UIKit, and multitasking windows on iPadOS.
 - Highly customizable API that's super simple — just add `.popover`.
 - SwiftUI-based core for a lightweight structure. 0 dependencies.
-- It's 2022 and popovers are still kind of boring. Well, not anymore!
+- It's 2022 — about time that popovers got interesting!
 
 ## Showroom
 
