@@ -455,7 +455,7 @@ public struct PopoverTemplates {
         }
 
         public var body: some View {
-            PopoverReader { _ in
+            PopoverReader { context in
                 VStack(spacing: 0) {
                     ForEach(content.indices) { index in
                         content[index]
@@ -474,23 +474,37 @@ public struct PopoverTemplates {
                 }
                 .fixedSize()
                 .padding(-1) /// To hide the border's horizontal edges.
-                .background(VisualEffectView(.regular))
+                .background(VisualEffectView(.systemChromeMaterial))
                 .cornerRadius(12)
                 .popoverContainerShadow()
                 .scaleEffect( /// Add a scale effect to shrink down the popover at first.
                     shrunk ? 0.2 : 1,
                     anchor: .topTrailing
                 )
-            }
-            .onAppear {
-                withAnimation(
-                    .spring(
-                        response: 0.4,
-                        dampingFraction: 0.8,
-                        blendDuration: 1
-                    )
-                ) {
-                    shrunk = false
+                .opacity(shrunk ? 0 : 1)
+                .onAppear {
+                    withAnimation(
+                        .spring(
+                            response: 0.4,
+                            dampingFraction: 0.8,
+                            blendDuration: 1
+                        )
+                    ) {
+                        shrunk = false
+                    }
+
+                    /// when the popover is about to be dismissed, shrink it again.
+                    context.attributes.onDismiss = {
+                        withAnimation(
+                            .spring(
+                                response: 0.3,
+                                dampingFraction: 0.9,
+                                blendDuration: 1
+                            )
+                        ) {
+                            shrunk = true
+                        }
+                    }
                 }
             }
         }
@@ -544,9 +558,9 @@ public struct PopoverTemplates {
 
                 Image(systemName: image)
             }
-            .contentShape(Rectangle())
             .frame(maxWidth: .infinity)
             .padding(EdgeInsets(top: 14, leading: 20, bottom: 14, trailing: 20))
+            .contentShape(Rectangle())
             .background(model.active == menuID.id ? PopoverTemplates.buttonHighlightColor : .clear)
             .foregroundColor(.primary)
             .simultaneousGesture(
