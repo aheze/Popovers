@@ -58,8 +58,10 @@ public extension Popover {
              Wait until the container is present in the view hierarchy before showing the popover,
              otherwise all the layout math will be working with wonky frames.
              */
-            container.onMovedToWindow = {
-                displayPopover(in: container)
+            container.onMovedToWindow = { [weak container] in
+                if let container = container {
+                    displayPopover(in: container)
+                }
             }
 
             window.addSubview(container)
@@ -75,7 +77,7 @@ public extension Popover {
      - parameter transaction: An optional transaction that can be applied for the dismissal animation.
      */
     func dismiss(transaction: Transaction? = nil) {
-        guard let presentingViewController = context.presentedPopoverContainer else { return }
+        guard let container = context.presentedPopoverContainer else { return }
 
         /// Let the internal SwiftUI modifiers know that the popover was automatically dismissed.
         context.onDismiss?()
@@ -83,18 +85,18 @@ public extension Popover {
         /// Let the client know that the popover was automatically dismissed.
         attributes.onDismiss?()
 
-        let model = presentingViewController.popoverModel
+        let model = container.popoverModel
         let dismissalTransaction = transaction ?? Transaction(animation: attributes.dismissal.animation)
 
         /// Clean up the container view controller if no more popovers are visible.
-        context.onDisappear = {
+        context.onDisappear = { [weak context] in
             if model.popovers.isEmpty {
-                context.presentedPopoverContainer?.removeFromSuperview()
-                context.presentedPopoverContainer = nil
+                context?.presentedPopoverContainer?.removeFromSuperview()
+                context?.presentedPopoverContainer = nil
             }
 
             /// If at least one popover has `blocksBackgroundTouches` set to true, stop VoiceOver from reading out background views
-            context.presentedPopoverContainer?.accessibilityViewIsModal = model.popovers.contains { $0.attributes.blocksBackgroundTouches }
+            context?.presentedPopoverContainer?.accessibilityViewIsModal = model.popovers.contains { $0.attributes.blocksBackgroundTouches }
         }
 
         /// Remove this popover from the view model, dismissing it.

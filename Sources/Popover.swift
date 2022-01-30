@@ -17,7 +17,7 @@ public struct Popover: Identifiable {
      Stores information about the popover.
      This includes the attributes, frame, and acts like a view model. If using SwiftUI, access it using `PopoverReader`.
      */
-    public var context: Context
+    unowned public var context: Context
 
     /// The view that the popover presents.
     public var view: AnyView
@@ -376,6 +376,7 @@ public struct Popover: Identifiable {
      The popover's view model (stores attributes, frame, and other visible traits).
      */
     public class Context: Identifiable, ObservableObject {
+        
         /// The popover's ID. Must be unique, unless replacing an existing popover.
         public var id = UUID()
 
@@ -452,6 +453,10 @@ public struct Popover: Identifiable {
                     self.attributes.onContextChange?(self)
                 }
             }
+        }
+        
+        deinit {
+            print("Context denited.")
         }
     }
 }
