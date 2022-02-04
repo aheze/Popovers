@@ -14,20 +14,20 @@ struct MenuView: View {
     @State var iconName = "list.bullet"
 
     var body: some View {
-        PopoverTemplates.Menu {
-            PopoverTemplates.MenuButton {
+        PopoverMenu {
+            PopoverMenuButton {
                 iconName = "list.bullet"
             } label: {
                 Label("Change Icon To List", systemImage: "list.bullet")
             }
 
-            PopoverTemplates.MenuButton {
+            PopoverMenuButton {
                 iconName = "keyboard"
             } label: {
                 Label("Change Icon To Keyboard", systemImage: "keyboard")
             }
 
-            PopoverTemplates.MenuButton {
+            PopoverMenuButton {
                 iconName = "bag"
             } label: {
                 Label("Change Icon To Bag", systemImage: "bag")
