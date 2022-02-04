@@ -426,17 +426,22 @@ public struct Popover: Identifiable {
             presentedPopoverContainer?.window?.bounds ?? .zero
         }
 
-        /**
-         For the SwiftUI `.popover` view modifier - set `$present` to false when this is called.
 
-         This is for internal use only - use `Popover.Attributes.onDismiss` if you want to know when the popover is dismissed.
+        /**
+         For the SwiftUI `.popover` view modifier. This is for internal use only - use `Popover.Attributes.onDismiss` if you want to know when the popover is dismissed.
+         
+         This is called just after the popover is removed from the model, - set `$present` to false when this is called.
+         However, the user can also set `$present` to false. And since a `onValueChange` listens to `$present` inside the modifier,
+         this could result the popover being double-dismissed.
+         So, in `onValueChange`, make sure to check is the model contains this popover before dismissing.
+         
          */
         internal var onDismiss: (() -> Void)?
 
         /// Invoked by the SwiftUI container view when the view has fully disappeared.
         internal var onDisappear: (() -> Void)?
 
-        /// The `UIView` presenting this `Popover`, or `nil` if the popover is currently not being presented.
+        /// The `UIView` presenting this `Popover`, or `nil` if no popovers are currently being presented.
         internal var presentedPopoverContainer: UIView?
 
         /// The `PopoverModel` managing the `Popover`. Sourced from the `presentedPopoverViewController`.

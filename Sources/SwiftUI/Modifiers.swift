@@ -100,7 +100,11 @@ struct PopoverModifier: ViewModifier {
                             background: { background }
                         )
 
-                        /// Listen to the internal `onDismiss` callback.
+                        /**
+                         Listen to the internal `onDismiss` callback.
+                         
+                         This is called just after the popover is removed from the model.
+                         */
                         popover.context.onDismiss = {
                             present = false
                         }
@@ -112,7 +116,16 @@ struct PopoverModifier: ViewModifier {
                         popover.present(in: window)
                     } else {
                         /// `$present` was set to `false`, dismiss the popover.
-                        popover?.dismiss()
+                        guard let popover = popover else { return }
+
+                        /**
+                         Only dismiss the popover if it hasn't been removed from the model.
+                         
+                         If the popover is still in the model, it means the client manually set `present` to false.
+                         */
+                        if popover.context.window.popoverModel.popovers.contains(popover) {
+                            popover.dismiss()
+                        }
                     }
                 }
         }

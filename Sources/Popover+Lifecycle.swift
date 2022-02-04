@@ -79,12 +79,6 @@ public extension Popover {
     func dismiss(transaction: Transaction? = nil) {
         guard let container = context.presentedPopoverContainer else { return }
 
-        /// Let the internal SwiftUI modifiers know that the popover was automatically dismissed.
-        context.onDismiss?()
-
-        /// Let the client know that the popover was automatically dismissed.
-        attributes.onDismiss?()
-
         let model = container.popoverModel
         let dismissalTransaction = transaction ?? Transaction(animation: attributes.dismissal.animation)
 
@@ -103,10 +97,16 @@ public extension Popover {
         withTransaction(dismissalTransaction) {
             model.remove(self)
         }
+
+        /// Let the internal SwiftUI modifiers know that the popover was automatically dismissed.
+        context.onDismiss?()
+
+        /// Let the client know that the popover was automatically dismissed.
+        attributes.onDismiss?()
     }
 
     /**
-     Replace a popover with another popover smoothly.
+     Replace this popover with another popover smoothly.
      */
     func replace(with newPopover: Popover) {
         guard let popoverContainerViewController = context.presentedPopoverContainer else { return }
