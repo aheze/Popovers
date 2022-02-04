@@ -46,34 +46,42 @@ class PopoverMenuModel: ObservableObject {
 
 public struct PopoverMenuConfiguration {
     public var holdDelay = CGFloat(0.15)
-    public var presentationAnimation = Animation.spring(response: 0.3, dampingFraction: 0.8, blendDuration: 1)
-    public var dismissalAnimation = Animation.spring(response: 0.2, dampingFraction: 0.9, blendDuration: 1)
+    public var presentationAnimation = Animation.spring(response: 0.4, dampingFraction: 0.7, blendDuration: 1)
+    public var dismissalAnimation = Animation.spring(response: 0.5, dampingFraction: 0.9, blendDuration: 1)
     public var labelFadeAnimation = Animation.default
+    public var clipContent = true
     public var scaleAnchor: Popover.Attributes.Position.Anchor?
-    public var backgroundBlur = UIBlurEffect.Style.prominent
-    public var cornerRadius = CGFloat(12)
+    public var menuBlur = UIBlurEffect.Style.prominent
+    public var maxWidth: CGFloat? = CGFloat(200)
+    public var cornerRadius = CGFloat(16)
     public var showDivider = true
     public var shadow = PopoverShadow.system
-
+    public var backgroundColor = Color.black.opacity(0.1)
+    
     public init(
         holdDelay: CGFloat = CGFloat(0.15),
-        presentationAnimation: Animation = Animation.spring(response: 0.3, dampingFraction: 0.8, blendDuration: 1),
-        dismissalAnimation: Animation = Animation.spring(response: 0.2, dampingFraction: 0.9, blendDuration: 1),
+        presentationAnimation: Animation = Animation.spring(response: 0.4, dampingFraction: 0.7, blendDuration: 1),
+        dismissalAnimation: Animation = Animation.spring(response: 0.5, dampingFraction: 0.9, blendDuration: 1),
         labelFadeAnimation: Animation = Animation.default,
         scaleAnchor: Popover.Attributes.Position.Anchor? = nil,
-        backgroundBlur: UIBlurEffect.Style = UIBlurEffect.Style.prominent,
-        cornerRadius: CGFloat = CGFloat(12),
+        menuBlur: UIBlurEffect.Style = UIBlurEffect.Style.prominent,
+        maxWidth: CGFloat? = CGFloat(200),
+        cornerRadius: CGFloat = CGFloat(16),
         showDivider: Bool = true,
-        shadow: PopoverShadow = PopoverShadow.system
+        shadow: PopoverShadow = PopoverShadow.system,
+        backgroundColor: Color = Color.black.opacity(0.1)
     ) {
         self.holdDelay = holdDelay
         self.presentationAnimation = presentationAnimation
         self.dismissalAnimation = dismissalAnimation
         self.labelFadeAnimation = labelFadeAnimation
         self.scaleAnchor = scaleAnchor
-        self.backgroundBlur = backgroundBlur
+        self.menuBlur = menuBlur
+        self.maxWidth = maxWidth
+        self.cornerRadius = cornerRadius
         self.showDivider = showDivider
         self.shadow = shadow
+        self.backgroundColor = backgroundColor
     }
 }
 
@@ -85,6 +93,8 @@ public struct PopoverMenu<Views, Label: View>: View {
     @State var labelPressUUID: UUID?
 
     @State var labelPressedWhenAlreadyPresented = false
+
+    @State var dragPosition: CGPoint?
 
     /// View model for the menu buttons.
     @StateObject var model = PopoverMenuModel()
@@ -123,29 +133,36 @@ public struct PopoverMenu<Views, Label: View>: View {
                     DragGesture(minimumDistance: 0, coordinateSpace: .global)
                         .onChanged { value in
 
+                            dragPosition = value.location
+
                             if model.present == false {
                                 /// The menu is not yet presented.
-                                labelPressUUID = UUID()
-                                let currentUUID = labelPressUUID
-                                DispatchQueue.main.asyncAfter(deadline: .now() + configuration.holdDelay) {
-                                    if currentUUID == labelPressUUID {
-                                        if window.frameTagged("PopoverMenuLabel").contains(value.location) {
-                                            model.present = true
+                                if labelPressUUID == nil {
+                                    labelPressUUID = UUID()
+                                    let currentUUID = labelPressUUID
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + configuration.holdDelay) {
+                                        if
+                                            currentUUID == labelPressUUID,
+                                            let dragPosition = dragPosition
+                                        {
+                                            if window.frameTagged("PopoverMenuLabel").contains(dragPosition) {
+                                                model.present = true
+                                            }
                                         }
                                     }
                                 }
 
                                 withAnimation(configuration.labelFadeAnimation) {
-                                    fadeLabel = true
+                                    fadeLabel = window.frameTagged("PopoverMenuLabel").contains(value.location)
                                 }
                             } else if labelPressUUID == nil {
                                 /// The menu was already presented.
                                 labelPressUUID = UUID()
                                 labelPressedWhenAlreadyPresented = true
+                            } else {
+                                /// Highlight the button that the user's finger is over.
+                                model.hoveringIndex = model.getIndex(from: value.location)
                             }
-
-                            /// Highlight the button that the user's finger is over.
-                            model.hoveringIndex = model.getIndex(from: value.location)
                         }
                         .onEnded { value in
                             labelPressUUID = nil
@@ -194,7 +211,7 @@ public struct PopoverMenu<Views, Label: View>: View {
                 ) {
                     PopoverMenuView(model: model, configuration: configuration, content: content.getViews)
                 } background: {
-                    Color.black.opacity(0.3)
+                    configuration.backgroundColor
                 }
         }
     }
@@ -243,8 +260,10 @@ struct PopoverMenuView: View {
                     }
                 }
             }
+            .frame(width: configuration.maxWidth)
             .fixedSize() /// hug the width of the inner content
-            .background(PopoverTemplates.VisualEffectView(configuration.backgroundBlur))
+            .modifier(ClippedModifier(context: context, configuration: configuration, expanded: model.scale >= 1)) /// Clip the content if desired.
+            .background(PopoverTemplates.VisualEffectView(configuration.menuBlur))
             .cornerRadius(configuration.cornerRadius)
             .popoverShadow(shadow: configuration.shadow)
             .scaleEffect(model.scale, anchor: configuration.scaleAnchor?.unitPoint ?? model.getScaleAnchor(from: context))
@@ -338,6 +357,23 @@ struct SystemMenuButtonModifier: ViewModifier {
             return PopoverTemplates.buttonHighlightColor
         }
         return Color.clear
+    }
+}
+
+struct ClippedModifier: ViewModifier {
+    let context: Popover.Context
+    let configuration: PopoverMenuConfiguration
+    let expanded: Bool
+    func body(content: Content) -> some View {
+        if configuration.clipContent {
+            content
+
+                /// Replicates the system menu's subtle clip effect.
+                .frame(height: expanded ? nil : context.frame.height / 2, alignment: .top)
+                .clipped()
+        } else {
+            content
+        }
     }
 }
 
