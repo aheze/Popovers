@@ -196,8 +196,8 @@ struct ChangeObserver<Content: View, Value: Equatable>: View {
     @State private var oldValue: Value
 
     var body: some View {
-        if oldValue != value {
-            DispatchQueue.main.async {
+        DispatchQueue.main.async {
+            if oldValue != value {
                 action(oldValue, value)
                 oldValue = value
             }

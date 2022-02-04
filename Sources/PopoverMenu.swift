@@ -37,55 +37,10 @@ enum PopoverMenuGestureType {
     case attachedToPopover
 }
 
-// extension View {
-//    func popoverMenuGesture(popoverModel: PopoverMenuModel, labelModel: PopoverMenuLabelModel) -> some View {
-////        self.gesture(
-////            DragGesture(minimumDistance: 0, coordinateSpace: .global)
-////                .onChanged { value in
-////
-////                    if !labelModel.isPressed {
-////                        labelModel.isPressed = true
-////
-////                        labelModel.currentPressUUID = UUID()
-////                        let currentUUID = labelModel.currentPressUUID
-////                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-////                            if currentUUID == labelModel.currentPressUUID {
-////                                popoverModel.present = true
-////                            }
-////                        }
-////                    }
-////
-////                    var found = false
-////                    for frame in popoverModel.frames {
-////                        if frame.value.contains(value.location) {
-////                            popoverModel.hoveringIndex = frame.key
-////                            found = true
-////                        }
-////                    }
-////                    if !found {
-////                        popoverModel.hoveringIndex = nil
-////                    }
-////                }
-////                .onEnded { value in
-////                    var found = false
-////                    for frame in popoverModel.frames {
-////                        if frame.value.contains(value.location) {
-////                            popoverModel.selectedIndex = frame.key
-////                        }
-////                    }
-////                    if !found {
-////                        popoverModel.hoveringIndex = nil
-////                    }
-////                    model.hoveringIndex = popoverModel
-////                    model.isPressed = false
-//////                    popoverModel.present = false
-////                }
-////        )
-//    }
-// }
-
 class PopoverMenuModel: ObservableObject {
     @Published var present = false
+
+    @Published var scale = CGFloat(0.1)
 
     @Published var hoveringIndex: Int?
 
@@ -98,9 +53,9 @@ class PopoverMenuModel: ObservableObject {
 class PopoverMenuLabelModel: ObservableObject {
     /// The active (hovering) button.
 
-    @Published var isPressed = false
+//    @Published var isPressed = false
 
-    @Published var currentPressUUID = UUID()
+    @Published var currentPressUUID: UUID?
 }
 
 public struct PopoverMenuConfiguration {
@@ -121,9 +76,6 @@ public struct PopoverMenu<Views, Label: View>: View {
     @StateObject var model = PopoverMenuModel()
 
     @StateObject var labelModel = PopoverMenuLabelModel()
-
-    /// If the menu is shrunk down and not visible (for transitions).
-    @State var shrunk = true
 
     public let configuration: PopoverMenuConfiguration
 
@@ -151,11 +103,10 @@ public struct PopoverMenu<Views, Label: View>: View {
             .gesture(
                 DragGesture(minimumDistance: 0, coordinateSpace: .global)
                     .onChanged { value in
-                        if !labelModel.isPressed {
-                            labelModel.isPressed = true
+                        if model.present == false {
                             labelModel.currentPressUUID = UUID()
                             let currentUUID = labelModel.currentPressUUID
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                                 if currentUUID == labelModel.currentPressUUID {
                                     model.selectedIndex = nil
                                     model.present = true
@@ -172,6 +123,10 @@ public struct PopoverMenu<Views, Label: View>: View {
                     }
                     .onEnded { value in
 
+                        if labelModel.currentPressUUID != nil {
+                            labelModel.currentPressUUID = nil
+                            model.present = true
+                        }
                         var found = false
                         for frame in model.frames {
                             if frame.value.contains(value.location) {
@@ -185,12 +140,20 @@ public struct PopoverMenu<Views, Label: View>: View {
                         }
 
                         model.hoveringIndex = nil
-                        labelModel.isPressed = false
                     }
             )
-            .onValueChange(of: labelModel.isPressed) { _, isPressed in
+            .onValueChange(of: labelModel.currentPressUUID) { _, newUUID in
                 withAnimation(configuration.animation) {
-                    fadeButton = isPressed
+                    if newUUID != nil {
+                        fadeButton = true
+                    }
+                }
+            }
+            .onValueChange(of: model.present) { _, newValue in
+                if !newValue {
+                    withAnimation(configuration.animation) {
+                        fadeButton = false
+                    }
                 }
             }
             .popover(
@@ -203,15 +166,6 @@ public struct PopoverMenu<Views, Label: View>: View {
             } background: {
                 Color.black.opacity(0.3)
             }
-    }
-
-    /// Get the point to scale from.
-    func getScaleAnchor(attributes: Popover.Attributes) -> UnitPoint {
-        if case let .absolute(_, popoverAnchor) = attributes.position {
-            return popoverAnchor.unitPoint
-        }
-
-        return .center
     }
 }
 
@@ -261,7 +215,10 @@ struct PopoverMenuPopoverView: View {
                 }
             }
             .fixedSize() /// hug the width of the inner content
-            .background(PopoverTemplates.VisualEffectView(.systemChromeMaterial))
+            .background(PopoverTemplates.VisualEffectView(.prominent))
+            .cornerRadius(12)
+            .popoverContainerShadow()
+            .scaleEffect(model.scale, anchor: getScaleAnchor(attributes: context.attributes))
             .gesture(
                 DragGesture(minimumDistance: 0, coordinateSpace: .global)
                     .onChanged { value in
@@ -287,59 +244,41 @@ struct PopoverMenuPopoverView: View {
                         model.hoveringIndex = nil
                     }
             )
-            .cornerRadius(12)
-            .popoverContainerShadow()
+            .onAppear {
+                withAnimation(
+                    .spring(
+                        response: 0.4,
+                        dampingFraction: 0.8,
+                        blendDuration: 1
+                    )
+                ) {
+                    model.scale = 1
+                }
+                /// when the popover is about to be dismissed, shrink it again.
+                context.attributes.onDismiss = {
+                    withAnimation(
+                        .spring(
+                            response: 0.3,
+                            dampingFraction: 0.9,
+                            blendDuration: 1
+                        )
+                    ) {
+                        model.scale = 0.1
+                    }
+                }
+            }
         }
     }
+
+    /// Get the point to scale from.
+    func getScaleAnchor(attributes: Popover.Attributes) -> UnitPoint {
+        if case let .absolute(_, popoverAnchor) = attributes.position {
+            return popoverAnchor.unitPoint
+        }
+
+        return .center
+    }
 }
-
-// struct MenuButtonModifier: ViewModifier {
-//    func body(content: Content) -> some View {
-//        content
-//            .padding()
-//            .border(
-//                Color(.secondaryLabel.withAlphaComponent(0.25)),
-//                width: 0.3
-//            )
-//    }
-// }
-// struct MenuModifier: ViewModifier {
-//    func body(content: Content) -> some View {
-//        content
-//            .padding()
-//            .background(.blue, in: Capsule())
-//    }
-// }
-
-//    .scaleEffect( /// Add a scale effect to shrink down the popover at first.
-//        shrunk ? 0.2 : 1,
-//        anchor: .topTrailing
-//    )
-//    .opacity(shrunk ? 0 : 1)
-//    .onAppear {
-//        withAnimation(
-//            .spring(
-//                response: 0.4,
-//                dampingFraction: 0.8,
-//                blendDuration: 1
-//            )
-//        ) {
-//            shrunk = false
-//        }
-//
-//        /// when the popover is about to be dismissed, shrink it again.
-//        context.attributes.onDismiss = {
-//            withAnimation(
-//                .spring(
-//                    response: 0.3,
-//                    dampingFraction: 0.9,
-//                    blendDuration: 1
-//                )
-//            ) {
-//                shrunk = true
-//            }
-//        }
-//    }
 
 /// For passing the hosting window into the environment.
 extension EnvironmentValues {

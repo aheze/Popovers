@@ -70,7 +70,7 @@ struct PopoverModifier: ViewModifier {
                 }
 
                 /// Detect a state change in `$present`.
-                .onValueChange(of: present) { _, newValue in
+                .onValueChange(of: present) { oldValue, newValue in
 
                     /// Make sure there is a window first.
                     guard let window = window else {
@@ -80,6 +80,7 @@ struct PopoverModifier: ViewModifier {
 
                     /// `newValue` is true, so present the popover.
                     if newValue {
+                        guard popover == nil else { return }
                         var attributes = Popover.Attributes()
 
                         /// Set the default source frame to the source view.
@@ -115,6 +116,7 @@ struct PopoverModifier: ViewModifier {
 
                         /// Present the popover.
                         popover.present(in: window)
+
                     } else {
                         /// `$present` was set to `false`, dismiss the popover.
 
