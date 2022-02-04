@@ -14,8 +14,55 @@ struct MenuView: View {
     @State var iconName = "list.bullet"
 
     var body: some View {
-        Button {
-            present = true
+        PopoverTemplates.Menu {
+            PopoverTemplates.MenuButton {
+                iconName = "list.bullet"
+            } label: {
+                Label("Change Icon To List", systemImage: "list.bullet")
+            }
+
+            PopoverTemplates.MenuButton {
+                iconName = "keyboard"
+            } label: {
+                Label("Change Icon To Keyboard", systemImage: "keyboard")
+            }
+
+            PopoverTemplates.MenuButton {
+                iconName = "bag"
+            } label: {
+                Label("Change Icon To Bag", systemImage: "bag")
+            }
+        } label: { isPressed in
+            ExampleShowroomRow(color: UIColor(hex: 0xFF00AB)) {
+                HStack {
+                    ExampleImage(iconName, color: UIColor(hex: 0xFF00AB))
+
+                    Text("Context Menu")
+                        .fontWeight(.medium)
+                }
+            }
+            .opacity(isPressed ? 0.5 : 1)
+        }
+
+        Menu {
+            Button {
+                iconName = "list.bullet"
+            } label: {
+                Label("Change Icon To List", systemImage: "list.bullet")
+            }
+
+            Button {
+                iconName = "keyboard"
+            } label: {
+                Label("Change Icon To Keyboard", systemImage: "keyboard")
+            }
+
+            Button {
+                iconName = "bag"
+            } label: {
+                Label("Change Icon To Bag", systemImage: "bag")
+            }
+
         } label: {
             ExampleShowroomRow(color: UIColor(hex: 0xFF00AB)) {
                 HStack {
@@ -26,46 +73,41 @@ struct MenuView: View {
                 }
             }
         }
-        .simultaneousGesture(
-            LongPressGesture(minimumDuration: 0.5, maximumDistance: 60)
-                .onEnded { _ in
-                    present = true
-                }
-        )
-        .popover(
-            present: $present,
-            attributes: {
-                $0.rubberBandingMode = .none
-                $0.sourceFrameInset.bottom = -8
-                $0.position = .absolute(
-                    originAnchor: .bottomRight,
-                    popoverAnchor: .topRight
-                )
-            }
-        ) {
-            MenuViewPopover(present: $present, iconName: $iconName)
-        }
     }
 }
 
-struct MenuViewPopover: View {
-    @Binding var present: Bool
-    @Binding var iconName: String
-
-    var body: some View {
-        PopoverTemplates.Menu {
-            PopoverTemplates.MenuButton(title: "Change Icon To List", image: "list.bullet") {
-                iconName = "list.bullet"
-                present = false
-            }
-            PopoverTemplates.MenuButton(title: "Change Icon To Keyboard", image: "keyboard") {
-                iconName = "keyboard"
-                present = false
-            }
-            PopoverTemplates.MenuButton(title: "Change Icon To Bag", image: "bag") {
-                iconName = "bag"
-                present = false
-            }
-        }
-    }
-}
+//struct MenuViewPopover: View {
+//    @Binding var present: Bool
+//    @Binding var iconName: String
+//
+//    var body: some View {
+//        PopoverTemplates.Menu {
+//            PopoverTemplates.MenuButton {
+//                iconName = "list.bullet"
+//            } label: {
+//                Label("Change Icon To List", systemImage: "list.bullet")
+//            }
+//
+//            PopoverTemplates.MenuButton {
+//                iconName = "keyboard"
+//            } label: {
+//                Label("Change Icon To Keyboard", systemImage: "keyboard")
+//            }
+//
+//            PopoverTemplates.MenuButton {
+//                iconName = "bag"
+//            } label: {
+//                Label("Change Icon To Bag", systemImage: "bag")
+//            }
+//        } label: { isPressed in
+//            ExampleShowroomRow(color: UIColor(hex: 0xFF00AB)) {
+//                HStack {
+//                    ExampleImage(iconName, color: UIColor(hex: 0xFF00AB))
+//
+//                    Text("Context Menu")
+//                        .fontWeight(.medium)
+//                }
+//            }
+//        }
+//    }
+//}

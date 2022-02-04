@@ -36,7 +36,8 @@ public struct PopoverReader<Content: View>: View {
  Read the current `UIWindow` that hosts the view.
  Use this just like `GeometryReader`.
 
-  **Warning:** Do **not** place this inside a popover's `view` or its `background`.
+  **Warning:** Do *not* place this inside a popover's `view` or its `background`.
+  Instead, use the `window` property of the popover's context.
  */
 public struct WindowReader<Content: View>: View {
     /// Your SwiftUI view.

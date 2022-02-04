@@ -381,219 +381,135 @@ public struct PopoverTemplates {
     // MARK: - Menu
 
     /// View model for the menu.
-    public class MenuModel: ObservableObject {
-        /// The active (hovering) button.
-        @Published var active: Int?
+//    public class MenuModel: ObservableObject {
+//        /// The active (hovering) button.
+//        @Published var active: Int?
+//
+//        /// The selected button.
+//        @Published var selected: Int?
+//
+//        /// Array of buttons.
+//        @Published var destinations: [Int: CGRect] = [:]
+//    }
+//
+//    /// Class for injecting an ID into a `MenuButton`.
+//    class MenuID: ObservableObject {
+//        @Published var id: Int
+//        init(_ id: Int) {
+//            self.id = id
+//        }
+//    }
+//
+//    /// Allow dragging between buttons. From https://stackoverflow.com/a/58901508/14351818
+//    struct DestinationDataKey: PreferenceKey {
+//        typealias Value = [DestinationData]
+//        static var defaultValue: [DestinationData] = []
+//        static func reduce(value: inout [DestinationData], nextValue: () -> [DestinationData]) {
+//            value.append(contentsOf: nextValue())
+//        }
+//    }
+//
+//    struct DestinationData: Equatable {
+//        let destination: Int
+//        let frame: CGRect
+//    }
 
-        /// The selected button.
-        @Published var selected: Int?
+//    struct DestinationDataSetter: View {
+//        let destination: Int
+//
+//        var body: some View {
+//            GeometryReader { geometry in
+//                Rectangle()
+//                    .fill(Color.clear)
+//                    .preference(
+//                        key: DestinationDataKey.self,
+//                        value: [
+//                            DestinationData(
+//                                destination: self.destination,
+//                                frame: geometry.frame(in: .global)
+//                            ),
+//                        ]
+//                    )
+//            }
+//        }
+//    }
 
-        /// Array of buttons.
-        @Published var destinations: [Int: CGRect] = [:]
-    }
-
-    /// Class for injecting an ID into a `MenuButton`.
-    class MenuID: ObservableObject {
-        @Published var id: Int
-        init(_ id: Int) {
-            self.id = id
-        }
-    }
-
-    /// Allow dragging between buttons. From https://stackoverflow.com/a/58901508/14351818
-    struct DestinationDataKey: PreferenceKey {
-        typealias Value = [DestinationData]
-        static var defaultValue: [DestinationData] = []
-        static func reduce(value: inout [DestinationData], nextValue: () -> [DestinationData]) {
-            value.append(contentsOf: nextValue())
-        }
-    }
-
-    struct DestinationData: Equatable {
-        let destination: Int
-        let frame: CGRect
-    }
-
-    struct DestinationDataSetter: View {
-        let destination: Int
-
-        var body: some View {
-            GeometryReader { geometry in
-                Rectangle()
-                    .fill(Color.clear)
-                    .preference(
-                        key: DestinationDataKey.self,
-                        value: [
-                            DestinationData(
-                                destination: self.destination,
-                                frame: geometry.frame(in: .global)
-                            ),
-                        ]
-                    )
-            }
-        }
-    }
-
-    /**
-     A built-from-scratch version of the system menu.
-     */
-    public struct Menu: View {
-        /// View model for the child buttons.
-        @StateObject var model = MenuModel()
-
-        /// If the menu is shrunk down and not visible (for transitions).
-        @State var shrunk = true
-
-        /// The menu buttons.
-        public let content: [AnyView]
-
-        /**
-         Create a custom menu.
-         */
-        public init<Views>(@ViewBuilder content: @escaping () -> TupleView<Views>) {
-            self.content = content().getViews
-        }
-
-        public var body: some View {
-            PopoverReader { context in
-                VStack(spacing: 0) {
-                    ForEach(content.indices) { index in
-                        content[index]
-                            .environmentObject(MenuID(index)) /// Pass down the index.
-                            .environmentObject(model) /// Pass down the model.
-                    }
-                    .border(
-                        Color(.secondaryLabel.withAlphaComponent(0.25)),
-                        width: 0.3
-                    )
-                }
-                .onPreferenceChange(DestinationDataKey.self) { preferences in
-                    for p in preferences {
-                        self.model.destinations[p.destination] = p.frame
-                    }
-                }
-                .fixedSize()
-                .padding(-1) /// To hide the border's horizontal edges.
-                .background(VisualEffectView(.systemChromeMaterial))
-                .cornerRadius(12)
-                .popoverContainerShadow()
-                .scaleEffect( /// Add a scale effect to shrink down the popover at first.
-                    shrunk ? 0.2 : 1,
-                    anchor: .topTrailing
-                )
-                .opacity(shrunk ? 0 : 1)
-                .onAppear {
-                    withAnimation(
-                        .spring(
-                            response: 0.4,
-                            dampingFraction: 0.8,
-                            blendDuration: 1
-                        )
-                    ) {
-                        shrunk = false
-                    }
-
-                    /// when the popover is about to be dismissed, shrink it again.
-                    context.attributes.onDismiss = {
-                        withAnimation(
-                            .spring(
-                                response: 0.3,
-                                dampingFraction: 0.9,
-                                blendDuration: 1
-                            )
-                        ) {
-                            shrunk = true
-                        }
-                    }
-                }
-            }
-        }
-
-        /// Get the point to scale from.
-        func getScaleAnchor(attributes: Popover.Attributes) -> UnitPoint {
-            if case let .absolute(_, popoverAnchor) = attributes.position {
-                return popoverAnchor.unitPoint
-            }
-
-            return .center
-        }
-    }
 
     /**
      A button for use in a `PopoverTemplates.Menu`.
      */
-    public struct MenuButton: View {
-        /// The button's title.
-        public var title: String
-
-        /// The button's image (system icon).
-        public var image: String
-
-        /// The action to be executed when the button is pressed.
-        public var action: () -> Void
-
-        /// The Menu view model.
-        @EnvironmentObject var model: MenuModel
-
-        /// The button's ID in a wrapper class.
-        @EnvironmentObject var menuID: MenuID
-
-        /**
-         A button for use in a `PopoverTemplates.Menu`.
-         - parameter title: The button's title.
-         - parameter image: The button's image (system icon).
-         - parameter action: The action to be executed when the button is pressed.
-         */
-        public init(title: String, image: String, action: @escaping (() -> Void)) {
-            self.title = title
-            self.image = image
-            self.action = action
-        }
-
-        public var body: some View {
-            HStack(spacing: 8) {
-                Text(title)
-
-                Spacer()
-
-                Image(systemName: image)
-            }
-            .frame(maxWidth: .infinity)
-            .padding(EdgeInsets(top: 14, leading: 20, bottom: 14, trailing: 20))
-            .contentShape(Rectangle())
-            .background(model.active == menuID.id ? PopoverTemplates.buttonHighlightColor : .clear)
-            .foregroundColor(.primary)
-            .simultaneousGesture(
-                DragGesture(minimumDistance: 0, coordinateSpace: .global)
-                    .onChanged { value in
-
-                        /// First set to nil (out of bounds).
-                        model.active = nil
-
-                        /// Then check if the point is inside another button.
-                        for (id, destination) in model.destinations {
-                            if destination.contains(value.location) {
-                                model.active = id
-                            }
-                        }
-                    }
-                    .onEnded { _ in
-                        model.selected = model.active
-                        model.active = nil
-                    }
-            )
-            .onValueChange(of: model.selected) { _, _ in
-                if
-                    let selected = model.selected,
-                    selected == menuID.id
-                {
-                    /// Call the action if the selected button is this button.
-                    action()
-                }
-            }
-            .background(DestinationDataSetter(destination: menuID.id))
-        }
-    }
+//    public struct MenuButton: View {
+//        /// The button's title.
+//        public var title: String
+//
+//        /// The button's image (system icon).
+//        public var image: String
+//
+//        /// The action to be executed when the button is pressed.
+//        public var action: () -> Void
+//
+//        /// The Menu view model.
+//        @EnvironmentObject var model: MenuModel
+//
+//        /// The button's ID in a wrapper class.
+//        @EnvironmentObject var menuID: MenuID
+//
+//        /**
+//         A button for use in a `PopoverTemplates.Menu`.
+//         - parameter title: The button's title.
+//         - parameter image: The button's image (system icon).
+//         - parameter action: The action to be executed when the button is pressed.
+//         */
+//        public init(title: String, image: String, action: @escaping (() -> Void)) {
+//            self.title = title
+//            self.image = image
+//            self.action = action
+//        }
+//
+//        public var body: some View {
+//            HStack(spacing: 8) {
+//                Text(title)
+//
+//                Spacer()
+//
+//                Image(systemName: image)
+//            }
+//            .frame(maxWidth: .infinity)
+//            .padding(EdgeInsets(top: 14, leading: 20, bottom: 14, trailing: 20))
+//            .contentShape(Rectangle())
+//            .background(model.active == menuID.id ? PopoverTemplates.buttonHighlightColor : .clear)
+//            .foregroundColor(.primary)
+//            .simultaneousGesture(
+//                DragGesture(minimumDistance: 0, coordinateSpace: .global)
+//                    .onChanged { value in
+//
+//                        /// First set to nil (out of bounds).
+//                        model.active = nil
+//
+//                        /// Then check if the point is inside another button.
+//                        for (id, destination) in model.destinations {
+//                            if destination.contains(value.location) {
+//                                model.active = id
+//                            }
+//                        }
+//                    }
+//                    .onEnded { _ in
+//                        model.selected = model.active
+//                        model.active = nil
+//                    }
+//            )
+//            .onValueChange(of: model.selected) { _, _ in
+//                if
+//                    let selected = model.selected,
+//                    selected == menuID.id
+//                {
+//                    /// Call the action if the selected button is this button.
+//                    action()
+//                }
+//            }
+//            .background(DestinationDataSetter(destination: menuID.id))
+//        }
+//    }
 }
 
 // MARK: - Arrow Position

@@ -27,11 +27,11 @@ public extension Optional where Wrapped: UIView {
 
 public extension View {
     /// Read a view's frame. From https://stackoverflow.com/a/66822461/14351818
-    func frameReader(rect: @escaping (CGRect) -> Void) -> some View {
+    func frameReader(in coordinateSpace: CoordinateSpace = .global, rect: @escaping (CGRect) -> Void) -> some View {
         return background(
             GeometryReader { geometry in
                 Color.clear
-                    .preference(key: ContentFrameReaderPreferenceKey.self, value: geometry.frame(in: .global))
+                    .preference(key: ContentFrameReaderPreferenceKey.self, value: geometry.frame(in: coordinateSpace))
                     .onPreferenceChange(ContentFrameReaderPreferenceKey.self) { newValue in
                         DispatchQueue.main.async {
                             rect(newValue)
