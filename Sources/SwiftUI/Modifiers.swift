@@ -100,32 +100,28 @@ struct PopoverModifier: ViewModifier {
                             background: { background }
                         )
 
-                        /**
-                         Listen to the internal `onDismiss` callback.
-                         
-                         This is called just after the popover is removed from the model.
-                         */
-                        popover.context.onDismiss = {
-                            present = false
-                        }
-
                         /// Store a reference to the popover.
                         self.popover = popover
+
+                        /**
+                         Listen to the internal `onDismiss` callback.
+
+                         This is called just after the popover is removed from the model.
+                         */
+                        popover.context.onAutoDismiss = {
+                            self.present = false
+                            self.popover = nil /// Remove the reference to the popover.
+                        }
 
                         /// Present the popover.
                         popover.present(in: window)
                     } else {
                         /// `$present` was set to `false`, dismiss the popover.
+
+                        /// If there is still a popover, it means the client set `$present` to false.
                         guard let popover = popover else { return }
 
-                        /**
-                         Only dismiss the popover if it hasn't been removed from the model.
-                         
-                         If the popover is still in the model, it means the client manually set `present` to false.
-                         */
-                        if popover.context.window.popoverModel.popovers.contains(popover) {
-                            popover.dismiss()
-                        }
+                        popover.dismiss()
                     }
                 }
         }
@@ -251,13 +247,18 @@ struct MultiPopoverModifier: ViewModifier {
                             background: { background }
                         )
 
-                        /// Listen to the internal `onDismiss` callback.
-                        popover.context.onDismiss = {
-                            self.selection = nil
-                        }
-
                         /// Store a reference to the popover.
                         self.popover = popover
+
+                        /**
+                         Listen to the internal `onDismiss` callback.
+
+                         This is called just after the popover is removed from the model.
+                         */
+                        popover.context.onAutoDismiss = {
+                            self.selection = nil
+                            self.popover = nil /// Remove the reference to the popover.
+                        }
 
                         /// If an old selection with the same tag exists, animate the change.
                         if let oldSelection = oldSelection, let oldPopover = window.popover(tagged: oldSelection) {

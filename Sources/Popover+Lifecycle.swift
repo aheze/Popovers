@@ -99,7 +99,7 @@ public extension Popover {
         }
 
         /// Let the internal SwiftUI modifiers know that the popover was automatically dismissed.
-        context.onDismiss?()
+        context.onAutoDismiss?()
 
         /// Let the client know that the popover was automatically dismissed.
         attributes.onDismiss?()

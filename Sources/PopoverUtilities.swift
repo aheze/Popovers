@@ -198,7 +198,7 @@ struct ChangeObserver<Content: View, Value: Equatable>: View {
     var body: some View {
         if oldValue != value {
             DispatchQueue.main.async {
-                self.action(oldValue, value)
+                action(oldValue, value)
                 oldValue = value
             }
         }
