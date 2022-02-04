@@ -23,14 +23,14 @@ class PopoverModel: ObservableObject {
     @Published var popoversDraggable = true
 
     /// Store the frames of views (for excluding popover dismissal or source frames).
-    @Published var frameTags: [String: CGRect] = [:]
+    @Published var frameTags: [AnyHashable: CGRect] = [:]
 
     /**
      Store frames of popover source views when presented using `.popover(selection:tag:attributes:view:)`. These frames are then used as excluded frames for dismissal.
 
      To opt out of this behavior, set `attributes.dismissal.excludedFrames` manually. To clear this array (usually when you present another view where the frames don't apply), use a `FrameTagReader` to call `FrameTagProxy.clearSavedFrames()`.
      */
-    @Published var selectionFrameTags: [String: CGRect] = [:]
+    @Published var selectionFrameTags: [AnyHashable: CGRect] = [:]
 
     /// Force the container view to update.
     func reload() {
@@ -73,7 +73,7 @@ class PopoverModel: ObservableObject {
      Get a currently-presented popover with a tag. Returns `nil` if no popover with the tag was found.
      - parameter tag: The tag of the popover to look for.
      */
-    func popover(tagged tag: String) -> Popover? {
+    func popover(tagged tag: AnyHashable) -> Popover? {
         return popovers.first(where: { $0.attributes.tag == tag })
     }
 
@@ -102,7 +102,7 @@ class PopoverModel: ObservableObject {
     }
 
     /// Access this with `UIResponder.frameTagged(_:)` if inside a `WindowReader`, or `Popover.Context.frameTagged(_:)` if inside a `PopoverReader.`
-    func frame(tagged tag: String) -> CGRect {
+    func frame(tagged tag: AnyHashable) -> CGRect {
         let frame = frameTags[tag]
         return frame ?? .zero
     }

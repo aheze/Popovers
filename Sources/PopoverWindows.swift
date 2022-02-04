@@ -120,7 +120,7 @@ public extension UIResponder {
      Get a currently-presented popover with a tag. Returns `nil` if no popover with the tag was found.
      - parameter tag: The tag of the popover to look for.
      */
-    func popover(tagged tag: String) -> Popover? {
+    func popover(tagged tag: AnyHashable) -> Popover? {
         return popoverModel.popover(tagged: tag)
     }
 }

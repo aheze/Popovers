@@ -68,7 +68,7 @@ public struct Popover: Identifiable {
 
          Use `Popovers.popovers(tagged: "Your Tag")` to access popovers that are currently presented.
          */
-        public var tag: String?
+        public var tag: AnyHashable?
 
         /// The popover's position.
         public var position = Position.absolute(originAnchor: .bottom, popoverAnchor: .top)
@@ -119,7 +119,7 @@ public struct Popover: Identifiable {
          Create the default attributes for a popover.
          */
         public init(
-            tag: String? = nil,
+            tag: AnyHashable? = nil,
             position: Popover.Attributes.Position = Position.absolute(originAnchor: .bottom, popoverAnchor: .top),
             sourceFrame: @escaping (() -> CGRect) = { .zero },
             sourceFrameInset: UIEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0),

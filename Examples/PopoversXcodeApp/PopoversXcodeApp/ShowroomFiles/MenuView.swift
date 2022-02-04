@@ -17,20 +17,23 @@ struct MenuView: View {
         PopoverMenu {
             PopoverMenuButton {
                 iconName = "list.bullet"
-            } label: {
+            } label: { pressed in
                 Label("Change Icon To List", systemImage: "list.bullet")
+                    .systemMenuButtonStyle(pressed: pressed)
             }
 
             PopoverMenuButton {
                 iconName = "keyboard"
-            } label: {
+            } label: { pressed in
                 Label("Change Icon To Keyboard", systemImage: "keyboard")
+                    .systemMenuButtonStyle(pressed: pressed)
             }
 
             PopoverMenuButton {
                 iconName = "bag"
-            } label: {
+            } label: { pressed in
                 Label("Change Icon To Bag", systemImage: "bag")
+                    .systemMenuButtonStyle(pressed: pressed)
             }
         } label: { isPressed in
             ExampleShowroomRow(color: UIColor(hex: 0xFF00AB)) {

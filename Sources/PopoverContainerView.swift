@@ -78,7 +78,6 @@ struct PopoverContainerView: View {
 
                     /// Offset the popover by the gesture's translation, if this current popover is the selected one.
                     .offset(popoverOffset(for: popover))
-
                     /// Add the drag gesture.
                     .simultaneousGesture(
                         /// `minimumDistance: 2` is enough to allow scroll views to scroll, if one is contained in the popover.

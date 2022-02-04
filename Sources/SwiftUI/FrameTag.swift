@@ -15,7 +15,7 @@ import SwiftUI
 /// Store a view's frame for later use.
 struct FrameTagModifier: ViewModifier {
     /// The name of the frame.
-    let tag: String
+    let tag: AnyHashable
     @State var frame = CGRect.zero
 
     func body(content: Content) -> some View {
@@ -44,7 +44,7 @@ public extension View {
 
      - parameter tag: The tag for the frame
      */
-    func frameTag(_ tag: String) -> some View {
+    func frameTag(_ tag: AnyHashable) -> some View {
         return modifier(FrameTagModifier(tag: tag))
     }
 }
@@ -55,7 +55,7 @@ public extension UIResponder {
      - parameter tag: The tag that you used for the frame.
      - Returns: The frame of a frame-tagged view, or `nil` if no view with the tag exists.
      */
-    func frameTagged(_ tag: String) -> CGRect {
+    func frameTagged(_ tag: AnyHashable) -> CGRect {
         return popoverModel.frame(tagged: tag)
     }
 
@@ -68,7 +68,7 @@ public extension UIResponder {
     }
 
     /// Save a frame in this window's `frameTags`.
-    internal func save(_ frame: CGRect, for tag: String) {
+    internal func save(_ frame: CGRect, for tag: AnyHashable) {
         popoverModel.frameTags[tag] = frame
     }
 }
