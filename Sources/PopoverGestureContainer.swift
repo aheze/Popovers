@@ -27,11 +27,7 @@ class PopoverGestureContainer: UIView {
         /// Orientation or screen bounds changed, so update popover frames.
         popoverModel.updateFramesAfterBoundsChange()
     }
-    
-    deinit {
-        print("Container deinited.")
-    }
-    
+
     override func didMoveToWindow() {
         super.didMoveToWindow()
 

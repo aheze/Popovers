@@ -72,6 +72,12 @@ struct PopoverModifier: ViewModifier {
                 /// Detect a state change in `$present`.
                 .onValueChange(of: present) { _, newValue in
 
+                    /// Make sure there is a window first.
+                    guard let window = window else {
+                        print("[Popovers] - No window was found when presenting popover. Please file a bug report (https://github.com/aheze/Popovers/issues).")
+                        return
+                    }
+
                     /// `newValue` is true, so present the popover.
                     if newValue {
                         var attributes = Popover.Attributes()
@@ -180,6 +186,13 @@ struct MultiPopoverModifier: ViewModifier {
 
                 /// `$selection` was changed, determine if the popover should be presented, animated, or dismissed.
                 .onValueChange(of: selection) { oldSelection, newSelection in
+
+                    /// Make sure there is a window first.
+                    guard let window = window else {
+                        print("[Popovers] - No window was found when presenting popover. Please file a bug report (https://github.com/aheze/Popovers/issues).")
+                        return
+                    }
+
                     let model = window.popoverModel
 
                     /// Save the frame in `selectionFrameTags` to provide `excludedFrames`.

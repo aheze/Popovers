@@ -40,7 +40,7 @@ public struct PopoverReader<Content: View>: View {
  */
 public struct WindowReader<Content: View>: View {
     /// Your SwiftUI view.
-    public let view: (UIWindow) -> Content
+    public let view: (UIWindow?) -> Content
 
     /// The read window.
     @State var window: UIWindow?
@@ -49,21 +49,16 @@ public struct WindowReader<Content: View>: View {
     @Environment(\.window) var environmentWindow
 
     /// Reads the `UIWindow` that hosts some SwiftUI content.
-    public init(@ViewBuilder view: @escaping (UIWindow) -> Content) {
+    public init(@ViewBuilder view: @escaping (UIWindow?) -> Content) {
         self.view = view
     }
 
     public var body: some View {
-        VStack(spacing: 0) {
-            if let window = window ?? environmentWindow {
-                view(window)
-                    .environment(\.window, window)
-            }
-
-            WindowHandlerRepresentable(binding: $window)
-                .allowsHitTesting(false)
-                .frame(width: 0, height: 0)
-        }
+        view(window)
+            .environment(\.window, window)
+            .background(
+                WindowHandlerRepresentable(binding: $window)
+            )
     }
 
     /// A wrapper view to read the parent window.
