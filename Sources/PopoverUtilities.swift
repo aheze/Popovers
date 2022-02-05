@@ -47,7 +47,7 @@ public extension View {
 
      From https://stackoverflow.com/a/66822461/14351818
      */
-    func sizeReader(transaction: Transaction?, size: @escaping (CGSize) -> Void) -> some View {
+    func sizeReader(transaction: Transaction? = nil, size: @escaping (CGSize) -> Void) -> some View {
         return background(
             GeometryReader { geometry in
                 Color.clear

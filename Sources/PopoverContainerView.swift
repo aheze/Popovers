@@ -22,7 +22,6 @@ struct PopoverContainerView: View {
     @State var selectedPopoverOffset: CGSize = .zero
 
     var body: some View {
-        
         /// Support multiple popovers without interfering with each other.
         ZStack {
             /// Loop over the popovers.
@@ -51,9 +50,6 @@ struct PopoverContainerView: View {
                                 dismissButtonLabel
                             }
                         }
-                    }
-                    .onDisappear {
-                        popover.context.onDisappear?()
                     }
                     /// Hide the popover until its size has been calculated.
                     .opacity(popover.context.size != nil ? 1 : 0)
@@ -136,10 +132,10 @@ struct PopoverContainerView: View {
                     )
                     .padding(edgeInsets(for: popover)) /// Apply edge padding so that the popover doesn't overflow off the screen.
                 }
-                
+
                 /// Ensure the popover container can use up all available space.
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                
+
                 /// Apply the presentation and dismissal transitions.
                 .transition(
                     .asymmetric(
@@ -147,6 +143,11 @@ struct PopoverContainerView: View {
                         removal: popover.attributes.dismissal.transition ?? .opacity
                     )
                 )
+                
+                /// Clean up the container view.
+                .onDisappear {
+                    popover.context.onDisappear?()
+                }
             }
         }
         .edgesIgnoringSafeArea(.all) /// All calculations are done from the screen bounds.

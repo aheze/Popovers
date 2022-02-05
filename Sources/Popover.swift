@@ -146,6 +146,8 @@ public struct Popover: Identifiable {
             self.onTapOutside = onTapOutside
             self.onDismiss = onDismiss
             self.onContextChange = onContextChange
+            
+            print("Init. \(dismissal)")
         }
 
         /**
@@ -233,14 +235,14 @@ public struct Popover: Identifiable {
         /// The popover's presentation animation and transition.
         public struct Presentation {
             /// The animation timing used when the popover is presented.
-            public var animation: Animation? = .default
+            public var animation: Animation? = .easeOut
 
             /// The transition used when the popover is presented.
             public var transition: AnyTransition? = .opacity
 
             /// Create the default animation and transition for the popover.
             public init(
-                animation: Animation? = .default,
+                animation: Animation? = .easeOut,
                 transition: AnyTransition? = .opacity
             ) {
                 self.animation = animation
@@ -251,7 +253,7 @@ public struct Popover: Identifiable {
         /// The popover's dismissal animation, transition, and other behavior.
         public struct Dismissal {
             /// The animation timing used when the popover is dismissed.
-            public var animation: Animation? = .default
+            public var animation: Animation? = .easeOut
 
             /// The transition used when the popover is dismissed.
             public var transition: AnyTransition? = .opacity
@@ -291,7 +293,7 @@ public struct Popover: Identifiable {
 
             /// Create the default dismissal behavior for the popover.
             public init(
-                animation: Animation? = .default,
+                animation: Animation? = .easeOut,
                 transition: AnyTransition? = .opacity,
                 mode: Popover.Attributes.Dismissal.Mode = Mode.tapOutside,
                 tapOutsideIncludesOtherPopovers: Bool = false,

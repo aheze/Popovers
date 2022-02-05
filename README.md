@@ -342,7 +342,7 @@ This property stores the animation and transition that's applied when the popove
 
 ```swift
 /// Default values:
-$0.presentation.animation = .default
+$0.presentation.animation = .easeInOut
 $0.presentation.transition = .opacity
 ```
 
@@ -351,7 +351,7 @@ This property stores the popover's dismissal behavior. There's a couple sub-prop
 
 ```swift
 /// Same thing as `Presentation`.
-$0.dismissal.animation = .default
+$0.dismissal.animation = .easeInOut
 $0.dismissal.transition = .opacity
 
 /// Advanced stuff! Here's their default values:

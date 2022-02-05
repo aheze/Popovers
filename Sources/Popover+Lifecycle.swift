@@ -80,7 +80,7 @@ public extension Popover {
         guard let container = context.presentedPopoverContainer else { return }
 
         let model = container.popoverModel
-        let dismissalTransaction = transaction ?? Transaction(animation: attributes.dismissal.animation)
+        let dismissalTransaction = transaction ?? Transaction(animation: .easeOut)
 
         /// Clean up the container view controller if no more popovers are visible.
         context.onDisappear = { [weak context] in
@@ -93,6 +93,7 @@ public extension Popover {
             context?.presentedPopoverContainer?.accessibilityViewIsModal = model.popovers.contains { $0.attributes.blocksBackgroundTouches }
         }
 
+        
         /// Remove this popover from the view model, dismissing it.
         withTransaction(dismissalTransaction) {
             model.remove(self)

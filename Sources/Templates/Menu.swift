@@ -24,6 +24,8 @@ public extension Templates {
         public var showDivider = true /// Show divider between menu items.
         public var shadow = Shadow.system
         public var backgroundColor = Color.black.opacity(0.1) /// A color that is overlaid over the entire screen, just underneath the menu.
+        public var scaleRange = CGFloat(40) ... CGFloat(90) /// For rubber banding - the range at which rubber banding should be applied.
+        public var minimumScale = CGFloat(0.7) /// For rubber banding - the scale the the popover should shrink to when rubber banding.
 
         /// Create the default attributes for the popover menu.
         public init(
@@ -38,7 +40,9 @@ public extension Templates {
             cornerRadius: CGFloat = CGFloat(14),
             showDivider: Bool = true,
             shadow: Shadow = Shadow.system,
-            backgroundColor: Color = Color.black.opacity(0.1)
+            backgroundColor: Color = Color.black.opacity(0.1),
+            scaleRange: ClosedRange<CGFloat> = CGFloat(30) ... CGFloat(80),
+            minimumScale: CGFloat = CGFloat(0.85)
         ) {
             self.holdDelay = holdDelay
             self.presentationAnimation = presentationAnimation
@@ -52,6 +56,8 @@ public extension Templates {
             self.showDivider = showDivider
             self.shadow = shadow
             self.backgroundColor = backgroundColor
+            self.scaleRange = scaleRange
+            self.minimumScale = minimumScale
         }
     }
 
@@ -133,9 +139,28 @@ public extension Templates {
                                 } else {
                                     /// Highlight the button that the user's finger is over.
                                     model.hoveringIndex = model.getIndex(from: value.location)
+
+                                    /// Rubber-band the menu.
+                                    withAnimation {
+                                        if let distance = model.getDistanceFromMenu(from: value.location) {
+                                            if configuration.scaleRange.contains(distance) {
+                                                let percentage = (distance - configuration.scaleRange.lowerBound) / (configuration.scaleRange.upperBound - configuration.scaleRange.lowerBound)
+                                                let scale = 1 - (1 - configuration.minimumScale) * percentage
+                                                model.scale = scale
+                                            } else if distance < configuration.scaleRange.lowerBound {
+                                                model.scale = 1
+                                            } else {
+                                                model.scale = configuration.minimumScale
+                                            }
+                                        }
+                                    }
                                 }
                             }
                             .onEnded { value in
+                                withAnimation {
+                                    model.scale = 1
+                                }
+
                                 labelPressUUID = nil
 
                                 /// The user started long pressing when the menu was **already** presented.
@@ -191,12 +216,18 @@ public extension Templates {
         }
     }
 
+    /// Map each menu item index with its size.
+    struct MenuItemSize {
+        var index: Int
+        var size: CGSize
+    }
+
     internal class MenuModel: ObservableObject {
         /// Whether to show the popover or not.
         @Published var present = false
 
-        /// The popover's scale. Animate from `0.1` to `1.0` when it's presented.
-        @Published var scale = CGFloat(0.1)
+        /// The popover's scale (for rubber banding).
+        @Published var scale = CGFloat(1)
 
         /// The index of the menu button that the user's finger hovers on.
         @Published var hoveringIndex: Int?
@@ -205,16 +236,47 @@ public extension Templates {
         @Published var selectedIndex: Int?
 
         /// The frames of the menu buttons, relative to the window.
-        @Published var frames: [Int: CGRect] = [:]
+        @Published var sizes: [MenuItemSize] = []
+
+        /// The frame of the menu in global coordinates.
+        @Published var menuFrame = CGRect.zero
 
         /// Get the menu button index that intersects the drag gesture's touch location.
         func getIndex(from location: CGPoint) -> Int? {
-            for frame in frames {
-                if frame.value.contains(location) {
-                    return frame.key
+            /// Create frames from the sizes.
+            var frames = [Int: CGRect]()
+            for item in sizes {
+                let previousSizes = sizes.filter { $0.index < item.index }
+                let previousHeight = previousSizes.map { $0.size.height }.reduce(0, +)
+                let frame = CGRect(x: 0, y: previousHeight, width: item.size.width, height: item.size.height)
+                frames[item.index] = frame
+            }
+
+            let zeroedLocation = CGPoint(x: location.x - menuFrame.minX, y: location.y - menuFrame.minY)
+
+            for (index, frame) in frames {
+                if frame.contains(zeroedLocation) {
+                    return index
                 }
             }
             return nil
+        }
+
+        func getDistanceFromMenu(from location: CGPoint) -> CGFloat? {
+            let menuCenter = CGPoint(x: menuFrame.midX, y: menuFrame.midY)
+
+            /// The location relative to the popover menu's center (0, 0)
+            let normalizedLocation = CGPoint(x: location.x - menuCenter.x, y: location.y - menuCenter.y)
+
+            if abs(normalizedLocation.y) >= menuFrame.height / 2, abs(normalizedLocation.y) >= abs(normalizedLocation.x) {
+                /// top and bottom
+                let distance = abs(normalizedLocation.y) - menuFrame.height / 2
+                return distance
+            } else {
+                /// left and right
+                let distance = abs(normalizedLocation.x) - menuFrame.width / 2
+                return distance
+            }
         }
 
         /// Get the anchor point to scale from.
@@ -229,6 +291,9 @@ public extension Templates {
 
     internal struct MenuView: View {
         @ObservedObject var model: MenuModel
+
+        /// For the scale animation.
+        @State var expanded = false
 
         let configuration: MenuConfiguration
 
@@ -258,8 +323,14 @@ public extension Templates {
                             /// Work with frames.
                             .frame(maxWidth: .infinity)
                             .contentShape(Rectangle())
-                            .frameReader { rect in
-                                model.frames[index] = rect
+
+                            /// Use `sizeReader` to prevent interfering with the scale effect.
+                            .sizeReader { size in
+                                if let firstIndex = model.sizes.firstIndex(where: { $0.index == index }) {
+                                    model.sizes[firstIndex].size = size
+                                } else {
+                                    model.sizes.append(MenuItemSize(index: index, size: size))
+                                }
                             }
 
                         if configuration.showDivider, index != content.count - 1 {
@@ -272,14 +343,35 @@ public extension Templates {
                 }
                 .frame(width: configuration.width)
                 .fixedSize() /// hug the width of the inner content
-                .modifier(ClippedBackgroundModifier(context: context, configuration: configuration, expanded: model.scale >= 1)) /// Clip the content if desired.
+                .modifier(ClippedBackgroundModifier(context: context, configuration: configuration, expanded: expanded)) /// Clip the content if desired.
+                .scaleEffect(expanded ? 1 : 0.1, anchor: configuration.scaleAnchor?.unitPoint ?? model.getScaleAnchor(from: context))
                 .scaleEffect(model.scale, anchor: configuration.scaleAnchor?.unitPoint ?? model.getScaleAnchor(from: context))
                 .gesture(
                     DragGesture(minimumDistance: 0, coordinateSpace: .global)
                         .onChanged { value in
                             model.hoveringIndex = model.getIndex(from: value.location)
+
+                            /// Rubber-band the menu.
+                            withAnimation {
+                                if let distance = model.getDistanceFromMenu(from: value.location) {
+                                    if configuration.scaleRange.contains(distance) {
+                                        let percentage = (distance - configuration.scaleRange.lowerBound) / (configuration.scaleRange.upperBound - configuration.scaleRange.lowerBound)
+                                        let scale = 1 - (1 - configuration.minimumScale) * percentage
+                                        model.scale = scale
+                                    } else if distance < configuration.scaleRange.lowerBound {
+                                        model.scale = 1
+                                    } else {
+                                        model.scale = configuration.minimumScale
+                                    }
+                                }
+                            }
                         }
                         .onEnded { value in
+
+                            withAnimation {
+                                model.scale = 1
+                            }
+
                             let activeIndex = model.getIndex(from: value.location)
                             model.selectedIndex = activeIndex
                             model.hoveringIndex = nil
@@ -290,13 +382,16 @@ public extension Templates {
                 )
                 .onAppear {
                     withAnimation(configuration.presentationAnimation) {
-                        model.scale = 1
+                        expanded = true
                     }
                     /// when the popover is about to be dismissed, shrink it again.
                     context.attributes.onDismiss = {
                         withAnimation(configuration.dismissalAnimation) {
-                            model.scale = 0.1
+                            expanded = false
                         }
+                    }
+                    context.attributes.onContextChange = { context in
+                        model.menuFrame = context.frame
                     }
                 }
             }

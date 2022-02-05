@@ -19,6 +19,9 @@ class PopoverGestureContainer: UIView {
 
         /// Allow resizing.
         autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        
+        self.layer.borderColor = UIColor.systemBlue.cgColor
+        self.layer.borderWidth = 10
     }
 
     override func layoutSubviews() {
