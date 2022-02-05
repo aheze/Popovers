@@ -18,7 +18,6 @@ struct Playground: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
         ) {
             Group {
-                MenuView()
                 BasicView()
                 CustomizedView()
                 AbsolutePositioningView()

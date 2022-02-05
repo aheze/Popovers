@@ -65,11 +65,20 @@ public extension Templates {
      A built-from-scratch version of the system menu.
      */
     struct Menu<Views, Label: View>: View {
+        
+        /// A unique ID for the menu (to support multiple menus in the same screen).
+        @State var id = UUID()
+        
         /// If the user is pressing down on the label, this will be a unique `UUID`.
         @State var labelPressUUID: UUID?
 
+        /**
+         If the label was pressed/dragged when the menu was already presented.
+         In this case, dismiss the menu if the user lifts their finger on the label.
+         */
         @State var labelPressedWhenAlreadyPresented = false
 
+        /// The current position of the user's finger.
         @State var dragPosition: CGPoint?
 
         /// View model for the menu buttons.
@@ -101,9 +110,10 @@ public extension Templates {
         }
 
         public var body: some View {
+            let _ = print("ID: \(id)")
             WindowReader { window in
                 label(fadeLabel)
-                    .frameTag("PopoverMenuLabel")
+                    .frameTag(id)
                     .contentShape(Rectangle())
                     .gesture(
                         DragGesture(minimumDistance: 0, coordinateSpace: .global)
@@ -122,7 +132,7 @@ public extension Templates {
                                                 currentUUID == labelPressUUID,
                                                 let dragPosition = dragPosition
                                             {
-                                                if window.frameTagged("PopoverMenuLabel").contains(dragPosition) {
+                                                if window.frameTagged(id).contains(dragPosition) {
                                                     model.present = true
                                                 }
                                             }
@@ -130,7 +140,7 @@ public extension Templates {
                                     }
 
                                     withAnimation(configuration.labelFadeAnimation) {
-                                        fadeLabel = window.frameTagged("PopoverMenuLabel").contains(value.location)
+                                        fadeLabel = window.frameTagged(id).contains(value.location)
                                     }
                                 } else if labelPressUUID == nil {
                                     /// The menu was already presented.
@@ -166,12 +176,12 @@ public extension Templates {
                                 /// The user started long pressing when the menu was **already** presented.
                                 if labelPressedWhenAlreadyPresented {
                                     labelPressedWhenAlreadyPresented = false
-                                    if window.frameTagged("PopoverMenuLabel").contains(value.location) {
+                                    if window.frameTagged(id).contains(value.location) {
                                         model.present = false
                                     }
                                 } else {
                                     if !model.present {
-                                        if window.frameTagged("PopoverMenuLabel").contains(value.location) {
+                                        if window.frameTagged(id).contains(value.location) {
                                             model.present = true
                                         } else {
                                             withAnimation(configuration.labelFadeAnimation) {
@@ -204,7 +214,7 @@ public extension Templates {
                         present: $model.present,
                         attributes: {
                             $0.rubberBandingMode = .none
-                            $0.dismissal.excludedFrames = { [window.frameTagged("PopoverMenuLabel")] }
+                            $0.dismissal.excludedFrames = { [window.frameTagged(id)] }
                             $0.sourceFrameInset = configuration.sourceFrameInset
                         }
                     ) {
@@ -494,7 +504,7 @@ public extension Templates {
                     .mask(
                         Color.clear
                             .overlay(
-                                Rectangle()
+                                RoundedRectangle(cornerRadius: configuration.cornerRadius)
                                     .frame(height: expanded ? nil : context.frame.height / 3),
                                 alignment: .top
                             )

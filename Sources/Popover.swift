@@ -146,8 +146,6 @@ public struct Popover: Identifiable {
             self.onTapOutside = onTapOutside
             self.onDismiss = onDismiss
             self.onContextChange = onContextChange
-            
-            print("Init. \(dismissal)")
         }
 
         /**

@@ -48,15 +48,9 @@ struct ExampleRow: View {
                 Color(uiColor: .systemBackground)
                     .overlay(alignment: .bottomTrailing) {
                         LinearGradient(
-                            stops: [
-                                Gradient.Stop(
-                                    color: Color(uiColor: UIColor(hex: color).offset(by: 0.2)),
-                                    location: 0
-                                ),
-                                Gradient.Stop(
-                                    color: Color(uiColor: UIColor(hex: color)),
-                                    location: 1
-                                ),
+                            colors: [
+                                Color(uiColor: UIColor(hex: color).offset(by: 0.2)),
+                                Color(uiColor: UIColor(hex: color)),
                             ],
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing

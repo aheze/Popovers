@@ -19,15 +19,15 @@ struct Showroom: View {
                 .padding(.top, 12)
         ) {
             Group {
+                MenuView()
                 AlertView()
                 VideoView()
                 TipView()
                 TutorialView()
                 ColorView()
                 NotificationView()
-                MenuView()
-                StandardView()
                 FormView()
+                StandardView()
             }
         }
     }

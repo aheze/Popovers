@@ -41,6 +41,8 @@
 		3CBD879C27755E5F005BBA48 /* DismissView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CBD879927755E5F005BBA48 /* DismissView.swift */; };
 		3CBD879D27755E5F005BBA48 /* PresentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CBD879A27755E5F005BBA48 /* PresentView.swift */; };
 		3CBD87AA27756277005BBA48 /* Popovers in Frameworks */ = {isa = PBXBuildFile; productRef = 3CBD87A927756277005BBA48 /* Popovers */; };
+		3CCA6CED27AF2287002D0091 /* Testing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CCA6CEC27AF2287002D0091 /* Testing.swift */; };
+		3CCA6CEF27AF24A0002D0091 /* MenuComparisonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CCA6CEE27AF249F002D0091 /* MenuComparisonView.swift */; };
 		CA04D305277B3488004E8FF6 /* PresentWithinSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA04D304277B3488004E8FF6 /* PresentWithinSheet.swift */; };
 		CA6F682D2786F70700DF97E7 /* FormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA6F682C2786F70700DF97E7 /* FormView.swift */; };
 /* End PBXBuildFile section */
@@ -81,6 +83,8 @@
 		3CBD879827755E5F005BBA48 /* ReplaceView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReplaceView.swift; sourceTree = "<group>"; };
 		3CBD879927755E5F005BBA48 /* DismissView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DismissView.swift; sourceTree = "<group>"; };
 		3CBD879A27755E5F005BBA48 /* PresentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PresentView.swift; sourceTree = "<group>"; };
+		3CCA6CEC27AF2287002D0091 /* Testing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Testing.swift; sourceTree = "<group>"; };
+		3CCA6CEE27AF249F002D0091 /* MenuComparisonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuComparisonView.swift; sourceTree = "<group>"; };
 		CA04D304277B3488004E8FF6 /* PresentWithinSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresentWithinSheet.swift; sourceTree = "<group>"; };
 		CA6F682C2786F70700DF97E7 /* FormView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FormView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -125,6 +129,8 @@
 				3CBD876427755E50005BBA48 /* Showroom.swift */,
 				3CBD878627755E5B005BBA48 /* ShowroomFiles */,
 				3CBD876027755E50005BBA48 /* UIKit.swift */,
+				3CCA6CEC27AF2287002D0091 /* Testing.swift */,
+				3CCA6CEB27AF2278002D0091 /* TestingFiles */,
 				3CBD879727755E5E005BBA48 /* UIKitFiles */,
 				3CBD876127755E50005BBA48 /* Utilities.swift */,
 				3CBD876B27755E54005BBA48 /* Assets.xcassets */,
@@ -136,7 +142,6 @@
 			isa = PBXGroup;
 			children = (
 				3CBD876E27755E57005BBA48 /* CustomizedView.swift */,
-				3C8521B527ACADB30020ECB8 /* InsideNavigationView.swift */,
 				3CBD876F27755E57005BBA48 /* NestedView.swift */,
 				3CBD877027755E57005BBA48 /* SelectionView.swift */,
 				3CBD877127755E57005BBA48 /* BasicView.swift */,
@@ -178,6 +183,15 @@
 				CA04D304277B3488004E8FF6 /* PresentWithinSheet.swift */,
 			);
 			path = UIKitFiles;
+			sourceTree = "<group>";
+		};
+		3CCA6CEB27AF2278002D0091 /* TestingFiles */ = {
+			isa = PBXGroup;
+			children = (
+				3C8521B527ACADB30020ECB8 /* InsideNavigationView.swift */,
+				3CCA6CEE27AF249F002D0091 /* MenuComparisonView.swift */,
+			);
+			path = TestingFiles;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -279,6 +293,8 @@
 				3CBD876627755E50005BBA48 /* UIKit.swift in Sources */,
 				3CBD877E27755E57005BBA48 /* BackgroundView.swift in Sources */,
 				3CBD876A27755E50005BBA48 /* Showroom.swift in Sources */,
+				3CCA6CEF27AF24A0002D0091 /* MenuComparisonView.swift in Sources */,
+				3CCA6CED27AF2287002D0091 /* Testing.swift in Sources */,
 				3CA34FAC279533E300AC36DF /* AccessibilityView.swift in Sources */,
 				3CBD877F27755E57005BBA48 /* RelativePositioningView.swift in Sources */,
 				3CBD876727755E50005BBA48 /* Utilities.swift in Sources */,

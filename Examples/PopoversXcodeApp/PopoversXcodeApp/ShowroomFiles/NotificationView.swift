@@ -35,7 +35,9 @@ struct NotificationView: View {
                         .top,
                     ]
                 )
+                $0.presentation.animation = .spring()
                 $0.presentation.transition = .move(edge: .top)
+                $0.dismissal.animation = .spring(response: 3, dampingFraction: 0.8, blendDuration: 1)
                 $0.dismissal.transition = .move(edge: .top)
                 $0.dismissal.mode = [.dragUp]
                 $0.dismissal.dragDismissalProximity = 0.1

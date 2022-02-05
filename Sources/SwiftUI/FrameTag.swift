@@ -79,7 +79,7 @@ public extension Optional where Wrapped: UIResponder {
      - parameter tag: The tag that you used for the frame.
      - Returns: The frame of a frame-tagged view, or `nil` if no view with the tag exists.
      */
-    func frameTagged(_ tag: String) -> CGRect {
+    func frameTagged(_ tag: AnyHashable) -> CGRect {
         if let responder = self {
             return responder.frameTagged(tag)
         }

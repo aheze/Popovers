@@ -29,77 +29,11 @@ struct MenuView: View {
                 HStack {
                     ExampleImage(iconName, color: UIColor(hex: 0xFF00AB))
 
-                    Text("Context Menu")
+                    Text("Menu")
                         .fontWeight(.medium)
                 }
             }
             .opacity(isPressed ? 0.5 : 1)
         }
-
-        Menu {
-            Button {
-                iconName = "list.bullet"
-            } label: {
-                Label("Change Icon To List", systemImage: "list.bullet")
-            }
-
-            Button {
-                iconName = "keyboard"
-            } label: {
-                Label("Change Icon To Keyboard", systemImage: "keyboard")
-            }
-
-            Button {
-                iconName = "bag"
-            } label: {
-                Label("Change Icon To Bag", systemImage: "bag")
-            }
-
-        } label: {
-            ExampleShowroomRow(color: UIColor(hex: 0xFF00AB)) {
-                HStack {
-                    ExampleImage(iconName, color: UIColor(hex: 0xFF00AB))
-
-                    Text("Context Menu")
-                        .fontWeight(.medium)
-                }
-            }
-        }
     }
 }
-
-//struct MenuViewPopover: View {
-//    @Binding var present: Bool
-//    @Binding var iconName: String
-//
-//    var body: some View {
-//        Templates.Menu {
-//            Templates.MenuButton {
-//                iconName = "list.bullet"
-//            } label: {
-//                Label("Change Icon To List", systemImage: "list.bullet")
-//            }
-//
-//            Templates.MenuButton {
-//                iconName = "keyboard"
-//            } label: {
-//                Label("Change Icon To Keyboard", systemImage: "keyboard")
-//            }
-//
-//            Templates.MenuButton {
-//                iconName = "bag"
-//            } label: {
-//                Label("Change Icon To Bag", systemImage: "bag")
-//            }
-//        } label: { isPressed in
-//            ExampleShowroomRow(color: UIColor(hex: 0xFF00AB)) {
-//                HStack {
-//                    ExampleImage(iconName, color: UIColor(hex: 0xFF00AB))
-//
-//                    Text("Context Menu")
-//                        .fontWeight(.medium)
-//                }
-//            }
-//        }
-//    }
-//}

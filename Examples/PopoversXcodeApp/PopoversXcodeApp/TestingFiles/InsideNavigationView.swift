@@ -11,7 +11,7 @@ import SwiftUI
 struct InsideNavigationView: View {
     var body: some View {
         NavigationLink(destination: NavigationDestinationView()) {
-            ExampleRow(
+            ExampleTestingRow(
                 image: "square.stack.3d.down.right.fill",
                 title: "Inside Navigation View",
                 color: 0x00AEEF
@@ -26,16 +26,20 @@ struct NavigationDestinationView: View {
 
     var body: some View {
         NavigationView {
-            VStack {
+            VStack(spacing: 30) {
                 Button("Present Popover") {
                     present.toggle()
                 }
 
-                NavigationLink("Next View", destination: Text("Hi"))
+                NavigationLink("Next View", destination: Text("This view should appear with a swipe animation."))
             }
         }
+        .cornerRadius(10)
+        .padding()
+        .background(Color(uiColor: .secondarySystemBackground))
+        .navigationBarTitleDisplayMode(.inline)
         .popover(present: $present) {
-            Text("Hello! I'm a popover. You can dismiss me by tapping outside. Also, try dragging me to get a nice bounce.")
+            Text("Popovers should work when attached to `NavigationView`s without interfering with system animations.")
                 .padding()
                 .background(.background)
                 .cornerRadius(12)
