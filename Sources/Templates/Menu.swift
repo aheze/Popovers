@@ -11,11 +11,12 @@ import SwiftUI
 public extension Templates {
     /// A set of attributes for the popover menu.
     struct MenuConfiguration {
-        public var holdDelay = CGFloat(0.15) /// The duration of a long press to activate the menu.
+        public var holdDelay = CGFloat(0.2) /// The duration of a long press to activate the menu.
         public var presentationAnimation = Animation.spring(response: 0.4, dampingFraction: 0.7, blendDuration: 1)
         public var dismissalAnimation = Animation.spring(response: 0.5, dampingFraction: 0.9, blendDuration: 1)
         public var labelFadeAnimation = Animation.default /// The animation used when calling the `fadeLabel`.
         public var clipContent = true /// Replicate the system's default clipping animation.
+        public var sourceFrameInset = UIEdgeInsets(top: -8, left: -8, bottom: -8, right: -8)
         public var scaleAnchor: Popover.Attributes.Position.Anchor? /// If nil, the anchor will be automatically picked.
         public var menuBlur = UIBlurEffect.Style.prominent
         public var width: CGFloat? = CGFloat(240) /// If nil, hug the content.
@@ -26,10 +27,11 @@ public extension Templates {
 
         /// Create the default attributes for the popover menu.
         public init(
-            holdDelay: CGFloat = CGFloat(0.15),
+            holdDelay: CGFloat = CGFloat(0.2),
             presentationAnimation: Animation = Animation.spring(response: 0.4, dampingFraction: 0.7, blendDuration: 1),
             dismissalAnimation: Animation = Animation.spring(response: 0.5, dampingFraction: 0.9, blendDuration: 1),
             labelFadeAnimation: Animation = Animation.default,
+            sourceFrameInset: UIEdgeInsets = UIEdgeInsets(top: -8, left: -8, bottom: -8, right: -8),
             scaleAnchor: Popover.Attributes.Position.Anchor? = nil,
             menuBlur: UIBlurEffect.Style = UIBlurEffect.Style.prominent,
             width: CGFloat? = CGFloat(240),
@@ -42,6 +44,7 @@ public extension Templates {
             self.presentationAnimation = presentationAnimation
             self.dismissalAnimation = dismissalAnimation
             self.labelFadeAnimation = labelFadeAnimation
+            self.sourceFrameInset = sourceFrameInset
             self.scaleAnchor = scaleAnchor
             self.menuBlur = menuBlur
             self.width = width
@@ -167,6 +170,8 @@ public extension Templates {
                         if !present {
                             withAnimation(configuration.labelFadeAnimation) {
                                 fadeLabel = false
+                                model.selectedIndex = nil
+                                model.hoveringIndex = nil
                             }
                         }
                     }
@@ -175,6 +180,7 @@ public extension Templates {
                         attributes: {
                             $0.rubberBandingMode = .none
                             $0.dismissal.excludedFrames = { [window.frameTagged("PopoverMenuLabel")] }
+                            $0.sourceFrameInset = configuration.sourceFrameInset
                         }
                     ) {
                         MenuView(model: model, configuration: configuration, content: content.getViews)
@@ -266,10 +272,7 @@ public extension Templates {
                 }
                 .frame(width: configuration.width)
                 .fixedSize() /// hug the width of the inner content
-                .modifier(ClippedModifier(context: context, configuration: configuration, expanded: model.scale >= 1)) /// Clip the content if desired.
-                .background(Templates.VisualEffectView(configuration.menuBlur))
-                .cornerRadius(configuration.cornerRadius)
-                .popoverShadow(shadow: configuration.shadow)
+                .modifier(ClippedBackgroundModifier(context: context, configuration: configuration, expanded: model.scale >= 1)) /// Clip the content if desired.
                 .scaleEffect(model.scale, anchor: configuration.scaleAnchor?.unitPoint ?? model.getScaleAnchor(from: context))
                 .gesture(
                     DragGesture(minimumDistance: 0, coordinateSpace: .global)
@@ -384,7 +387,7 @@ public extension Templates {
     }
 
     /// Replicates the system menu's subtle clip effect.
-    internal struct ClippedModifier: ViewModifier {
+    internal struct ClippedBackgroundModifier: ViewModifier {
         let context: Popover.Context
         let configuration: MenuConfiguration
         let expanded: Bool
@@ -393,8 +396,23 @@ public extension Templates {
                 content
 
                     /// Replicates the system menu's subtle clip effect.
-                    .frame(height: expanded ? nil : context.frame.height / 2, alignment: .top)
-                    .clipped()
+                    .mask(
+                        Color.clear
+                            .overlay(
+                                Rectangle()
+                                    .frame(height: expanded ? nil : context.frame.height / 3),
+                                alignment: .top
+                            )
+                    )
+
+                    /// Avoid limiting the frame of the content to ensure proper hit-testing (for popover dismissal).
+                    .background(
+                        Templates.VisualEffectView(configuration.menuBlur)
+                            .cornerRadius(configuration.cornerRadius)
+                            .popoverShadow(shadow: configuration.shadow)
+                            .frame(height: expanded ? nil : context.frame.height / 3),
+                        alignment: .top
+                    )
             } else {
                 content
             }

@@ -86,7 +86,7 @@ public struct Popover: Identifiable {
         public var sourceFrame: (() -> CGRect) = { .zero }
 
         /// Inset the source frame by this.
-        public var sourceFrameInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        public var sourceFrameInset = UIEdgeInsets.zero
 
         /// Padding to prevent the popover from overflowing off the screen.
         public var screenEdgePadding = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
@@ -122,7 +122,7 @@ public struct Popover: Identifiable {
             tag: AnyHashable? = nil,
             position: Popover.Attributes.Position = Position.absolute(originAnchor: .bottom, popoverAnchor: .top),
             sourceFrame: @escaping (() -> CGRect) = { .zero },
-            sourceFrameInset: UIEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0),
+            sourceFrameInset: UIEdgeInsets = UIEdgeInsets.zero,
             screenEdgePadding: UIEdgeInsets = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16),
             presentation: Popover.Attributes.Presentation = Presentation(),
             dismissal: Popover.Attributes.Dismissal = Dismissal(),

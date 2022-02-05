@@ -64,6 +64,7 @@ struct TutorialViewPopover: View {
 
                     Button {
                         present = false
+                        selection = nil
                     } label: {
                         Image(systemName: "xmark")
                             .font(.system(size: 19))
