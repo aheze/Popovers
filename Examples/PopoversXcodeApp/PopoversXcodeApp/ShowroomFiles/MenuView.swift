@@ -14,14 +14,14 @@ struct MenuView: View {
     @State var iconName = "list.bullet"
 
     var body: some View {
-        PopoverMenu {
-            PopoverMenuButton(title: "Change Icon To List", systemImage: "list.bullet") {
+        Templates.Menu {
+            Templates.MenuButton(title: "Change Icon To List", systemImage: "list.bullet") {
                 iconName = "list.bullet"
             }
-            PopoverMenuButton(title: "Change Icon To Keyboard", systemImage: "keyboard") {
+            Templates.MenuButton(title: "Change Icon To Keyboard", systemImage: "keyboard") {
                 iconName = "keyboard"
             }
-            PopoverMenuButton(title: "Change Icon To Bag", systemImage: "bag") {
+            Templates.MenuButton(title: "Change Icon To Bag", systemImage: "bag") {
                 iconName = "bag"
             }
         } label: { isPressed in
@@ -73,20 +73,20 @@ struct MenuView: View {
 //    @Binding var iconName: String
 //
 //    var body: some View {
-//        PopoverTemplates.Menu {
-//            PopoverTemplates.MenuButton {
+//        Templates.Menu {
+//            Templates.MenuButton {
 //                iconName = "list.bullet"
 //            } label: {
 //                Label("Change Icon To List", systemImage: "list.bullet")
 //            }
 //
-//            PopoverTemplates.MenuButton {
+//            Templates.MenuButton {
 //                iconName = "keyboard"
 //            } label: {
 //                Label("Change Icon To Keyboard", systemImage: "keyboard")
 //            }
 //
-//            PopoverTemplates.MenuButton {
+//            Templates.MenuButton {
 //                iconName = "bag"
 //            } label: {
 //                Label("Change Icon To Bag", systemImage: "bag")

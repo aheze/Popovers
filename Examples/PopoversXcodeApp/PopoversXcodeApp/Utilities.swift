@@ -29,7 +29,7 @@ struct ExampleRow: View {
                     .font(.system(size: 19, weight: .medium))
                     .frame(width: 40, height: 40)
                     .background(
-                        PopoverTemplates.VisualEffectView(.dark)
+                        Templates.VisualEffectView(.dark)
                     )
                     .cornerRadius(10)
                     .overlay {

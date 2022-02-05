@@ -84,11 +84,11 @@ struct AlertViewPopover: View {
                 Text("Ok")
                     .foregroundColor(.blue)
             }
-            .buttonStyle(PopoverTemplates.AlertButtonStyle())
+            .buttonStyle(Templates.AlertButtonStyle())
         }
         .background(Color(uiColor: .systemBackground))
         .cornerRadius(16)
-        .popoverContainerShadow()
+        .popoverShadow(shadow: .system)
         .frame(width: 260)
         .scaleEffect(expanding ? 1.05 : 1)
         .scaleEffect(scaled ? 2 : 1)

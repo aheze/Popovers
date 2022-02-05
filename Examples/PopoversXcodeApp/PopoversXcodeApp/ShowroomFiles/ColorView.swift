@@ -77,7 +77,7 @@ struct ColorViewPopover: View {
         .frame(width: 200)
         .background(
             ZStack {
-                PopoverTemplates.VisualEffectView(.systemUltraThinMaterialDark)
+                Templates.VisualEffectView(.systemUltraThinMaterialDark)
                 UIColor(hex: 0x0070A3).color.opacity(0.5)
             }
         )

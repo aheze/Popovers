@@ -38,7 +38,7 @@ struct DismissView: View {
         ) {
             DismissViewControllerRepresentable()
                 .cornerRadius(16)
-                .popoverContainerShadow()
+                .popoverShadow(shadow: .system)
                 .frame(maxWidth: 600, maxHeight: 300)
         }
     }

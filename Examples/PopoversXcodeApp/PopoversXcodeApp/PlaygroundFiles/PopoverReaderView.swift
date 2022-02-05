@@ -70,7 +70,7 @@ struct PopoverReaderViewBackground: View {
                 .position(context.frame.point(at: .top))
                 .zIndex(1)
 
-            PopoverTemplates.CurveConnector(
+            Templates.CurveConnector(
                 start: context.frame.point(at: .top),
                 end: context.window.frameTagged("Frame-Tagged View").point(at: .bottom)
             )

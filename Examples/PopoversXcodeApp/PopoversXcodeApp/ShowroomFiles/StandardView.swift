@@ -35,7 +35,7 @@ struct StandardView: View {
                 )
             }
         ) {
-            PopoverTemplates.Container {
+            Templates.Container {
                 Text("This is a pretty standard-looking popover with an arrow.")
             }
             .frame(maxWidth: 300)

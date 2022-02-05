@@ -41,7 +41,7 @@ struct ReplaceView: View {
         ) {
             ReplaceViewControllerRepresentable()
                 .cornerRadius(16)
-                .popoverContainerShadow()
+                .popoverShadow(shadow: .system)
                 .frame(maxWidth: 600, maxHeight: 300)
         }
     }

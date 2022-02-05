@@ -40,7 +40,7 @@ struct TipView: View {
         } background: {
             PopoverReader { context in
 
-                PopoverTemplates.CurveConnector(
+                Templates.CurveConnector(
                     start: context.frame.point(at: .bottom),
                     end: context.window.frameTagged("TipView").point(at: .top)
                 )

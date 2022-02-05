@@ -34,7 +34,7 @@ struct ContentViewToolbar: ViewModifier {
                             $0.dismissal.mode = [.dragDown, .tapOutside]
                         }
                     ) {
-                        PopoverTemplates.Container(cornerRadius: 20) {
+                        Templates.Container(cornerRadius: 20) {
                             InfoView()
                         }
                         .frame(maxWidth: 400)

@@ -40,7 +40,7 @@ struct PresentWithinSheet: View {
             .navigationTitle("Popovers inside presented sheet")
             .navigationBarTitleDisplayMode(.inline)
             .popover(present: $isPopoverPresented) {
-                PopoverTemplates.Container {
+                Templates.Container {
                     VStack {
                         Text("Popover inside a sheet!")
 
