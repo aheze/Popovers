@@ -16,8 +16,7 @@ struct MenuComparisonView: View {
                 image: "contextualmenu.and.cursorarrow",
                 title: "Menu Comparison View",
                 color: 0xA000FF
-            ) {}
-                .disabled(true) /// `NavigationLink` is a button already, so disable`ExampleRow`'s inner button
+            )
         }
     }
 }
@@ -41,15 +40,8 @@ struct MenuComparisonDestinationView: View {
                     iconName = "bag"
                 }
             } label: { isPressed in
-                ExampleShowroomRow(color: UIColor(hex: 0xFF00AB)) {
-                    HStack {
-                        ExampleImage(iconName, color: UIColor(hex: 0xFF00AB))
-
-                        Text("Popovers Menu")
-                            .fontWeight(.medium)
-                    }
-                }
-                .opacity(isPressed ? 0.5 : 1)
+                ExampleRow(image: iconName, title: "Popovers Menu", color: 0xFF00AB)
+                    .opacity(isPressed ? 0.5 : 1)
             }
 
             Menu {
@@ -72,21 +64,31 @@ struct MenuComparisonDestinationView: View {
                 }
 
             } label: {
-                ExampleShowroomRow(color: UIColor(hex: 0xFF004E)) {
-                    HStack {
-                        ExampleImage(iconName, color: UIColor(hex: 0xFF004E))
-
-                        Text("System Menu")
-                            .fontWeight(.medium)
-                    }
-                }
+                ExampleRow(image: iconName, title: "System Menu", color: 0xFF004E)
             }
 
-            Templates.Menu(configuration: {
-                var configuration = Templates.MenuConfiguration()
-                configuration.width = nil
-                return configuration
-            }()) {
+            Templates.Menu(
+                configuration: {
+                    var configuration = Templates.MenuConfiguration()
+                    configuration.width = nil
+                    return configuration
+                }()
+            ) {
+                Text("Popover menus are highly customizable!")
+                    .padding(EdgeInsets(top: 16, leading: 18, bottom: 16, trailing: 18))
+                    .overlay(
+                        AsyncImage(url: URL(string: "https://raw.githubusercontent.com/aheze/Popovers/main/Assets/SocialPreview.png")) { image in
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                        } placeholder: {
+                            Color.clear
+                        }
+                    )
+                    .clipped()
+
+                Templates.MenuDivider()
+
                 Templates.MenuItem {
                     iconName = "list.bullet"
                 } label: { pressed in
@@ -126,18 +128,12 @@ struct MenuComparisonDestinationView: View {
                     .background(pressed ? Templates.buttonHighlightColor : Color.clear) /// Add highlight effect when pressed.
                 }
             } label: { isPressed in
-                ExampleShowroomRow(color: UIColor(hex: 0xFF1900)) {
-                    HStack {
-                        ExampleImage(iconName, color: UIColor(hex: 0xFF1900))
-
-                        Text("Popovers Menu (Customized)")
-                            .fontWeight(.medium)
-                    }
-                }
-                .opacity(isPressed ? 0.5 : 1)
+                ExampleRow(image: iconName, title: "Popovers Menu (Customized)", color: 0xFF1900)
+                    .opacity(isPressed ? 0.5 : 1)
             }
         }
         .padding()
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 

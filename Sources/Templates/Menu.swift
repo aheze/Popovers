@@ -65,10 +65,9 @@ public extension Templates {
      A built-from-scratch version of the system menu.
      */
     struct Menu<Views, Label: View>: View {
-        
         /// A unique ID for the menu (to support multiple menus in the same screen).
         @State var id = UUID()
-        
+
         /// If the user is pressing down on the label, this will be a unique `UUID`.
         @State var labelPressUUID: UUID?
 
@@ -110,12 +109,11 @@ public extension Templates {
         }
 
         public var body: some View {
-            let _ = print("ID: \(id)")
             WindowReader { window in
                 label(fadeLabel)
                     .frameTag(id)
                     .contentShape(Rectangle())
-                    .gesture(
+                    .simultaneousGesture(
                         DragGesture(minimumDistance: 0, coordinateSpace: .global)
                             .onChanged { value in
 
@@ -176,7 +174,16 @@ public extension Templates {
                                 /// The user started long pressing when the menu was **already** presented.
                                 if labelPressedWhenAlreadyPresented {
                                     labelPressedWhenAlreadyPresented = false
-                                    if window.frameTagged(id).contains(value.location) {
+
+                                    let selectedIndex = model.getIndex(from: value.location)
+                                    model.selectedIndex = selectedIndex
+                                    model.hoveringIndex = nil
+
+                                    /// The user lifted their finger on the label **and** it did not hit a menu item.
+                                    if
+                                        selectedIndex == nil,
+                                        window.frameTagged(id).contains(value.location)
+                                    {
                                         model.present = false
                                     }
                                 } else {
@@ -248,6 +255,12 @@ public extension Templates {
         /// The frames of the menu buttons, relative to the window.
         @Published var sizes: [MenuItemSize] = []
 
+        /**
+         The indices of tappable menu buttons.
+         `getIndex` will only return indices that are contained in here.
+         */
+        @Published var itemIndices = [Int]()
+
         /// The frame of the menu in global coordinates.
         @Published var menuFrame = CGRect.zero
 
@@ -265,7 +278,10 @@ public extension Templates {
             let zeroedLocation = CGPoint(x: location.x - menuFrame.minX, y: location.y - menuFrame.minY)
 
             for (index, frame) in frames {
-                if frame.contains(zeroedLocation) {
+                if
+                    frame.contains(zeroedLocation),
+                    itemIndices.contains(index) /// Make sure that the index is a tappable button.
+                {
                     return index
                 }
             }
@@ -356,7 +372,7 @@ public extension Templates {
                 .modifier(ClippedBackgroundModifier(context: context, configuration: configuration, expanded: expanded)) /// Clip the content if desired.
                 .scaleEffect(expanded ? 1 : 0.1, anchor: configuration.scaleAnchor?.unitPoint ?? model.getScaleAnchor(from: context))
                 .scaleEffect(model.scale, anchor: configuration.scaleAnchor?.unitPoint ?? model.getScaleAnchor(from: context))
-                .gesture(
+                .simultaneousGesture(
                     DragGesture(minimumDistance: 0, coordinateSpace: .global)
                         .onChanged { value in
                             model.hoveringIndex = model.getIndex(from: value.location)
@@ -431,6 +447,15 @@ public extension Templates {
                         action()
                     }
                 }
+                .onAppear {
+                    if
+                        let index = index,
+                        !model.itemIndices.contains(index)
+                    {
+                        /// Append this button's index to the model's item indices.
+                        model.itemIndices.append(index)
+                    }
+                }
         }
     }
 
@@ -488,6 +513,18 @@ public extension Templates {
                 .padding(EdgeInsets(top: 14, leading: 18, bottom: 14, trailing: 18))
                 .background(pressed ? Templates.buttonHighlightColor : Color.clear) /// Add highlight effect when pressed.
             }
+        }
+    }
+
+    /// Place this inside a Menu to separate content.
+    struct MenuDivider: View {
+        /// Place this inside a Menu to separate content.
+        public init() {}
+        public var body: some View {
+            Rectangle()
+                .fill(Color(UIColor.label))
+                .opacity(0.15)
+                .frame(height: 7)
         }
     }
 

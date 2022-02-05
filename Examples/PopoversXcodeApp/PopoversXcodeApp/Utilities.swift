@@ -20,10 +20,10 @@ struct ExampleRow: View {
     let image: String
     let title: String
     let color: UInt
-    let action: () -> Void
+    var action: (() -> Void)? = nil
 
     var body: some View {
-        Button(action: action) {
+        Button(action: action ?? {}) {
             HStack {
                 Image(systemName: image)
                     .font(.system(size: 19, weight: .medium))
@@ -62,6 +62,7 @@ struct ExampleRow: View {
             .cornerRadius(16)
             .foregroundColor(.primary)
         }
+        .disabled(action == nil)
     }
 }
 

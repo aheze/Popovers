@@ -15,8 +15,7 @@ struct InsideNavigationView: View {
                 image: "square.stack.3d.down.right.fill",
                 title: "Inside Navigation View",
                 color: 0x00AEEF
-            ) {}
-            .disabled(true) /// `NavigationLink` is a button already, so disable`ExampleRow`'s inner button
+            )
         }
     }
 }
