@@ -15,25 +15,14 @@ struct MenuView: View {
 
     var body: some View {
         PopoverMenu {
-            PopoverMenuButton {
+            PopoverMenuButton(title: "Change Icon To List", systemImage: "list.bullet") {
                 iconName = "list.bullet"
-            } label: { pressed in
-                Label("Change Icon To List", systemImage: "list.bullet")
-                    .systemMenuButtonStyle(pressed: pressed)
             }
-
-            PopoverMenuButton {
+            PopoverMenuButton(title: "Change Icon To Keyboard", systemImage: "keyboard") {
                 iconName = "keyboard"
-            } label: { pressed in
-                Label("Change Icon To Keyboard", systemImage: "keyboard")
-                    .systemMenuButtonStyle(pressed: pressed)
             }
-
-            PopoverMenuButton {
+            PopoverMenuButton(title: "Change Icon To Bag", systemImage: "bag") {
                 iconName = "bag"
-            } label: { pressed in
-                Label("Change Icon To Bag", systemImage: "bag")
-                    .systemMenuButtonStyle(pressed: pressed)
             }
         } label: { isPressed in
             ExampleShowroomRow(color: UIColor(hex: 0xFF00AB)) {

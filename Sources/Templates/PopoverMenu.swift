@@ -52,12 +52,12 @@ public struct PopoverMenuConfiguration {
     public var clipContent = true
     public var scaleAnchor: Popover.Attributes.Position.Anchor?
     public var menuBlur = UIBlurEffect.Style.prominent
-    public var maxWidth: CGFloat? = CGFloat(200)
+    public var width: CGFloat? = CGFloat(240)
     public var cornerRadius = CGFloat(16)
     public var showDivider = true
     public var shadow = PopoverShadow.system
     public var backgroundColor = Color.black.opacity(0.1)
-    
+
     public init(
         holdDelay: CGFloat = CGFloat(0.15),
         presentationAnimation: Animation = Animation.spring(response: 0.4, dampingFraction: 0.7, blendDuration: 1),
@@ -65,7 +65,7 @@ public struct PopoverMenuConfiguration {
         labelFadeAnimation: Animation = Animation.default,
         scaleAnchor: Popover.Attributes.Position.Anchor? = nil,
         menuBlur: UIBlurEffect.Style = UIBlurEffect.Style.prominent,
-        maxWidth: CGFloat? = CGFloat(200),
+        width: CGFloat? = CGFloat(240),
         cornerRadius: CGFloat = CGFloat(16),
         showDivider: Bool = true,
         shadow: PopoverShadow = PopoverShadow.system,
@@ -77,7 +77,7 @@ public struct PopoverMenuConfiguration {
         self.labelFadeAnimation = labelFadeAnimation
         self.scaleAnchor = scaleAnchor
         self.menuBlur = menuBlur
-        self.maxWidth = maxWidth
+        self.width = width
         self.cornerRadius = cornerRadius
         self.showDivider = showDivider
         self.shadow = shadow
@@ -260,7 +260,7 @@ struct PopoverMenuView: View {
                     }
                 }
             }
-            .frame(width: configuration.maxWidth)
+            .frame(width: configuration.width)
             .fixedSize() /// hug the width of the inner content
             .modifier(ClippedModifier(context: context, configuration: configuration, expanded: model.scale >= 1)) /// Clip the content if desired.
             .background(PopoverTemplates.VisualEffectView(configuration.menuBlur))
@@ -296,7 +296,7 @@ struct PopoverMenuView: View {
     }
 }
 
-public struct PopoverMenuButton<Content: View>: View {
+public struct PopoverMenuItem<Content: View>: View {
     @Environment(\.index) var index: Int?
     @EnvironmentObject var model: PopoverMenuModel
 
@@ -318,6 +318,58 @@ public struct PopoverMenuButton<Content: View>: View {
                     action()
                 }
             }
+    }
+}
+
+public struct PopoverMenuButton: View {
+    public let text: Text?
+    public let image: Image?
+    public let action: () -> Void
+
+    public init(
+        title: String? = nil,
+        systemImage: String? = nil,
+        _ action: @escaping (() -> Void)
+    ) {
+        if let title = title {
+            text = Text(title)
+        } else {
+            text = nil
+        }
+        if let systemImage = systemImage {
+            image = Image(systemName: systemImage)
+        } else {
+            image = nil
+        }
+        self.action = action
+    }
+
+    public init(
+        text: Text? = nil,
+        image: Image? = nil,
+        _ action: @escaping (() -> Void)
+    ) {
+        self.text = text
+        self.image = image
+        self.action = action
+    }
+
+    public var body: some View {
+        PopoverMenuItem(action) { pressed in
+            HStack {
+                if let text = text {
+                    text
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+
+                if let image = image {
+                    image
+                }
+            }
+            .frame(maxWidth: .infinity)
+            .padding(EdgeInsets(top: 14, leading: 18, bottom: 14, trailing: 18))
+            .background(pressed ? PopoverTemplates.buttonHighlightColor : Color.clear)
+        }
     }
 }
 
