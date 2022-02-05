@@ -17,6 +17,8 @@ public extension Templates {
         public var labelFadeAnimation = Animation.default /// The animation used when calling the `fadeLabel`.
         public var clipContent = true /// Replicate the system's default clipping animation.
         public var sourceFrameInset = UIEdgeInsets(top: -8, left: -8, bottom: -8, right: -8)
+        public var originAnchor = Popover.Attributes.Position.Anchor.bottom /// The label's anchor.
+        public var popoverAnchor = Popover.Attributes.Position.Anchor.top /// The menu's anchor.
         public var scaleAnchor: Popover.Attributes.Position.Anchor? /// If nil, the anchor will be automatically picked.
         public var menuBlur = UIBlurEffect.Style.prominent
         public var width: CGFloat? = CGFloat(240) /// If nil, hug the content.
@@ -30,25 +32,29 @@ public extension Templates {
         /// Create the default attributes for the popover menu.
         public init(
             holdDelay: CGFloat = CGFloat(0.2),
-            presentationAnimation: Animation = Animation.spring(response: 0.4, dampingFraction: 0.7, blendDuration: 1),
-            dismissalAnimation: Animation = Animation.spring(response: 0.5, dampingFraction: 0.9, blendDuration: 1),
-            labelFadeAnimation: Animation = Animation.default,
-            sourceFrameInset: UIEdgeInsets = UIEdgeInsets(top: -8, left: -8, bottom: -8, right: -8),
+            presentationAnimation: Animation = .spring(response: 0.4, dampingFraction: 0.7, blendDuration: 1),
+            dismissalAnimation: Animation = .spring(response: 0.5, dampingFraction: 0.9, blendDuration: 1),
+            labelFadeAnimation: Animation = .easeOut,
+            sourceFrameInset: UIEdgeInsets = .init(top: -8, left: -8, bottom: -8, right: -8),
+            originAnchor: Popover.Attributes.Position.Anchor = .bottom,
+            popoverAnchor: Popover.Attributes.Position.Anchor = .top,
             scaleAnchor: Popover.Attributes.Position.Anchor? = nil,
-            menuBlur: UIBlurEffect.Style = UIBlurEffect.Style.prominent,
+            menuBlur: UIBlurEffect.Style = .prominent,
             width: CGFloat? = CGFloat(240),
             cornerRadius: CGFloat = CGFloat(14),
             showDivider: Bool = true,
-            shadow: Shadow = Shadow.system,
-            backgroundColor: Color = Color.black.opacity(0.1),
-            scaleRange: ClosedRange<CGFloat> = CGFloat(30) ... CGFloat(80),
-            minimumScale: CGFloat = CGFloat(0.85)
+            shadow: Shadow = .system,
+            backgroundColor: Color = .black.opacity(0.1),
+            scaleRange: ClosedRange<CGFloat> = 30 ... 80,
+            minimumScale: CGFloat = 0.85
         ) {
             self.holdDelay = holdDelay
             self.presentationAnimation = presentationAnimation
             self.dismissalAnimation = dismissalAnimation
             self.labelFadeAnimation = labelFadeAnimation
             self.sourceFrameInset = sourceFrameInset
+            self.originAnchor = originAnchor
+            self.popoverAnchor = popoverAnchor
             self.scaleAnchor = scaleAnchor
             self.menuBlur = menuBlur
             self.width = width
@@ -220,6 +226,7 @@ public extension Templates {
                     .popover(
                         present: $model.present,
                         attributes: {
+                            $0.position = .absolute(originAnchor: configuration.originAnchor, popoverAnchor: configuration.popoverAnchor)
                             $0.rubberBandingMode = .none
                             $0.dismissal.excludedFrames = { [window.frameTagged(id)] }
                             $0.sourceFrameInset = configuration.sourceFrameInset

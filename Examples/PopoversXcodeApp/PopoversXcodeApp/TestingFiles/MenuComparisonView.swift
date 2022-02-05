@@ -71,11 +71,13 @@ struct MenuComparisonDestinationView: View {
                 configuration: {
                     var configuration = Templates.MenuConfiguration()
                     configuration.width = nil
+                    configuration.originAnchor = .top
+                    configuration.popoverAnchor = .bottom
                     return configuration
                 }()
             ) {
-                Text("Popover menus are highly customizable!")
-                    .padding(EdgeInsets(top: 16, leading: 18, bottom: 16, trailing: 18))
+                Color.blue
+                    .frame(height: 50)
                     .overlay(
                         AsyncImage(url: URL(string: "https://raw.githubusercontent.com/aheze/Popovers/main/Assets/SocialPreview.png")) { image in
                             image

@@ -29,7 +29,7 @@ struct ContentView: View {
                     Showroom()
                     UIKit()
                     Testing()
-                    Color.clear.frame(height: 100)
+                    Color.clear.frame(height: 40)
                 }
                 .padding()
             }
