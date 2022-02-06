@@ -20,6 +20,7 @@ public extension Templates {
         public var originAnchor = Popover.Attributes.Position.Anchor.bottom /// The label's anchor.
         public var popoverAnchor = Popover.Attributes.Position.Anchor.top /// The menu's anchor.
         public var scaleAnchor: Popover.Attributes.Position.Anchor? /// If nil, the anchor will be automatically picked.
+        public var excludedFrames: (() -> [CGRect]) = { [] }
         public var menuBlur = UIBlurEffect.Style.prominent
         public var width: CGFloat? = CGFloat(240) /// If nil, hug the content.
         public var cornerRadius = CGFloat(14)
@@ -39,6 +40,7 @@ public extension Templates {
             originAnchor: Popover.Attributes.Position.Anchor = .bottom,
             popoverAnchor: Popover.Attributes.Position.Anchor = .top,
             scaleAnchor: Popover.Attributes.Position.Anchor? = nil,
+            excludedFrames: @escaping (() -> [CGRect]) = { [] },
             menuBlur: UIBlurEffect.Style = .prominent,
             width: CGFloat? = CGFloat(240),
             cornerRadius: CGFloat = CGFloat(14),
@@ -56,6 +58,7 @@ public extension Templates {
             self.originAnchor = originAnchor
             self.popoverAnchor = popoverAnchor
             self.scaleAnchor = scaleAnchor
+            self.excludedFrames = excludedFrames
             self.menuBlur = menuBlur
             self.width = width
             self.cornerRadius = cornerRadius
@@ -188,7 +191,12 @@ public extension Templates {
                         attributes: {
                             $0.position = .absolute(originAnchor: configuration.originAnchor, popoverAnchor: configuration.popoverAnchor)
                             $0.rubberBandingMode = .none
-                            $0.dismissal.excludedFrames = { [window.frameTagged(id)] }
+                            $0.dismissal.excludedFrames = {
+                                return [
+                                    window.frameTagged(id)
+                                ]
+                                + configuration.excludedFrames()
+                            }
                             $0.sourceFrameInset = configuration.sourceFrameInset
                         }
                     ) {

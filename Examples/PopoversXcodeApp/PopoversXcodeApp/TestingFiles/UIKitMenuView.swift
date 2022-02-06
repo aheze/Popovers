@@ -17,39 +17,86 @@ class UIKitMenuViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
+    lazy var labelMenu = Templates.UIKitMenu(
+        sourceView: label,
+        configuration: {
+            var configuration = Templates.MenuConfiguration()
+            configuration.excludedFrames = { [weak self] in
+                guard let self = self else { return [] }
+                return [
+                    self.activateButton.windowFrame(),
+                ]
+            }
+            return configuration
+        }()
+    ) {
+        Templates.MenuButton(title: "Change Icon To List", systemImage: "list.bullet") { [weak self] in
+            self?.label.text = "Present Menu (List)"
+        }
+        Templates.MenuButton(title: "Change Icon To Keyboard", systemImage: "keyboard") { [weak self] in
+            self?.label.text = "Present Menu (Keyboard)"
+        }
+        Templates.MenuButton(title: "Change Icon To Bag", systemImage: "bag") { [weak self] in
+            self?.label.text = "Present Menu (Bag)"
+        }
+    }
+
     lazy var label: UILabel = {
         let label = UILabel()
         label.text = "Present Menu"
         return label
     }()
 
-    lazy var labelMenu = Templates.UIKitMenu(sourceView: label) {
-        Templates.MenuButton(title: "Change Icon To List", systemImage: "list.bullet") {
-//                iconName = "list.bullet"
-        }
-        Templates.MenuButton(title: "Change Icon To Keyboard", systemImage: "keyboard") {
-//                iconName = "keyboard"
-        }
-        Templates.MenuButton(title: "Change Icon To Bag", systemImage: "bag") {
-//                iconName = "bag"
-        }
-    }
+    lazy var activateButton: UIButton = {
+        let activateButton = UIButton(type: .system)
+        activateButton.setTitle("Activate", for: .normal)
+        activateButton.addTarget(self, action: #selector(activateButtonTapped), for: .touchUpInside)
+        return activateButton
+    }()
+
+    //            title: "Activate Menu",
+    //            style: .plain,
+    //            target: self,
+    //            action: #selector(activateButtonTapped)
+    //        )
+
+    lazy var stackView: UIStackView = {
+        let stackView = UIStackView()
+        view.addSubview(stackView)
+        stackView.axis = .vertical
+        stackView.distribution = .equalSpacing
+        stackView.alignment = .center
+        stackView.spacing = 16
+        stackView.isUserInteractionEnabled = true
+        stackView.addArrangedSubview(activateButton)
+        stackView.addArrangedSubview(label)
+
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            stackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            stackView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+        ])
+
+        return stackView
+    }()
 
     override func loadView() {
         /**
          Instantiate the base `view`.
          */
         view = UIView()
-
-        view.addSubview(label)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            label.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            label.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-        ])
+        view.backgroundColor = .systemBackground
 
         _ = labelMenu
-//        self.labelMenu = labelMenu
+        _ = stackView
+    }
+
+    @objc func activateButtonTapped() {
+        if labelMenu.isPresented {
+            labelMenu.dismiss()
+        } else {
+            labelMenu.present()
+        }
     }
 }
 
@@ -57,6 +104,9 @@ struct UIKitMenuView: View {
     var body: some View {
         NavigationLink(
             destination: UIKitMenuViewRepresentable()
+                .cornerRadius(10)
+                .padding()
+                .background(Color(uiColor: .secondarySystemBackground))
                 .navigationBarTitleDisplayMode(.inline)
         ) {
             ExampleTestingRow(
@@ -69,10 +119,11 @@ struct UIKitMenuView: View {
 }
 
 struct UIKitMenuViewRepresentable: UIViewControllerRepresentable {
-    func makeUIViewController(context: Context) -> UIKitMenuViewController {
+    func makeUIViewController(context: Context) -> UINavigationController {
         let viewController = UIKitMenuViewController()
-        return viewController
+        let navigationController = UINavigationController(rootViewController: viewController)
+        return navigationController
     }
 
-    func updateUIViewController(_ uiViewController: UIKitMenuViewController, context: Context) {}
+    func updateUIViewController(_ uiViewController: UINavigationController, context: Context) {}
 }

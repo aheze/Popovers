@@ -60,44 +60,7 @@ public extension Templates {
             self.content = content()
             super.init()
 
-            addPopover()
             addGestureRecognizer()
-        }
-
-        /// Set up the popover.
-        func addPopover() {
-            var popover = Popover { [weak self] in
-                if let self = self {
-                    MenuView(
-                        model: self.model,
-                        present: { [weak self] present in
-                            self?.setPresentManually(present: present)
-                        },
-                        configuration: self.configuration,
-                        content: self.content.getViews
-                    )
-                }
-            } background: { [weak self] in
-                if let self = self {
-                    self.configuration.backgroundColor
-                }
-            }
-
-            popover.attributes.sourceFrame = { [weak sourceView] in sourceView.windowFrame() }
-            popover.attributes.position = .absolute(originAnchor: configuration.originAnchor, popoverAnchor: configuration.popoverAnchor)
-            popover.attributes.rubberBandingMode = .none
-            popover.attributes.dismissal.excludedFrames = { [weak self] in
-                guard let self = self else { return [] }
-                return [self.sourceView.window.frameTagged(self.id)]
-            }
-            popover.attributes.sourceFrameInset = configuration.sourceFrameInset
-
-            /// Make sure to set `model.present` back to false when the menu is dismissed.
-            popover.context.onAutoDismiss = { [weak self] in
-                self?.model.present = false
-            }
-
-            self.popover = popover
         }
 
         /// Set up the drag gesture recognizer (enable "pull-down" behavior).
@@ -128,7 +91,7 @@ public extension Templates {
                 } getDragPosition: { [weak self] in
                     self?.dragPosition
                 } present: { [weak self] present in
-                    self?.setPresentManually(present: present)
+                    self?.updatePresent(present)
                 }
             } else {
                 MenuModel.onDragEnded(
@@ -142,7 +105,7 @@ public extension Templates {
                     fadeLabel: &fadeLabel,
                     labelPressedWhenAlreadyPresented: &labelPressedWhenAlreadyPresented
                 ) { [weak self] present in
-                    self?.setPresentManually(present: present)
+                    self?.updatePresent(present)
                 }
             }
         }
@@ -155,20 +118,74 @@ public extension Templates {
          This is **not** called when the user taps outside the menu,
          since the menu would already be automatically dismissed.
          */
-        func setPresentManually(present: Bool) {
+        func updatePresent(_ present: Bool) {
             model.present = present
             if
                 present,
                 let window = sourceView.window
             {
+                presentPopover()
                 popover?.present(in: window)
             } else {
                 popover?.dismiss()
+                popover = nil
             }
+        }
+
+        /// Present the menu popover.
+        func presentPopover() {
+            var popover = Popover { [weak self] in
+                if let self = self {
+                    MenuView(
+                        model: self.model,
+                        present: { [weak self] present in
+                            self?.updatePresent(present)
+                        },
+                        configuration: self.configuration,
+                        content: self.content.getViews
+                    )
+                }
+            } background: { [weak self] in
+                if let self = self {
+                    self.configuration.backgroundColor
+                }
+            }
+
+            popover.attributes.sourceFrame = { [weak sourceView] in sourceView.windowFrame() }
+            popover.attributes.position = .absolute(originAnchor: configuration.originAnchor, popoverAnchor: configuration.popoverAnchor)
+            popover.attributes.rubberBandingMode = .none
+            popover.attributes.dismissal.excludedFrames = { [weak self] in
+                guard let self = self else { return [] }
+                return [
+                    self.sourceView.windowFrame()
+                ]
+                    + self.configuration.excludedFrames()
+            }
+            popover.attributes.sourceFrameInset = configuration.sourceFrameInset
+
+            /**
+             Make sure to set `model.present` back to false when the menu is dismissed.
+             Don't call `updatePresent`, since the popover has already been automatically dismissed.
+             */
+            popover.context.onAutoDismiss = { [weak self] in
+                self?.model.present = false
+            }
+
+            self.popover = popover
         }
     }
 }
 
-public extension UIView {
-    func addMenu<Views>(menu: Templates.UIKitMenu<Views>) {}
+public extension Templates.UIKitMenu {
+    var isPresented: Bool {
+        model.present
+    }
+
+    func present() {
+        updatePresent(true)
+    }
+
+    func dismiss() {
+        updatePresent(false)
+    }
 }
