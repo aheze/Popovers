@@ -244,6 +244,7 @@ public extension Templates {
         var size: CGSize
     }
 
+    /// The popover that gets presented.
     internal struct MenuView: View {
         @ObservedObject var model: MenuModel
         let present: (Bool) -> Void
@@ -299,7 +300,7 @@ public extension Templates {
                     }
                 }
                 .frame(width: configuration.width)
-                .fixedSize() /// hug the width of the inner content
+                .fixedSize() /// Hug the width of the inner content.
                 .modifier(ClippedBackgroundModifier(context: context, configuration: configuration, expanded: expanded)) /// Clip the content if desired.
                 .scaleEffect(expanded ? 1 : 0.1, anchor: configuration.scaleAnchor?.unitPoint ?? model.getScaleAnchor(from: context))
                 .scaleEffect(model.scale, anchor: configuration.scaleAnchor?.unitPoint ?? model.getScaleAnchor(from: context))
@@ -340,7 +341,7 @@ public extension Templates {
                     withAnimation(configuration.presentationAnimation) {
                         expanded = true
                     }
-                    /// when the popover is about to be dismissed, shrink it again.
+                    /// When the popover is about to be dismissed, shrink it again.
                     context.attributes.onDismiss = {
                         withAnimation(configuration.dismissalAnimation) {
                             expanded = false
