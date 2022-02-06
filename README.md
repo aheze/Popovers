@@ -447,7 +447,7 @@ New in [v1.3.0](https://github.com/aheze/Popovers/releases/tag/1.3.0)! The templ
 | --- |
 
 <details>
-<summary>SwiftUI</summary>
+<summary>SwiftUI (Basic)</summary>
 
 ```swift
 struct ContentView: View {
@@ -465,9 +465,74 @@ struct ContentView: View {
 
 </details>
 
+<details>
+<summary>SwiftUI (Customized)</summary>
+
+```swift
+Templates.Menu(
+    configuration: {
+        $0.width = 360
+        $0.backgroundColor = .blue.opacity(0.2)
+    }
+) {
+    Text("Hi, I'm a menu!")
+        .padding()
+
+    Templates.MenuDivider()
+
+    Templates.MenuItem {
+        print("Item tapped")
+    } label: { fade in
+        Color.clear.overlay(
+            AsyncImage(url: URL(string: "https://getfind.app/image.png")) {
+                $0.resizable().aspectRatio(contentMode: .fill)
+            } placeholder: {
+                Color.clear
+            }
+        )
+        .frame(height: 180)
+        .clipped()
+        .opacity(fade ? 0.5 : 1)
+    }
+
+} label: { fade in
+    Text("Present Menu!")
+        .opacity(fade ? 0.5 : 1)
+}
+```
+
+</details>
 
 <details>
-<summary>UIKit</summary>
+<summary>SwiftUI (Manual Presentation)</summary>
+
+```swift
+struct ContentView: View {
+    @State var present = false
+    var body: some View {
+        VStack {
+            Toggle("Activate", isOn: $present)
+                .padding()
+                .background(.regularMaterial)
+                .cornerRadius(12)
+                .padding()
+            
+            Templates.Menu(present: $present) {
+                Templates.MenuButton(title: "Button 1", systemImage: "1.circle.fill") { print("Button 1 pressed") }
+                Templates.MenuButton(title: "Button 2", systemImage: "2.circle.fill") { print("Button 2 pressed") }
+            } label: { fade in
+                Text("Present Menu!")
+                    .opacity(fade ? 0.5 : 1)
+            }
+        }
+    }
+}
+```
+
+</details>
+
+<details>
+<summary>UIKit (Basic)</summary>
 
 ```swift
 class ViewController: UIViewController {
@@ -490,6 +555,78 @@ class ViewController: UIViewController {
 </details>
 
 
+<details>
+<summary>UIKit (Customized)</summary>
+
+```swift
+class ViewController: UIViewController {
+    @IBOutlet var label: UILabel!
+
+    lazy var menu = Templates.UIKitMenu(
+        sourceView: label,
+        configuration: {
+            $0.width = 360
+            $0.backgroundColor = .blue.opacity(0.2)
+        }
+    ) {
+        Text("Hi, I'm a menu!")
+            .padding()
+
+        Templates.MenuDivider()
+
+        Templates.MenuItem {
+            print("Item tapped")
+        } label: { fade in
+            Color.clear.overlay(
+                AsyncImage(url: URL(string: "https://getfind.app/image.png")) {
+                    $0.resizable().aspectRatio(contentMode: .fill)
+                } placeholder: {
+                    Color.clear
+                }
+            )
+            .frame(height: 180)
+            .clipped()
+            .opacity(fade ? 0.5 : 1)
+        }
+    } fadeLabel: { [weak self] fade in
+        UIView.animate(withDuration: 0.15) {
+            self?.label.alpha = fade ? 0.5 : 1
+        }
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        _ = menu /// Create the menu.
+    }
+}
+
+```
+
+</details>
+
+<details>
+<summary>UIKit (Manual Presentation)</summary>
+
+```swift
+class ViewController: UIViewController {
+    /// ...
+
+    @IBAction func switchPressed(_ sender: UISwitch) {
+        if menu.isPresented {
+            menu.dismiss()
+        } else {
+            menu.present()
+        }
+    }
+}
+```
+
+</details>
+
+
+Basic | Customized | Manual Activation
+--- | --- | ---
+![Menu with 2 buttons](Assets/MenuBasic.png) | ![Menu with image and divider](Assets/MenuCustomized.png) | ![Manually activate the menu with a toggle switch](Assets/MenuManual.png)
 
 
 ### 🧩 Animating Between Popovers

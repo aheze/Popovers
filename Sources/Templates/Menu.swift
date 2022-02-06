@@ -73,7 +73,7 @@ public extension Templates {
     /**
      A built-from-scratch version of the system menu.
      */
-    struct Menu<Views, Label: View>: View {
+    struct Menu<Label: View>: View {
         /// A unique ID for the menu (to support multiple menus in the same screen).
         @State var id = UUID()
 
@@ -99,7 +99,7 @@ public extension Templates {
         public let configuration: MenuConfiguration
 
         /// The menu buttons.
-        public let content: TupleView<Views>
+        public let content: [AnyView]
 
         /// The origin label.
         public let label: (Bool) -> Label
@@ -108,21 +108,40 @@ public extension Templates {
         @State var fadeLabel = false
 
         /**
-         Create a custom menu.
+         A built-from-scratch version of the system menu, for SwiftUI.
+         This initializer lets you pass in a multiple menu items.
          */
-        public init(
+        public init<Contents>(
             present: Binding<Bool> = .constant(false),
             configuration buildConfiguration: @escaping ((inout MenuConfiguration) -> Void) = { _ in },
-            @ViewBuilder content: @escaping () -> TupleView<Views>,
+            @ViewBuilder content: @escaping () -> TupleView<Contents>,
             @ViewBuilder label: @escaping (Bool) -> Label
         ) {
-            self._overridePresent = present
-            
+            _overridePresent = present
+
             var configuration = MenuConfiguration()
             buildConfiguration(&configuration)
             self.configuration = configuration
-            
-            self.content = content()
+            self.content = ViewExtractor.getViews(from: content)
+            self.label = label
+        }
+
+        /**
+         A built-from-scratch version of the system menu, for SwiftUI.
+         This initializer lets you pass in a single menu item.
+         */
+        public init<Content: View>(
+            present: Binding<Bool> = .constant(false),
+            configuration buildConfiguration: @escaping ((inout MenuConfiguration) -> Void) = { _ in },
+            @ViewBuilder content: @escaping () -> Content,
+            @ViewBuilder label: @escaping (Bool) -> Label
+        ) {
+            _overridePresent = present
+
+            var configuration = MenuConfiguration()
+            buildConfiguration(&configuration)
+            self.configuration = configuration
+            self.content = [AnyView(content())]
             self.label = label
         }
 
@@ -198,10 +217,10 @@ public extension Templates {
                             $0.position = .absolute(originAnchor: configuration.originAnchor, popoverAnchor: configuration.popoverAnchor)
                             $0.rubberBandingMode = .none
                             $0.dismissal.excludedFrames = {
-                                return [
+                                [
                                     window.frameTagged(id)
                                 ]
-                                + configuration.excludedFrames()
+                                    + configuration.excludedFrames()
                             }
                             $0.sourceFrameInset = configuration.sourceFrameInset
                         }
@@ -210,7 +229,7 @@ public extension Templates {
                             model: model,
                             present: { model.present = $0 },
                             configuration: configuration,
-                            content: content.getViews
+                            content: content
                         )
                     } background: {
                         configuration.backgroundColor

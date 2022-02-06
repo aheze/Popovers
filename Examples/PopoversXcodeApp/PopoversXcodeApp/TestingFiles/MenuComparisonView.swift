@@ -26,145 +26,138 @@ struct MenuComparisonDestinationView: View {
     @State var iconName = "list.bullet"
 
     var body: some View {
-        VStack {
-            Text("Compare Popovers' custom menu with the system menu.")
+        ScrollView {
+            VStack {
+                Text("Compare Popovers' custom menu with the system menu.")
 
-            Templates.Menu {
-                Templates.MenuButton(title: "Button 1", systemImage: "1.circle.fill") { print("Button 1 pressed") }
-                Templates.MenuButton(title: "Button 2", systemImage: "2.circle.fill") { print("Button 2 pressed") }
-            } label: { fade in
-                Text("Present Menu!")
-                    .opacity(fade ? 0.5 : 1)
-            }
-            .padding(.vertical, 100)
+                Templates.Menu {
+                    Templates.MenuButton(title: "Change Icon To List", systemImage: "list.bullet") {
+                        iconName = "list.bullet"
+                    }
+                    Templates.MenuButton(title: "Change Icon To Keyboard", systemImage: "keyboard") {
+                        iconName = "keyboard"
+                    }
+                    Templates.MenuButton(title: "Change Icon To Bag", systemImage: "bag") {
+                        iconName = "bag"
+                    }
+                } label: { fade in
+                    ExampleRow(image: iconName, title: "Popovers Menu", color: 0x007eef)
+                        .opacity(fade ? 0.5 : 1)
+                }
 
-            Templates.Menu {
-                Templates.MenuButton(title: "Change Icon To List", systemImage: "list.bullet") {
-                    iconName = "list.bullet"
-                }
-                Templates.MenuButton(title: "Change Icon To Keyboard", systemImage: "keyboard") {
-                    iconName = "keyboard"
-                }
-                Templates.MenuButton(title: "Change Icon To Bag", systemImage: "bag") {
-                    iconName = "bag"
-                }
-            } label: { fade in
-                ExampleRow(image: iconName, title: "Popovers Menu", color: 0x007eef)
-                    .opacity(fade ? 0.5 : 1)
-            }
+                Menu {
+                    Button {
+                        iconName = "list.bullet"
+                    } label: {
+                        Label("Change Icon To List", systemImage: "list.bullet")
+                    }
 
-            Menu {
-                Button {
-                    iconName = "list.bullet"
+                    Button {
+                        iconName = "keyboard"
+                    } label: {
+                        Label("Change Icon To Keyboard", systemImage: "keyboard")
+                    }
+
+                    Button {
+                        iconName = "bag"
+                    } label: {
+                        Label("Change Icon To Bag", systemImage: "bag")
+                    }
+
                 } label: {
-                    Label("Change Icon To List", systemImage: "list.bullet")
+                    ExampleRow(image: iconName, title: "System Menu", color: 0x0009ff)
                 }
 
-                Button {
-                    iconName = "keyboard"
-                } label: {
-                    Label("Change Icon To Keyboard", systemImage: "keyboard")
-                }
+                Templates.Menu(
+                    configuration: {
+                        $0.width = nil
+                        $0.originAnchor = .top
+                        $0.popoverAnchor = .bottom
+                    }
+                ) {
+                    Color.blue
+                        .frame(height: 50)
+                        .overlay(
+                            AsyncImage(url: URL(string: "https://raw.githubusercontent.com/aheze/Popovers/main/Assets/SocialPreview.png")) { image in
+                                image
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                            } placeholder: {
+                                Color.clear
+                            }
+                        )
+                        .clipped()
 
-                Button {
-                    iconName = "bag"
-                } label: {
-                    Label("Change Icon To Bag", systemImage: "bag")
-                }
+                    Templates.MenuDivider()
 
-            } label: {
-                ExampleRow(image: iconName, title: "System Menu", color: 0x0009ff)
-            }
-
-            Templates.Menu(
-                configuration: {
-                    $0.width = nil
-                    $0.originAnchor = .top
-                    $0.popoverAnchor = .bottom
-                }
-            ) {
-                Color.blue
-                    .frame(height: 50)
-                    .overlay(
-                        AsyncImage(url: URL(string: "https://raw.githubusercontent.com/aheze/Popovers/main/Assets/SocialPreview.png")) { image in
-                            image
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                        } placeholder: {
-                            Color.clear
+                    Templates.MenuItem {
+                        iconName = "list.bullet"
+                    } label: { pressed in
+                        HStack {
+                            MenuImageView(image: "list.bullet", color: .red)
+                            Text("Change Icon To List")
+                                .frame(maxWidth: .infinity, alignment: .trailing)
                         }
-                    )
-                    .clipped()
-
-                Templates.MenuDivider()
-
-                Templates.MenuItem {
-                    iconName = "list.bullet"
-                } label: { pressed in
-                    HStack {
-                        MenuImageView(image: "list.bullet", color: .red)
-                        Text("Change Icon To List")
-                            .frame(maxWidth: .infinity, alignment: .trailing)
+                        .frame(maxWidth: .infinity)
+                        .padding(EdgeInsets(top: 14, leading: 18, bottom: 14, trailing: 18))
+                        .background(pressed ? Templates.buttonHighlightColor : Color.clear) /// Add highlight effect when pressed.
                     }
-                    .frame(maxWidth: .infinity)
-                    .padding(EdgeInsets(top: 14, leading: 18, bottom: 14, trailing: 18))
-                    .background(pressed ? Templates.buttonHighlightColor : Color.clear) /// Add highlight effect when pressed.
-                }
 
-                Templates.MenuItem {
-                    iconName = "keyboard"
-                } label: { pressed in
-                    HStack {
-                        MenuImageView(image: "keyboard", color: .green)
-                        Text("Change Icon To Keyboard")
-                            .frame(maxWidth: .infinity, alignment: .trailing)
+                    Templates.MenuItem {
+                        iconName = "keyboard"
+                    } label: { pressed in
+                        HStack {
+                            MenuImageView(image: "keyboard", color: .green)
+                            Text("Change Icon To Keyboard")
+                                .frame(maxWidth: .infinity, alignment: .trailing)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(EdgeInsets(top: 14, leading: 18, bottom: 14, trailing: 18))
+                        .background(pressed ? Templates.buttonHighlightColor : Color.clear) /// Add highlight effect when pressed.
                     }
-                    .frame(maxWidth: .infinity)
-                    .padding(EdgeInsets(top: 14, leading: 18, bottom: 14, trailing: 18))
-                    .background(pressed ? Templates.buttonHighlightColor : Color.clear) /// Add highlight effect when pressed.
-                }
 
-                Templates.MenuItem {
-                    iconName = "bag"
-                } label: { pressed in
-                    HStack {
-                        MenuImageView(image: "bag", color: .blue)
-                        Text("Change Icon To Bag")
-                            .frame(maxWidth: .infinity, alignment: .trailing)
+                    Templates.MenuItem {
+                        iconName = "bag"
+                    } label: { pressed in
+                        HStack {
+                            MenuImageView(image: "bag", color: .blue)
+                            Text("Change Icon To Bag")
+                                .frame(maxWidth: .infinity, alignment: .trailing)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(EdgeInsets(top: 14, leading: 18, bottom: 14, trailing: 18))
+                        .background(pressed ? Templates.buttonHighlightColor : Color.clear) /// Add highlight effect when pressed.
                     }
-                    .frame(maxWidth: .infinity)
-                    .padding(EdgeInsets(top: 14, leading: 18, bottom: 14, trailing: 18))
-                    .background(pressed ? Templates.buttonHighlightColor : Color.clear) /// Add highlight effect when pressed.
+                } label: { fade in
+                    ExampleRow(image: iconName, title: "Popovers Menu (Customized)", color: 0xb900ff)
+                        .opacity(fade ? 0.5 : 1)
                 }
-            } label: { fade in
-                ExampleRow(image: iconName, title: "Popovers Menu (Customized)", color: 0xb900ff)
-                    .opacity(fade ? 0.5 : 1)
+
+                Divider()
+
+                Button("Present Menu") {
+                    present = true
+                }
+
+                Templates.Menu(present: $present) {
+                    Templates.MenuButton(title: "Change Icon To List", systemImage: "list.bullet") {
+                        iconName = "list.bullet"
+                    }
+                    Templates.MenuButton(title: "Change Icon To Keyboard", systemImage: "keyboard") {
+                        iconName = "keyboard"
+                    }
+                    Templates.MenuButton(title: "Change Icon To Bag", systemImage: "bag") {
+                        iconName = "bag"
+                    }
+                } label: { fade in
+                    ExampleRow(image: iconName, title: "Popovers Menu With Binding", color: 0xcff2000)
+                        .opacity(fade ? 0.5 : 1)
+                }
+
+                Color.clear.frame(height: 300)
             }
-
-            Divider()
-
-            Button("Present Menu") {
-                present = true
-            }
-
-            Templates.Menu(present: $present) {
-                Templates.MenuButton(title: "Change Icon To List", systemImage: "list.bullet") {
-                    iconName = "list.bullet"
-                }
-                Templates.MenuButton(title: "Change Icon To Keyboard", systemImage: "keyboard") {
-                    iconName = "keyboard"
-                }
-                Templates.MenuButton(title: "Change Icon To Bag", systemImage: "bag") {
-                    iconName = "bag"
-                }
-            } label: { fade in
-                ExampleRow(image: iconName, title: "Popovers Menu With Binding", color: 0xcff2000)
-                    .opacity(fade ? 0.5 : 1)
-            }
-
-            Color.clear.frame(height: 300)
+            .padding()
         }
-        .padding()
         .navigationBarTitleDisplayMode(.inline)
     }
 }
@@ -195,5 +188,3 @@ struct MenuImageView: View {
             }
     }
 }
-
-

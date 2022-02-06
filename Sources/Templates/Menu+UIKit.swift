@@ -11,7 +11,7 @@ import SwiftUI
 
 public extension Templates {
     /// A built-from-scratch version of the system menu, for UIKit.
-    class UIKitMenu<Views>: NSObject {
+    class UIKitMenu: NSObject {
         // MARK: - Menu properties
 
         /// A unique ID for the menu (to support multiple menus in the same screen).
@@ -36,7 +36,7 @@ public extension Templates {
         public let configuration: MenuConfiguration
 
         /// The menu buttons.
-        public let content: TupleView<Views>
+        public let content: [AnyView]
 
         /// The origin label.
         public let sourceView: UIView
@@ -49,20 +49,46 @@ public extension Templates {
         var popover: Popover?
         var longPressGestureRecognizer: UILongPressGestureRecognizer!
 
-        /// A built-from-scratch version of the system menu, for UIKit.
-        public init(
+        /**
+         A built-from-scratch version of the system menu, for UIKit.
+         This initializer lets you pass in a multiple menu items.
+         */
+        public init<Contents>(
             sourceView: UIView,
             configuration buildConfiguration: @escaping ((inout MenuConfiguration) -> Void) = { _ in },
-            @ViewBuilder content: @escaping () -> TupleView<Views>,
+            @ViewBuilder content: @escaping () -> TupleView<Contents>,
             fadeLabel: ((Bool) -> Void)? = nil
         ) {
             self.sourceView = sourceView
-            
+
             var configuration = MenuConfiguration()
             buildConfiguration(&configuration)
             self.configuration = configuration
-            
-            self.content = content()
+
+            self.content = ViewExtractor.getViews(from: content)
+            self.fadeLabel = fadeLabel
+            super.init()
+
+            addGestureRecognizer()
+        }
+
+        /**
+         A built-from-scratch version of the system menu, for UIKit.
+         This initializer lets you pass in a single menu item.
+         */
+        public init<Content: View>(
+            sourceView: UIView,
+            configuration buildConfiguration: @escaping ((inout MenuConfiguration) -> Void) = { _ in },
+            @ViewBuilder content: @escaping () -> Content,
+            fadeLabel: ((Bool) -> Void)? = nil
+        ) {
+            self.sourceView = sourceView
+
+            var configuration = MenuConfiguration()
+            buildConfiguration(&configuration)
+            self.configuration = configuration
+
+            self.content = [AnyView(content())]
             self.fadeLabel = fadeLabel
             super.init()
 
@@ -152,7 +178,7 @@ public extension Templates {
                             self?.updatePresent(present)
                         },
                         configuration: self.configuration,
-                        content: self.content.getViews
+                        content: self.content
                     )
                 }
             } background: { [weak self] in
@@ -189,7 +215,6 @@ public extension Templates {
 
 /// Control menu state externally.
 public extension Templates.UIKitMenu {
-    
     /// Whether the menu is currently presented or not.
     var isPresented: Bool {
         model.present
