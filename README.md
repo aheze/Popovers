@@ -446,37 +446,28 @@ New in [v1.3.0](https://github.com/aheze/Popovers/releases/tag/1.3.0)! The templ
 | <img src="Assets/MenuComparison.gif" width=500 alt="The system menu and Popovers' custom menu, side by side"> |
 | --- |
 
-
-<table>
-<tr>
-<td>
-<strong>
-SwiftUI
-</strong>
-</td>
-<td>
-<strong>
-UIKit
-</strong>
-</td>
-</tr>
-  
-<tr>
-<td>
-<br>
+<details>
+<summary>SwiftUI</summary>
 
 ```swift
-Templates.Menu {
-    Templates.MenuButton(title: "Button 1", systemImage: "1.circle.fill") { print("Button 1 pressed") }
-    Templates.MenuButton(title: "Button 2", systemImage: "2.circle.fill") { print("Button 2 pressed") }
-} label: { fade in
-    Text("Present Menu!")
-        .opacity(fade ? 0.5 : 1)
+struct ContentView: View {
+    var body: some View {
+        Templates.Menu {
+            Templates.MenuButton(title: "Button 1", systemImage: "1.circle.fill") { print("Button 1 pressed") }
+            Templates.MenuButton(title: "Button 2", systemImage: "2.circle.fill") { print("Button 2 pressed") }
+        } label: { fade in
+            Text("Present Menu!")
+                .opacity(fade ? 0.5 : 1)
+        }
+    }
 }
 ```
-</td>
-<td>
-<br>
+
+</details>
+
+
+<details>
+<summary>UIKit</summary>
 
 ```swift
 class ViewController: UIViewController {
@@ -495,9 +486,11 @@ class ViewController: UIViewController {
     }
 }
 ```
-</td>
-</tr>
-</table>
+
+</details>
+
+
+
 
 ### 🧩 Animating Between Popovers
 As long as the view structure is the same, you can smoothly transition from one popover to another. 
