@@ -93,7 +93,6 @@ public extension Popover {
             context?.presentedPopoverContainer?.accessibilityViewIsModal = model.popovers.contains { $0.attributes.blocksBackgroundTouches }
         }
 
-        
         /// Remove this popover from the view model, dismissing it.
         withTransaction(dismissalTransaction) {
             model.remove(self)

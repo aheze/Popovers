@@ -136,13 +136,17 @@ public extension Templates {
                                     model: model,
                                     id: id,
                                     labelPressUUID: &labelPressUUID,
+                                    labelFrame: window.frameTagged(id),
                                     configuration: configuration,
-                                    dragPosition: dragPosition,
                                     window: window,
                                     fadeLabel: &fadeLabel,
                                     labelPressedWhenAlreadyPresented: &labelPressedWhenAlreadyPresented
                                 ) {
                                     labelPressUUID
+                                } getDragPosition: {
+                                    dragPosition
+                                } present: { present in
+                                    model.present = present
                                 }
                             }
                             .onEnded { value in
@@ -151,11 +155,14 @@ public extension Templates {
                                     model: model,
                                     id: id,
                                     labelPressUUID: &labelPressUUID,
+                                    labelFrame: window.frameTagged(id),
                                     configuration: configuration,
                                     window: window,
                                     fadeLabel: &fadeLabel,
                                     labelPressedWhenAlreadyPresented: &labelPressedWhenAlreadyPresented
-                                )
+                                ) { present in
+                                    model.present = present
+                                }
                             }
                     )
                     .onValueChange(of: model.present) { _, present in
@@ -185,7 +192,12 @@ public extension Templates {
                             $0.sourceFrameInset = configuration.sourceFrameInset
                         }
                     ) {
-                        MenuView(model: model, configuration: configuration, content: content.getViews)
+                        MenuView(
+                            model: model,
+                            present: { model.present = $0 },
+                            configuration: configuration,
+                            content: content.getViews
+                        )
                     } background: {
                         configuration.backgroundColor
                     }
@@ -280,12 +292,14 @@ public extension Templates {
             model: MenuModel,
             id: UUID,
             labelPressUUID: inout UUID?,
+            labelFrame: CGRect,
             configuration: MenuConfiguration,
-            dragPosition: CGPoint?,
             window: UIWindow?,
             fadeLabel: inout Bool,
             labelPressedWhenAlreadyPresented: inout Bool,
-            getCurrentLabelPressUUID: @escaping (() -> UUID?)
+            getCurrentLabelPressUUID: @escaping (() -> UUID?),
+            getDragPosition: @escaping (() -> CGPoint?),
+            present: @escaping ((Bool) -> Void)
         ) {
             if model.present == false {
                 /// The menu is not yet presented.
@@ -295,17 +309,17 @@ public extension Templates {
                     DispatchQueue.main.asyncAfter(deadline: .now() + configuration.holdDelay) {
                         if
                             currentUUID == getCurrentLabelPressUUID(),
-                            let dragPosition = dragPosition
+                            let dragPosition = getDragPosition()
                         {
-                            if window.frameTagged(id).contains(dragPosition) {
-                                model.present = true
+                            if labelFrame.contains(dragPosition) {
+                                present(true)
                             }
                         }
                     }
                 }
 
                 withAnimation(configuration.labelFadeAnimation) {
-                    fadeLabel = window.frameTagged(id).contains(location)
+                    fadeLabel = labelFrame.contains(location)
                 }
             } else if labelPressUUID == nil {
                 /// The menu was already presented.
@@ -338,10 +352,12 @@ public extension Templates {
             model: MenuModel,
             id: UUID,
             labelPressUUID: inout UUID?,
+            labelFrame: CGRect,
             configuration: MenuConfiguration,
             window: UIWindow?,
             fadeLabel: inout Bool,
-            labelPressedWhenAlreadyPresented: inout Bool
+            labelPressedWhenAlreadyPresented: inout Bool,
+            present: @escaping ((Bool) -> Void)
         ) {
             withAnimation {
                 model.scale = 1
@@ -360,14 +376,14 @@ public extension Templates {
                 /// The user lifted their finger on the label **and** it did not hit a menu item.
                 if
                     selectedIndex == nil,
-                    window.frameTagged(id).contains(location)
+                    labelFrame.contains(location)
                 {
-                    model.present = false
+                    present(false)
                 }
             } else {
                 if !model.present {
-                    if window.frameTagged(id).contains(location) {
-                        model.present = true
+                    if labelFrame.contains(location) {
+                        present(true)
                     } else {
                         withAnimation(configuration.labelFadeAnimation) {
                             fadeLabel = false
@@ -380,7 +396,7 @@ public extension Templates {
 
                     /// The user lifted their finger on a button.
                     if selectedIndex != nil {
-                        model.present = false
+                        present(false)
                     }
                 }
             }
@@ -389,21 +405,23 @@ public extension Templates {
 
     internal struct MenuView: View {
         @ObservedObject var model: MenuModel
-
-        /// For the scale animation.
-        @State var expanded = false
-
+        let present: (Bool) -> Void
         let configuration: MenuConfiguration
 
         /// The menu buttons.
         let content: [AnyView]
 
+        /// For the scale animation.
+        @State var expanded = false
+
         init(
             model: MenuModel,
+            present: @escaping (Bool) -> Void,
             configuration: MenuConfiguration,
             content: [AnyView]
         ) {
             self.model = model
+            self.present = present
             self.configuration = configuration
             self.content = content
         }
@@ -465,7 +483,6 @@ public extension Templates {
                             }
                         }
                         .onEnded { value in
-
                             withAnimation {
                                 model.scale = 1
                             }
@@ -474,7 +491,7 @@ public extension Templates {
                             model.selectedIndex = activeIndex
                             model.hoveringIndex = nil
                             if activeIndex != nil {
-                                model.present = false
+                                present(false)
                             }
                         }
                 )

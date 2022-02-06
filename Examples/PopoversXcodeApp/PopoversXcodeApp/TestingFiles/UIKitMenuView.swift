@@ -6,16 +6,33 @@
 //  Copyright © 2022 A. Zheng. All rights reserved.
 //
 
+import Popovers
 import SwiftUI
 
 class UIKitMenuViewController: UIViewController {
-    init() {
-        super.init(nibName: nil, bundle: nil)
-    }
+    init() { super.init(nibName: nil, bundle: nil) }
 
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    lazy var label: UILabel = {
+        let label = UILabel()
+        label.text = "Present Menu"
+        return label
+    }()
+
+    lazy var labelMenu = Templates.UIKitMenu(sourceView: label) {
+        Templates.MenuButton(title: "Change Icon To List", systemImage: "list.bullet") {
+//                iconName = "list.bullet"
+        }
+        Templates.MenuButton(title: "Change Icon To Keyboard", systemImage: "keyboard") {
+//                iconName = "keyboard"
+        }
+        Templates.MenuButton(title: "Change Icon To Bag", systemImage: "bag") {
+//                iconName = "bag"
+        }
     }
 
     override func loadView() {
@@ -23,7 +40,16 @@ class UIKitMenuViewController: UIViewController {
          Instantiate the base `view`.
          */
         view = UIView()
-        view.backgroundColor = .blue
+
+        view.addSubview(label)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            label.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            label.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+        ])
+
+        _ = labelMenu
+//        self.labelMenu = labelMenu
     }
 }
 
