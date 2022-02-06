@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3C73924E27AF8496006A56E7 /* UIKitMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C73924D27AF8496006A56E7 /* UIKitMenuView.swift */; };
 		3C8521B627ACADB30020ECB8 /* InsideNavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C8521B527ACADB30020ECB8 /* InsideNavigationView.swift */; };
 		3CA34FAC279533E300AC36DF /* AccessibilityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CA34FAB279533E300AC36DF /* AccessibilityView.swift */; };
 		3CBD875E27755E45005BBA48 /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CBD875D27755E45005BBA48 /* App.swift */; };
@@ -49,6 +50,7 @@
 
 /* Begin PBXFileReference section */
 		3C6C745127822EE600E039F0 /* Popovers */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Popovers; path = ../..; sourceTree = "<group>"; };
+		3C73924D27AF8496006A56E7 /* UIKitMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKitMenuView.swift; sourceTree = "<group>"; };
 		3C8521B527ACADB30020ECB8 /* InsideNavigationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsideNavigationView.swift; sourceTree = "<group>"; };
 		3CA34FAB279533E300AC36DF /* AccessibilityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessibilityView.swift; sourceTree = "<group>"; };
 		3CBD874C27755E19005BBA48 /* PopoversXcodeApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PopoversXcodeApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -189,6 +191,7 @@
 			children = (
 				3C8521B527ACADB30020ECB8 /* InsideNavigationView.swift */,
 				3CCA6CEE27AF249F002D0091 /* MenuComparisonView.swift */,
+				3C73924D27AF8496006A56E7 /* UIKitMenuView.swift */,
 				CA04D304277B3488004E8FF6 /* PresentWithinSheetView.swift */,
 			);
 			path = TestingFiles;
@@ -304,6 +307,7 @@
 				3CBD878127755E57005BBA48 /* DismissalView2.swift in Sources */,
 				3CBD875E27755E45005BBA48 /* App.swift in Sources */,
 				3C8521B627ACADB30020ECB8 /* InsideNavigationView.swift in Sources */,
+				3C73924E27AF8496006A56E7 /* UIKitMenuView.swift in Sources */,
 				3CBD878427755E57005BBA48 /* DismissalView1.swift in Sources */,
 				3CBD879D27755E5F005BBA48 /* PresentView.swift in Sources */,
 				3CBD877C27755E57005BBA48 /* SelectionView.swift in Sources */,

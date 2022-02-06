@@ -20,6 +20,7 @@ struct Testing: View {
             Group {
                 InsideNavigationView()
                 MenuComparisonView()
+                UIKitMenuView()
                 PresentWithinSheetView()
             }
         }

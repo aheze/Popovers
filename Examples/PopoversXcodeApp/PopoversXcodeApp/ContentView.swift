@@ -25,10 +25,11 @@ struct ContentView: View {
                     columns: [GridItem(.adaptive(minimum: 300))],
                     spacing: 16
                 ) {
+                    Testing()
                     Playground()
                     Showroom()
                     UIKit()
-                    Testing()
+
                     Color.clear.frame(height: 40)
                 }
                 .padding()
@@ -40,3 +41,5 @@ struct ContentView: View {
         .navigationViewStyle(.stack)
     }
 }
+
+

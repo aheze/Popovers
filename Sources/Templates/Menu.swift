@@ -131,92 +131,31 @@ public extension Templates {
                                 /// Keep the drag position updated for the `asyncAfter`.
                                 dragPosition = value.location
 
-                                if model.present == false {
-                                    /// The menu is not yet presented.
-                                    if labelPressUUID == nil {
-                                        labelPressUUID = UUID()
-                                        let currentUUID = labelPressUUID
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + configuration.holdDelay) {
-                                            if
-                                                currentUUID == labelPressUUID,
-                                                let dragPosition = dragPosition
-                                            {
-                                                if window.frameTagged(id).contains(dragPosition) {
-                                                    model.present = true
-                                                }
-                                            }
-                                        }
-                                    }
-
-                                    withAnimation(configuration.labelFadeAnimation) {
-                                        fadeLabel = window.frameTagged(id).contains(value.location)
-                                    }
-                                } else if labelPressUUID == nil {
-                                    /// The menu was already presented.
-                                    labelPressUUID = UUID()
-                                    labelPressedWhenAlreadyPresented = true
-                                } else {
-                                    /// Highlight the button that the user's finger is over.
-                                    model.hoveringIndex = model.getIndex(from: value.location)
-
-                                    /// Rubber-band the menu.
-                                    withAnimation {
-                                        if let distance = model.getDistanceFromMenu(from: value.location) {
-                                            if configuration.scaleRange.contains(distance) {
-                                                let percentage = (distance - configuration.scaleRange.lowerBound) / (configuration.scaleRange.upperBound - configuration.scaleRange.lowerBound)
-                                                let scale = 1 - (1 - configuration.minimumScale) * percentage
-                                                model.scale = scale
-                                            } else if distance < configuration.scaleRange.lowerBound {
-                                                model.scale = 1
-                                            } else {
-                                                model.scale = configuration.minimumScale
-                                            }
-                                        }
-                                    }
+                                MenuModel.onDragChanged(
+                                    location: value.location,
+                                    model: model,
+                                    id: id,
+                                    labelPressUUID: &labelPressUUID,
+                                    configuration: configuration,
+                                    dragPosition: dragPosition,
+                                    window: window,
+                                    fadeLabel: &fadeLabel,
+                                    labelPressedWhenAlreadyPresented: &labelPressedWhenAlreadyPresented
+                                ) {
+                                    labelPressUUID
                                 }
                             }
                             .onEnded { value in
-                                withAnimation {
-                                    model.scale = 1
-                                }
-
-                                labelPressUUID = nil
-
-                                /// The user started long pressing when the menu was **already** presented.
-                                if labelPressedWhenAlreadyPresented {
-                                    labelPressedWhenAlreadyPresented = false
-
-                                    let selectedIndex = model.getIndex(from: value.location)
-                                    model.selectedIndex = selectedIndex
-                                    model.hoveringIndex = nil
-
-                                    /// The user lifted their finger on the label **and** it did not hit a menu item.
-                                    if
-                                        selectedIndex == nil,
-                                        window.frameTagged(id).contains(value.location)
-                                    {
-                                        model.present = false
-                                    }
-                                } else {
-                                    if !model.present {
-                                        if window.frameTagged(id).contains(value.location) {
-                                            model.present = true
-                                        } else {
-                                            withAnimation(configuration.labelFadeAnimation) {
-                                                fadeLabel = false
-                                            }
-                                        }
-                                    } else {
-                                        let selectedIndex = model.getIndex(from: value.location)
-                                        model.selectedIndex = selectedIndex
-                                        model.hoveringIndex = nil
-
-                                        /// The user lifted their finger on a button.
-                                        if selectedIndex != nil {
-                                            model.present = false
-                                        }
-                                    }
-                                }
+                                MenuModel.onDragEnded(
+                                    location: value.location,
+                                    model: model,
+                                    id: id,
+                                    labelPressUUID: &labelPressUUID,
+                                    configuration: configuration,
+                                    window: window,
+                                    fadeLabel: &fadeLabel,
+                                    labelPressedWhenAlreadyPresented: &labelPressedWhenAlreadyPresented
+                                )
                             }
                     )
                     .onValueChange(of: model.present) { _, present in
@@ -333,6 +272,118 @@ public extension Templates {
             }
 
             return .center
+        }
+
+        /// Process the drag gesture, updating the menu to match.
+        static func onDragChanged(
+            location: CGPoint,
+            model: MenuModel,
+            id: UUID,
+            labelPressUUID: inout UUID?,
+            configuration: MenuConfiguration,
+            dragPosition: CGPoint?,
+            window: UIWindow?,
+            fadeLabel: inout Bool,
+            labelPressedWhenAlreadyPresented: inout Bool,
+            getCurrentLabelPressUUID: @escaping (() -> UUID?)
+        ) {
+            if model.present == false {
+                /// The menu is not yet presented.
+                if labelPressUUID == nil {
+                    labelPressUUID = UUID()
+                    let currentUUID = labelPressUUID
+                    DispatchQueue.main.asyncAfter(deadline: .now() + configuration.holdDelay) {
+                        if
+                            currentUUID == getCurrentLabelPressUUID(),
+                            let dragPosition = dragPosition
+                        {
+                            if window.frameTagged(id).contains(dragPosition) {
+                                model.present = true
+                            }
+                        }
+                    }
+                }
+
+                withAnimation(configuration.labelFadeAnimation) {
+                    fadeLabel = window.frameTagged(id).contains(location)
+                }
+            } else if labelPressUUID == nil {
+                /// The menu was already presented.
+                labelPressUUID = UUID()
+                labelPressedWhenAlreadyPresented = true
+            } else {
+                /// Highlight the button that the user's finger is over.
+                model.hoveringIndex = model.getIndex(from: location)
+
+                /// Rubber-band the menu.
+                withAnimation {
+                    if let distance = model.getDistanceFromMenu(from: location) {
+                        if configuration.scaleRange.contains(distance) {
+                            let percentage = (distance - configuration.scaleRange.lowerBound) / (configuration.scaleRange.upperBound - configuration.scaleRange.lowerBound)
+                            let scale = 1 - (1 - configuration.minimumScale) * percentage
+                            model.scale = scale
+                        } else if distance < configuration.scaleRange.lowerBound {
+                            model.scale = 1
+                        } else {
+                            model.scale = configuration.minimumScale
+                        }
+                    }
+                }
+            }
+        }
+
+        /// Process the drag gesture ending, updating the menu to match.
+        static func onDragEnded(
+            location: CGPoint,
+            model: MenuModel,
+            id: UUID,
+            labelPressUUID: inout UUID?,
+            configuration: MenuConfiguration,
+            window: UIWindow?,
+            fadeLabel: inout Bool,
+            labelPressedWhenAlreadyPresented: inout Bool
+        ) {
+            withAnimation {
+                model.scale = 1
+            }
+
+            labelPressUUID = nil
+
+            /// The user started long pressing when the menu was **already** presented.
+            if labelPressedWhenAlreadyPresented {
+                labelPressedWhenAlreadyPresented = false
+
+                let selectedIndex = model.getIndex(from: location)
+                model.selectedIndex = selectedIndex
+                model.hoveringIndex = nil
+
+                /// The user lifted their finger on the label **and** it did not hit a menu item.
+                if
+                    selectedIndex == nil,
+                    window.frameTagged(id).contains(location)
+                {
+                    model.present = false
+                }
+            } else {
+                if !model.present {
+                    if window.frameTagged(id).contains(location) {
+                        model.present = true
+                    } else {
+                        withAnimation(configuration.labelFadeAnimation) {
+                            fadeLabel = false
+                        }
+                    }
+                } else {
+                    let selectedIndex = model.getIndex(from: location)
+                    model.selectedIndex = selectedIndex
+                    model.hoveringIndex = nil
+
+                    /// The user lifted their finger on a button.
+                    if selectedIndex != nil {
+                        model.present = false
+                    }
+                }
+            }
         }
     }
 
