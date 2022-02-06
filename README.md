@@ -441,7 +441,7 @@ A closure that's called whenever the context changed. The context contains the p
 Popovers comes with some features to make your life easier.
 
 ### 📘 Menus
-New in [v1.3.0](https://github.com/aheze/Popovers/releases/tag/1.3.0)! The template `Menu` looks and behaves pretty much exactly like the system menu, but also works on iOS 13.
+New in [v1.3.0](https://github.com/aheze/Popovers/releases/tag/1.3.0)! The template `Menu` looks and behaves pretty much exactly like the system menu, but also works on iOS 13. It's also extremely customizable with support for manual presentation and custom views.
 
 | <img src="Assets/MenuComparison.gif" width=500 alt="The system menu and Popovers' custom menu, side by side"> |
 | --- |

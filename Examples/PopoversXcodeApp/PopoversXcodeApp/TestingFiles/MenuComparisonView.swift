@@ -78,12 +78,10 @@ struct MenuComparisonDestinationView: View {
 
             Templates.Menu(
                 configuration: {
-                    var configuration = Templates.MenuConfiguration()
-                    configuration.width = nil
-                    configuration.originAnchor = .top
-                    configuration.popoverAnchor = .bottom
-                    return configuration
-                }()
+                    $0.width = nil
+                    $0.originAnchor = .top
+                    $0.popoverAnchor = .bottom
+                }
             ) {
                 Color.blue
                     .frame(height: 50)

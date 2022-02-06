@@ -112,12 +112,16 @@ public extension Templates {
          */
         public init(
             present: Binding<Bool> = .constant(false),
-            configuration: MenuConfiguration = .init(),
+            configuration buildConfiguration: @escaping ((inout MenuConfiguration) -> Void) = { _ in },
             @ViewBuilder content: @escaping () -> TupleView<Views>,
             @ViewBuilder label: @escaping (Bool) -> Label
         ) {
-            _overridePresent = present
+            self._overridePresent = present
+            
+            var configuration = MenuConfiguration()
+            buildConfiguration(&configuration)
             self.configuration = configuration
+            
             self.content = content()
             self.label = label
         }

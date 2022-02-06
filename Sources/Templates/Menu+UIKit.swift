@@ -52,12 +52,16 @@ public extension Templates {
         /// A built-from-scratch version of the system menu, for UIKit.
         public init(
             sourceView: UIView,
-            configuration: MenuConfiguration = .init(),
+            configuration buildConfiguration: @escaping ((inout MenuConfiguration) -> Void) = { _ in },
             @ViewBuilder content: @escaping () -> TupleView<Views>,
             fadeLabel: ((Bool) -> Void)? = nil
         ) {
             self.sourceView = sourceView
+            
+            var configuration = MenuConfiguration()
+            buildConfiguration(&configuration)
             self.configuration = configuration
+            
             self.content = content()
             self.fadeLabel = fadeLabel
             super.init()

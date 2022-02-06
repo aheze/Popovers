@@ -9,8 +9,6 @@
 import Popovers
 import SwiftUI
 
-
-
 class UIKitMenuViewController: UIViewController {
     init() { super.init(nibName: nil, bundle: nil) }
 
@@ -31,15 +29,13 @@ class UIKitMenuViewController: UIViewController {
     lazy var labelMenu = Templates.UIKitMenu(
         sourceView: label,
         configuration: {
-            var configuration = Templates.MenuConfiguration()
-            configuration.excludedFrames = { [weak self] in
+            $0.excludedFrames = { [weak self] in
                 guard let self = self else { return [] }
                 return [
                     self.activateButton.windowFrame(),
                 ]
             }
-            return configuration
-        }()
+        }
     ) {
         Templates.MenuButton(title: "Change Icon To List", systemImage: "list.bullet") { [weak self] in
             self?.label.text = "Present Menu (List)"
@@ -59,10 +55,8 @@ class UIKitMenuViewController: UIViewController {
     lazy var barButtonMenu = Templates.UIKitMenu(
         sourceView: barButton,
         configuration: {
-            var configuration = Templates.MenuConfiguration()
-            configuration.scaleAnchor = .topRight
-            return configuration
-        }()
+            $0.scaleAnchor = .topRight
+        }
     ) {
         Templates.MenuButton(title: "Change Icon To List", systemImage: "list.bullet") { [weak self] in
             self?.label.text = "Present Menu (List)"
@@ -182,6 +176,3 @@ struct UIKitMenuViewRepresentable: UIViewControllerRepresentable {
 
     func updateUIViewController(_ uiViewController: UINavigationController, context: Context) {}
 }
-
-
-
