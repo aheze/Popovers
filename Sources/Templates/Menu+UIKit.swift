@@ -10,6 +10,7 @@ import Combine
 import SwiftUI
 
 public extension Templates {
+    /// A built-from-scratch version of the system menu, for UIKit.
     class UIKitMenu<Views>: NSObject {
         // MARK: - Menu properties
 
@@ -47,8 +48,8 @@ public extension Templates {
 
         var popover: Popover?
         var longPressGestureRecognizer: UILongPressGestureRecognizer!
-        var panGestureRecognizer: UIPanGestureRecognizer!
 
+        /// A built-from-scratch version of the system menu, for UIKit.
         public init(
             sourceView: UIView,
             configuration: MenuConfiguration = .init(),
@@ -59,32 +60,39 @@ public extension Templates {
             self.content = content()
             super.init()
 
-            self.sourceView.layer.borderWidth = 4
-            self.sourceView.layer.borderColor = UIColor.systemBlue.cgColor
-
             addPopover()
-            addGestureRecognizers()
+            addGestureRecognizer()
         }
 
+        /// Set up the popover.
         func addPopover() {
-            var popover = Popover {
-                MenuView(
-                    model: self.model,
-                    present: { [weak self] present in
-                        self?.setPresentManually(present: present)
-                    },
-                    configuration: self.configuration,
-                    content: self.content.getViews
-                )
-            } background: {
-                self.configuration.backgroundColor
+            var popover = Popover { [weak self] in
+                if let self = self {
+                    MenuView(
+                        model: self.model,
+                        present: { [weak self] present in
+                            self?.setPresentManually(present: present)
+                        },
+                        configuration: self.configuration,
+                        content: self.content.getViews
+                    )
+                }
+            } background: { [weak self] in
+                if let self = self {
+                    self.configuration.backgroundColor
+                }
             }
 
             popover.attributes.sourceFrame = { [weak sourceView] in sourceView.windowFrame() }
             popover.attributes.position = .absolute(originAnchor: configuration.originAnchor, popoverAnchor: configuration.popoverAnchor)
             popover.attributes.rubberBandingMode = .none
-            popover.attributes.dismissal.excludedFrames = { [self.sourceView.window.frameTagged(self.id)] }
+            popover.attributes.dismissal.excludedFrames = { [weak self] in
+                guard let self = self else { return [] }
+                return [self.sourceView.window.frameTagged(self.id)]
+            }
             popover.attributes.sourceFrameInset = configuration.sourceFrameInset
+
+            /// Make sure to set `model.present` back to false when the menu is dismissed.
             popover.context.onAutoDismiss = { [weak self] in
                 self?.model.present = false
             }
@@ -92,28 +100,15 @@ public extension Templates {
             self.popover = popover
         }
 
-        func addGestureRecognizers() {
-            let longPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(panned))
+        /// Set up the drag gesture recognizer (enable "pull-down" behavior).
+        func addGestureRecognizer() {
+            let longPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(dragged))
             longPressGestureRecognizer.minimumPressDuration = 0
-            self.longPressGestureRecognizer = longPressGestureRecognizer
             sourceView.addGestureRecognizer(longPressGestureRecognizer)
-
-            let panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(panned))
-            self.panGestureRecognizer = panGestureRecognizer
-            sourceView.addGestureRecognizer(panGestureRecognizer)
-
             sourceView.isUserInteractionEnabled = true
         }
 
-        @objc func longPressed(_ gestureRecognizer: UIPanGestureRecognizer) {
-            onDragChanged(gestureRecognizer: gestureRecognizer)
-        }
-
-        @objc func panned(_ gestureRecognizer: UIPanGestureRecognizer) {
-            onDragChanged(gestureRecognizer: gestureRecognizer)
-        }
-
-        func onDragChanged(gestureRecognizer: UIGestureRecognizer) {
+        @objc func dragged(_ gestureRecognizer: UILongPressGestureRecognizer) {
             let location = gestureRecognizer.location(in: nil)
             dragPosition = location
 
@@ -151,10 +146,10 @@ public extension Templates {
                 }
             }
         }
-        
+
         /**
          Set `model.present` and show/hide the popover.
-         
+
          This is called when a menu button is pressed,
          or some other action happened that should hide the menu.
          This is **not** called when the user taps outside the menu,
