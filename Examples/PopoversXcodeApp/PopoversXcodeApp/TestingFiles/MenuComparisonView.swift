@@ -30,6 +30,15 @@ struct MenuComparisonDestinationView: View {
             Text("Compare Popovers' custom menu with the system menu.")
 
             Templates.Menu {
+                Templates.MenuButton(title: "Button 1", systemImage: "1.circle.fill") { print("Button 1 pressed") }
+                Templates.MenuButton(title: "Button 2", systemImage: "2.circle.fill") { print("Button 2 pressed") }
+            } label: { fade in
+                Text("Present Menu!")
+                    .opacity(fade ? 0.5 : 1)
+            }
+            .padding(.vertical, 100)
+
+            Templates.Menu {
                 Templates.MenuButton(title: "Change Icon To List", systemImage: "list.bullet") {
                     iconName = "list.bullet"
                 }
@@ -39,9 +48,9 @@ struct MenuComparisonDestinationView: View {
                 Templates.MenuButton(title: "Change Icon To Bag", systemImage: "bag") {
                     iconName = "bag"
                 }
-            } label: { isPressed in
+            } label: { fade in
                 ExampleRow(image: iconName, title: "Popovers Menu", color: 0x007eef)
-                    .opacity(isPressed ? 0.5 : 1)
+                    .opacity(fade ? 0.5 : 1)
             }
 
             Menu {
@@ -129,9 +138,9 @@ struct MenuComparisonDestinationView: View {
                     .padding(EdgeInsets(top: 14, leading: 18, bottom: 14, trailing: 18))
                     .background(pressed ? Templates.buttonHighlightColor : Color.clear) /// Add highlight effect when pressed.
                 }
-            } label: { isPressed in
+            } label: { fade in
                 ExampleRow(image: iconName, title: "Popovers Menu (Customized)", color: 0xb900ff)
-                    .opacity(isPressed ? 0.5 : 1)
+                    .opacity(fade ? 0.5 : 1)
             }
 
             Divider()
@@ -150,9 +159,9 @@ struct MenuComparisonDestinationView: View {
                 Templates.MenuButton(title: "Change Icon To Bag", systemImage: "bag") {
                     iconName = "bag"
                 }
-            } label: { isPressed in
+            } label: { fade in
                 ExampleRow(image: iconName, title: "Popovers Menu With Binding", color: 0xcff2000)
-                    .opacity(isPressed ? 0.5 : 1)
+                    .opacity(fade ? 0.5 : 1)
             }
 
             Color.clear.frame(height: 300)
@@ -188,3 +197,5 @@ struct MenuImageView: View {
             }
     }
 }
+
+

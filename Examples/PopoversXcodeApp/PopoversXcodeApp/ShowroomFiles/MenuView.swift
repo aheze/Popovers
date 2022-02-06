@@ -24,7 +24,7 @@ struct MenuView: View {
             Templates.MenuButton(title: "Change Icon To Bag", systemImage: "bag") {
                 iconName = "bag"
             }
-        } label: { isPressed in
+        } label: { fade in
             ExampleShowroomRow(color: UIColor(hex: 0xFF00AB)) {
                 HStack {
                     ExampleImage(iconName, color: UIColor(hex: 0xFF00AB))
@@ -33,7 +33,7 @@ struct MenuView: View {
                         .fontWeight(.medium)
                 }
             }
-            .opacity(isPressed ? 0.5 : 1)
+            .opacity(fade ? 0.5 : 1)
         }
     }
 }

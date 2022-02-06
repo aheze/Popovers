@@ -9,12 +9,23 @@
 import Popovers
 import SwiftUI
 
+
+
 class UIKitMenuViewController: UIViewController {
     init() { super.init(nibName: nil, bundle: nil) }
 
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    lazy var menu = Templates.UIKitMenu(sourceView: label) {
+        Templates.MenuButton(title: "Button 1", systemImage: "1.circle.fill") { print("Button 1 pressed") }
+        Templates.MenuButton(title: "Button 2", systemImage: "2.circle.fill") { print("Button 2 pressed") }
+    } fadeLabel: { [weak self] fade in
+        UIView.animate(withDuration: 0.15) {
+            self?.label.alpha = fade ? 0.5 : 1
+        }
     }
 
     lazy var labelMenu = Templates.UIKitMenu(
@@ -120,8 +131,8 @@ class UIKitMenuViewController: UIViewController {
          */
         view = UIView()
         view.backgroundColor = .systemBackground
-
-        _ = labelMenu
+        _ = menu
+//        _ = labelMenu
         _ = barButtonMenu
         _ = stackView
         _ = barButtonItem

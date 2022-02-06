@@ -8,6 +8,7 @@ A library to present popovers.
 - Display multiple popovers at the same time with smooth transitions.
 - Supports SwiftUI, UIKit, and multitasking windows on iPadOS.
 - Highly customizable API that's super simple — just add `.popover`.
+- Drop-in replacement for iOS 14's `Menu` that works on iOS 13.
 - SwiftUI-based core for a lightweight structure. 0 dependencies.
 - It's 2022 — about time that popovers got interesting!
 
@@ -253,7 +254,7 @@ present(popover)
 </tr>
 </table>
 
-### 🔖 Tag • `String?`
+### 🔖 Tag • `AnyHashable?`
 Tag popovers to access them later from anywhere. This is useful for updating existing popovers.
 
 ```swift
@@ -434,10 +435,69 @@ A closure that's called whenever the context changed. The context contains the p
 <br>
 
 ## Utilities
-| [🧩](https://github.com/aheze/Popovers#animating-between-popovers)  | [🌃](https://github.com/aheze/Popovers#background)  | [📖](https://github.com/aheze/Popovers#popover-reader)  | [🏷](https://github.com/aheze/Popovers#frame-tags)  | [📄](https://github.com/aheze/Popovers#templates)  |
-| --- | --- | --- | --- | --- |
+| [📘](https://github.com/aheze/Popovers#menus)  | [🧩](https://github.com/aheze/Popovers#animating-between-popovers)  | [🌃](https://github.com/aheze/Popovers#background)  | [📖](https://github.com/aheze/Popovers#popover-reader)  | [🏷](https://github.com/aheze/Popovers#frame-tags)  | [📄](https://github.com/aheze/Popovers#templates)  |
+| --- | --- | --- | --- | --- | --- |
 
 Popovers comes with some features to make your life easier.
+
+### 📘 Menus
+New in [v1.3.0](https://github.com/aheze/Popovers/releases/tag/1.3.0)! The template `Menu` looks and behaves pretty much exactly like the system menu, but also works on iOS 13.
+
+| <img src="Assets/MenuComparison.gif" width=500 alt="The system menu and Popovers' custom menu, side by side"> |
+| --- |
+
+
+<table>
+<tr>
+<td>
+<strong>
+SwiftUI
+</strong>
+</td>
+<td>
+<strong>
+UIKit
+</strong>
+</td>
+</tr>
+  
+<tr>
+<td>
+<br>
+
+```swift
+Templates.Menu {
+    Templates.MenuButton(title: "Button 1", systemImage: "1.circle.fill") { print("Button 1 pressed") }
+    Templates.MenuButton(title: "Button 2", systemImage: "2.circle.fill") { print("Button 2 pressed") }
+} label: { fade in
+    Text("Present Menu!")
+        .opacity(fade ? 0.5 : 1)
+}
+```
+</td>
+<td>
+<br>
+
+```swift
+class ViewController: UIViewController {
+    @IBOutlet var label: UILabel!
+
+    lazy var menu = Templates.UIKitMenu(sourceView: label) {
+        Templates.MenuButton(title: "Button 1", systemImage: "1.circle.fill") { print("Button 1 pressed") }
+        Templates.MenuButton(title: "Button 2", systemImage: "2.circle.fill") { print("Button 2 pressed") }
+    } fadeLabel: { [weak self] fade in
+        self?.label.alpha = fade ? 0.5 : 1
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        _ = menu /// Create the menu.
+    }
+}
+```
+</td>
+</tr>
+</table>
 
 ### 🧩 Animating Between Popovers
 As long as the view structure is the same, you can smoothly transition from one popover to another. 
@@ -622,12 +682,11 @@ Get started quickly with some templates. All of them are inside [`Templates.swif
 
 - `AlertButtonStyle` - a button style resembling a system alert.
 - `VisualEffectView` - lets you use UIKit blurs in SwiftUI.
-- `ContainerShadow` - a view modifier that applies a system-like shadow.
 - `Container` - a wrapper view for the `BackgroundWithArrow` shape.
+- `Shadow` - an easier way to apply shadows.
 - `BackgroundWithArrow` - a shape with an arrow that looks like the system popover.
 - `CurveConnector` - an animatable shape with endpoints that you can set.
-- `Menu` - the system menu but built from scratch.
-- `MenuButton` - buttons to put in the `Menu`.
+- `Menu` - the system menu, but built from scratch.
 
 <br>
 
