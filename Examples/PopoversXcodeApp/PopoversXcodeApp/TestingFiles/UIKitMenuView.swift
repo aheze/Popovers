@@ -41,6 +41,25 @@ class UIKitMenuViewController: UIViewController {
         }
     }
 
+    lazy var barButtonMenu = Templates.UIKitMenu(
+        sourceView: barButton,
+        configuration: {
+            var configuration = Templates.MenuConfiguration()
+            configuration.scaleAnchor = .topRight
+            return configuration
+        }()
+    ) {
+        Templates.MenuButton(title: "Change Icon To List", systemImage: "list.bullet") { [weak self] in
+            self?.label.text = "Present Menu (List)"
+        }
+        Templates.MenuButton(title: "Change Icon To Keyboard", systemImage: "keyboard") { [weak self] in
+            self?.label.text = "Present Menu (Keyboard)"
+        }
+        Templates.MenuButton(title: "Change Icon To Bag", systemImage: "bag") { [weak self] in
+            self?.label.text = "Present Menu (Bag)"
+        }
+    }
+
     lazy var label: UILabel = {
         let label = UILabel()
         label.text = "Present Menu"
@@ -54,11 +73,18 @@ class UIKitMenuViewController: UIViewController {
         return activateButton
     }()
 
-    //            title: "Activate Menu",
-    //            style: .plain,
-    //            target: self,
-    //            action: #selector(activateButtonTapped)
-    //        )
+    lazy var barButton: UIButton = {
+        let barButton = UIButton(type: .system)
+        barButton.setImage(UIImage(systemName: "ellipsis"), for: .normal)
+        barButton.addTarget(self, action: #selector(barButtonTapped), for: .touchUpInside)
+        return barButton
+    }()
+
+    lazy var barButtonItem: UIBarButtonItem = {
+        let barButtonItem = UIBarButtonItem(customView: barButton)
+        navigationItem.rightBarButtonItem = barButtonItem
+        return barButtonItem
+    }()
 
     lazy var stackView: UIStackView = {
         let stackView = UIStackView()
@@ -88,7 +114,9 @@ class UIKitMenuViewController: UIViewController {
         view.backgroundColor = .systemBackground
 
         _ = labelMenu
+        _ = barButtonMenu
         _ = stackView
+        _ = barButtonItem
     }
 
     @objc func activateButtonTapped() {
@@ -96,6 +124,14 @@ class UIKitMenuViewController: UIViewController {
             labelMenu.dismiss()
         } else {
             labelMenu.present()
+        }
+    }
+
+    @objc func barButtonTapped() {
+        if barButtonMenu.isPresented {
+            barButtonMenu.dismiss()
+        } else {
+            barButtonMenu.present()
         }
     }
 }
