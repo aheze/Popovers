@@ -624,7 +624,7 @@ class ViewController: UIViewController {
 </details>
 
 
-Basic | Customized | Manual Activation
+Basic | Customized | Manual Presentation
 --- | --- | ---
 ![Menu with 2 buttons](Assets/MenuBasic.png) | ![Menu with image and divider](Assets/MenuCustomized.png) | ![Manually activate the menu with a toggle switch](Assets/MenuManual.png)
 
