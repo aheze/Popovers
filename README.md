@@ -808,7 +808,7 @@ WindowReader { window in
 
 
 ### 📄 Templates
-Get started quickly with some templates. All of them are inside [`Templates.swift`](Sources/Templates.swift) with example usage in the example app.
+Get started quickly with some templates. All of them are inside [`Templates`](Sources/Templates) with example usage in the example app.
 
 - `AlertButtonStyle` - a button style resembling a system alert.
 - `VisualEffectView` - lets you use UIKit blurs in SwiftUI.

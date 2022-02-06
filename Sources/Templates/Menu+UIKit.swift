@@ -153,7 +153,6 @@ public extension Templates {
          since the menu would already be automatically dismissed.
          */
         func updatePresent(_ present: Bool) {
-            print("Update -> \(present)")
             model.present = present
             if
                 present,
