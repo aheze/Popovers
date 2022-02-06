@@ -1,6 +1,6 @@
 //
 //  TutorialView.swift
-//  PopoversXcodeApp
+//  PopoversPlaygroundsApp
 //
 //  Created by A. Zheng (github.com/aheze) on 12/23/21.
 //  Copyright © 2022 A. Zheng. All rights reserved.
@@ -64,6 +64,7 @@ struct TutorialViewPopover: View {
 
                     Button {
                         present = false
+                        selection = nil
                     } label: {
                         Image(systemName: "xmark")
                             .font(.system(size: 19))
@@ -107,7 +108,7 @@ struct TutorialViewPopover: View {
                             selection = "Step 2"
                         }
                     } label: {
-                        PopoverTemplates.VisualEffectView(.systemChromeMaterialDark)
+                        Templates.VisualEffectView(.systemChromeMaterialDark)
                             .frame(height: 60)
                             .overlay {
                                 Text("Search Bar")
@@ -151,7 +152,7 @@ struct TutorialViewPopover: View {
                             .font(.system(size: 48))
                             .padding()
                             .background(
-                                PopoverTemplates.VisualEffectView(.systemChromeMaterialDark)
+                                Templates.VisualEffectView(.systemChromeMaterialDark)
                             )
                             .cornerRadius(16)
                     }
@@ -187,7 +188,7 @@ struct TutorialViewPopover: View {
         }
         .background(.regularMaterial)
         .cornerRadius(16)
-        .popoverContainerShadow()
+        .popoverShadow(shadow: .system)
         .onTapGesture {
             withAnimation(.spring()) {
                 selection = nil
@@ -200,7 +201,7 @@ struct TutorialViewPopoverDetails: View {
     @Binding var selection: String?
     var step: Int
     var body: some View {
-        PopoverTemplates.Container(backgroundColor: .black) {
+        Templates.Container(backgroundColor: .black) {
             VStack(alignment: .leading) {
                 Text("Tutorial")
                     .font(.system(size: 14, weight: .bold))

@@ -1,6 +1,6 @@
 //
 //  Showroom.swift
-//  PopoversXcodeApp
+//  PopoversPlaygroundsApp
 //
 //  Created by A. Zheng (github.com/aheze) on 12/23/21.
 //  Copyright © 2022 A. Zheng. All rights reserved.
@@ -19,15 +19,15 @@ struct Showroom: View {
                 .padding(.top, 12)
         ) {
             Group {
+                MenuView()
                 AlertView()
                 VideoView()
                 TipView()
                 TutorialView()
                 ColorView()
                 NotificationView()
-                MenuView()
-                StandardView()
                 FormView()
+                StandardView()
             }
         }
     }

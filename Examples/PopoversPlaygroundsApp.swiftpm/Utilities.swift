@@ -1,6 +1,6 @@
 //
 //  Utilities.swift
-//  PopoversXcodeApp
+//  PopoversPlaygroundsApp
 //
 //  Created by A. Zheng (github.com/aheze) on 12/23/21.
 //  Copyright © 2022 A. Zheng. All rights reserved.
@@ -20,16 +20,16 @@ struct ExampleRow: View {
     let image: String
     let title: String
     let color: UInt
-    let action: () -> Void
+    var action: (() -> Void)? = nil
 
     var body: some View {
-        Button(action: action) {
+        Button(action: action ?? {}) {
             HStack {
                 Image(systemName: image)
                     .font(.system(size: 19, weight: .medium))
                     .frame(width: 40, height: 40)
                     .background(
-                        PopoverTemplates.VisualEffectView(.dark)
+                        Templates.VisualEffectView(.dark)
                     )
                     .cornerRadius(10)
                     .overlay {
@@ -48,15 +48,9 @@ struct ExampleRow: View {
                 Color(uiColor: .systemBackground)
                     .overlay(alignment: .bottomTrailing) {
                         LinearGradient(
-                            stops: [
-                                Gradient.Stop(
-                                    color: Color(uiColor: UIColor(hex: color).offset(by: 0.2)),
-                                    location: 0
-                                ),
-                                Gradient.Stop(
-                                    color: Color(uiColor: UIColor(hex: color)),
-                                    location: 1
-                                ),
+                            colors: [
+                                Color(uiColor: UIColor(hex: color).offset(by: 0.2)),
+                                Color(uiColor: UIColor(hex: color)),
                             ],
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
@@ -68,6 +62,7 @@ struct ExampleRow: View {
             .cornerRadius(16)
             .foregroundColor(.primary)
         }
+        .disabled(action == nil)
     }
 }
 

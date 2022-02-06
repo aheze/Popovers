@@ -1,6 +1,6 @@
 //
 //  PopoverReaderView.swift
-//  PopoversXcodeApp
+//  PopoversPlaygroundsApp
 //
 //  Created by A. Zheng (github.com/aheze) on 12/23/21.
 //  Copyright © 2022 A. Zheng. All rights reserved.
@@ -70,7 +70,7 @@ struct PopoverReaderViewBackground: View {
                 .position(context.frame.point(at: .top))
                 .zIndex(1)
 
-            PopoverTemplates.CurveConnector(
+            Templates.CurveConnector(
                 start: context.frame.point(at: .top),
                 end: context.window.frameTagged("Frame-Tagged View").point(at: .bottom)
             )

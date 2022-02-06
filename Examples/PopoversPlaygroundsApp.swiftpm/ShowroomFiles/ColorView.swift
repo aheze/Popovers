@@ -1,6 +1,6 @@
 //
 //  ColorView.swift
-//  PopoversXcodeApp
+//  PopoversPlaygroundsApp
 //
 //  Created by A. Zheng (github.com/aheze) on 12/23/21.
 //  Copyright © 2022 A. Zheng. All rights reserved.
@@ -77,7 +77,7 @@ struct ColorViewPopover: View {
         .frame(width: 200)
         .background(
             ZStack {
-                PopoverTemplates.VisualEffectView(.systemUltraThinMaterialDark)
+                Templates.VisualEffectView(.systemUltraThinMaterialDark)
                 UIColor(hex: 0x0070A3).color.opacity(0.5)
             }
         )

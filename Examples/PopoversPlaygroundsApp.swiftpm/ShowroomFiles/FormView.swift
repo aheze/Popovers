@@ -65,7 +65,7 @@ private struct WarningAccessoryModifier: ViewModifier {
                     }
                 ) {
                     if let warning = warning {
-                        PopoverTemplates.Container {
+                        Templates.Container {
                             Text(warning)
                                 .font(.caption)
                         }

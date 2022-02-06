@@ -1,6 +1,6 @@
 //
 //  AlertView.swift
-//  PopoversXcodeApp
+//  PopoversPlaygroundsApp
 //
 //  Created by A. Zheng (github.com/aheze) on 12/23/21.
 //  Copyright © 2022 A. Zheng. All rights reserved.
@@ -84,11 +84,11 @@ struct AlertViewPopover: View {
                 Text("Ok")
                     .foregroundColor(.blue)
             }
-            .buttonStyle(PopoverTemplates.AlertButtonStyle())
+            .buttonStyle(Templates.AlertButtonStyle())
         }
         .background(Color(uiColor: .systemBackground))
         .cornerRadius(16)
-        .popoverContainerShadow()
+        .popoverShadow(shadow: .system)
         .frame(width: 260)
         .scaleEffect(expanding ? 1.05 : 1)
         .scaleEffect(scaled ? 2 : 1)

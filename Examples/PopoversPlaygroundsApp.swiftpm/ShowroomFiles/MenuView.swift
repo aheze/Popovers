@@ -1,6 +1,6 @@
 //
 //  MenuView.swift
-//  PopoversXcodeApp
+//  PopoversPlaygroundsApp
 //
 //  Created by A. Zheng (github.com/aheze) on 12/23/21.
 //  Copyright © 2022 A. Zheng. All rights reserved.
@@ -14,58 +14,26 @@ struct MenuView: View {
     @State var iconName = "list.bullet"
 
     var body: some View {
-        Button {
-            present = true
-        } label: {
+        Templates.Menu {
+            Templates.MenuButton(title: "Change Icon To List", systemImage: "list.bullet") {
+                iconName = "list.bullet"
+            }
+            Templates.MenuButton(title: "Change Icon To Keyboard", systemImage: "keyboard") {
+                iconName = "keyboard"
+            }
+            Templates.MenuButton(title: "Change Icon To Bag", systemImage: "bag") {
+                iconName = "bag"
+            }
+        } label: { fade in
             ExampleShowroomRow(color: UIColor(hex: 0xFF00AB)) {
                 HStack {
                     ExampleImage(iconName, color: UIColor(hex: 0xFF00AB))
 
-                    Text("Context Menu")
+                    Text("Menu")
                         .fontWeight(.medium)
                 }
             }
-        }
-        .simultaneousGesture(
-            LongPressGesture(minimumDuration: 0.5, maximumDistance: 60)
-                .onEnded { _ in
-                    present = true
-                }
-        )
-        .popover(
-            present: $present,
-            attributes: {
-                $0.rubberBandingMode = .none
-                $0.sourceFrameInset.bottom = -8
-                $0.position = .absolute(
-                    originAnchor: .bottomRight,
-                    popoverAnchor: .topRight
-                )
-            }
-        ) {
-            MenuViewPopover(present: $present, iconName: $iconName)
-        }
-    }
-}
-
-struct MenuViewPopover: View {
-    @Binding var present: Bool
-    @Binding var iconName: String
-
-    var body: some View {
-        PopoverTemplates.Menu {
-            PopoverTemplates.MenuButton(title: "Change Icon To List", image: "list.bullet") {
-                iconName = "list.bullet"
-                present = false
-            }
-            PopoverTemplates.MenuButton(title: "Change Icon To Keyboard", image: "keyboard") {
-                iconName = "keyboard"
-                present = false
-            }
-            PopoverTemplates.MenuButton(title: "Change Icon To Bag", image: "bag") {
-                iconName = "bag"
-                present = false
-            }
+            .opacity(fade ? 0.5 : 1)
         }
     }
 }
