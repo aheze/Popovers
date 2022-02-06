@@ -27,7 +27,7 @@ public extension Templates {
         var labelPressedWhenAlreadyPresented = false
 
         /// The current position of the user's finger.
-        var dragPosition: CGPoint?
+        var dragLocation: CGPoint?
 
         /// View model for the menu buttons.
         var model = MenuModel()
@@ -104,8 +104,8 @@ public extension Templates {
         }
 
         @objc func dragged(_ gestureRecognizer: UILongPressGestureRecognizer) {
-            let location = gestureRecognizer.location(in: nil)
-            dragPosition = location
+            let location = gestureRecognizer.location(in: sourceView.window)
+            dragLocation = location
 
             if gestureRecognizer.state == .began || gestureRecognizer.state == .changed {
                 MenuModel.onDragChanged(
@@ -119,8 +119,8 @@ public extension Templates {
                     labelPressedWhenAlreadyPresented: &labelPressedWhenAlreadyPresented
                 ) { [weak self] in
                     self?.labelPressUUID
-                } getDragPosition: { [weak self] in
-                    self?.dragPosition
+                } getDragLocation: { [weak self] in
+                    self?.dragLocation
                 } present: { [weak self] present in
                     self?.updatePresent(present)
                 } fadeLabel: { [weak self] fade in
@@ -153,6 +153,7 @@ public extension Templates {
          since the menu would already be automatically dismissed.
          */
         func updatePresent(_ present: Bool) {
+            print("Update -> \(present)")
             model.present = present
             if
                 present,
