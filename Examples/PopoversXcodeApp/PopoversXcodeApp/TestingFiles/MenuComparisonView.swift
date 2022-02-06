@@ -14,8 +14,8 @@ struct MenuComparisonView: View {
         NavigationLink(destination: MenuComparisonDestinationView()) {
             ExampleTestingRow(
                 image: "contextualmenu.and.cursorarrow",
-                title: "Menu Comparison View",
-                color: 0xA000FF
+                title: "Menu Comparison",
+                color: 0xa000ff
             )
         }
     }
@@ -40,7 +40,7 @@ struct MenuComparisonDestinationView: View {
                     iconName = "bag"
                 }
             } label: { isPressed in
-                ExampleRow(image: iconName, title: "Popovers Menu", color: 0xFF00AB)
+                ExampleRow(image: iconName, title: "Popovers Menu", color: 0x007eef)
                     .opacity(isPressed ? 0.5 : 1)
             }
 
@@ -64,7 +64,7 @@ struct MenuComparisonDestinationView: View {
                 }
 
             } label: {
-                ExampleRow(image: iconName, title: "System Menu", color: 0xFF004E)
+                ExampleRow(image: iconName, title: "System Menu", color: 0x0009ff)
             }
 
             Templates.Menu(
@@ -130,9 +130,32 @@ struct MenuComparisonDestinationView: View {
                     .background(pressed ? Templates.buttonHighlightColor : Color.clear) /// Add highlight effect when pressed.
                 }
             } label: { isPressed in
-                ExampleRow(image: iconName, title: "Popovers Menu (Customized)", color: 0xFF1900)
+                ExampleRow(image: iconName, title: "Popovers Menu (Customized)", color: 0xb900ff)
                     .opacity(isPressed ? 0.5 : 1)
             }
+
+            Divider()
+
+            Button("Present Menu") {
+                present = true
+            }
+
+            Templates.Menu(present: $present) {
+                Templates.MenuButton(title: "Change Icon To List", systemImage: "list.bullet") {
+                    iconName = "list.bullet"
+                }
+                Templates.MenuButton(title: "Change Icon To Keyboard", systemImage: "keyboard") {
+                    iconName = "keyboard"
+                }
+                Templates.MenuButton(title: "Change Icon To Bag", systemImage: "bag") {
+                    iconName = "bag"
+                }
+            } label: { isPressed in
+                ExampleRow(image: iconName, title: "Popovers Menu With Binding", color: 0xcff2000)
+                    .opacity(isPressed ? 0.5 : 1)
+            }
+
+            Color.clear.frame(height: 300)
         }
         .padding()
         .navigationBarTitleDisplayMode(.inline)

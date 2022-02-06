@@ -25,7 +25,7 @@ public extension Templates {
         public var cornerRadius = CGFloat(14)
         public var showDivider = true /// Show divider between menu items.
         public var shadow = Shadow.system
-        public var backgroundColor = Color.black.opacity(0.1) /// A color that is overlaid over the entire screen, just underneath the menu.
+        public var backgroundColor = Color.clear /// A color that is overlaid over the entire screen, just underneath the menu.
         public var scaleRange = CGFloat(40) ... CGFloat(90) /// For rubber banding - the range at which rubber banding should be applied.
         public var minimumScale = CGFloat(0.7) /// For rubber banding - the scale the the popover should shrink to when rubber banding.
 
@@ -44,7 +44,7 @@ public extension Templates {
             cornerRadius: CGFloat = CGFloat(14),
             showDivider: Bool = true,
             shadow: Shadow = .system,
-            backgroundColor: Color = .black.opacity(0.1),
+            backgroundColor: Color = .clear,
             scaleRange: ClosedRange<CGFloat> = 30 ... 80,
             minimumScale: CGFloat = 0.85
         ) {
@@ -89,6 +89,9 @@ public extension Templates {
         /// View model for the menu buttons.
         @StateObject var model = MenuModel()
 
+        /// Allow presenting from an external view via `$present`.
+        @Binding var overridePresent: Bool
+
         /// Attributes that determine what the menu looks like.
         public let configuration: MenuConfiguration
 
@@ -105,10 +108,12 @@ public extension Templates {
          Create a custom menu.
          */
         public init(
+            present: Binding<Bool> = .constant(false),
             configuration: MenuConfiguration = .init(),
             @ViewBuilder content: @escaping () -> TupleView<Views>,
             @ViewBuilder label: @escaping (Bool) -> Label
         ) {
+            _overridePresent = present
             self.configuration = configuration
             self.content = content()
             self.label = label
@@ -220,6 +225,15 @@ public extension Templates {
                                 fadeLabel = false
                                 model.selectedIndex = nil
                                 model.hoveringIndex = nil
+                            }
+                            overridePresent = present
+                        }
+                    }
+                    .onValueChange(of: overridePresent) { _, present in
+                        if present != model.present {
+                            model.present = present
+                            withAnimation(configuration.labelFadeAnimation) {
+                                fadeLabel = present
                             }
                         }
                     }
@@ -369,7 +383,7 @@ public extension Templates {
                         if configuration.showDivider, index != content.count - 1 {
                             Rectangle()
                                 .fill(Color(UIColor.label))
-                                .frame(height: 0.33)
+                                .frame(height: 0.4)
                                 .opacity(0.3)
                         }
                     }
