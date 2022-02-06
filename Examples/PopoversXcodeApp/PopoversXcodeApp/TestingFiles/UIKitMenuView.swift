@@ -39,6 +39,10 @@ class UIKitMenuViewController: UIViewController {
         Templates.MenuButton(title: "Change Icon To Bag", systemImage: "bag") { [weak self] in
             self?.label.text = "Present Menu (Bag)"
         }
+    } fadeLabel: { [weak self] fade in
+        UIView.animate(withDuration: 0.15) {
+            self?.label.alpha = fade ? 0.5 : 1
+        }
     }
 
     lazy var barButtonMenu = Templates.UIKitMenu(
@@ -57,6 +61,10 @@ class UIKitMenuViewController: UIViewController {
         }
         Templates.MenuButton(title: "Change Icon To Bag", systemImage: "bag") { [weak self] in
             self?.label.text = "Present Menu (Bag)"
+        }
+    } fadeLabel: { [weak self] fade in
+        UIView.animate(withDuration: 0.15) {
+            self?.barButton.alpha = fade ? 0.5 : 1
         }
     }
 
@@ -92,7 +100,7 @@ class UIKitMenuViewController: UIViewController {
         stackView.axis = .vertical
         stackView.distribution = .equalSpacing
         stackView.alignment = .center
-        stackView.spacing = 16
+        stackView.spacing = 24
         stackView.isUserInteractionEnabled = true
         stackView.addArrangedSubview(activateButton)
         stackView.addArrangedSubview(label)

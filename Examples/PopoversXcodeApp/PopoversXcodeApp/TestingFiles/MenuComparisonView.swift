@@ -13,7 +13,7 @@ struct MenuComparisonView: View {
     var body: some View {
         NavigationLink(destination: MenuComparisonDestinationView()) {
             ExampleTestingRow(
-                image: "contextualmenu.and.cursorarrow",
+                image: "rectangle.on.rectangle",
                 title: "Menu Comparison",
                 color: 0xa000ff
             )

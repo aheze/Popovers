@@ -142,7 +142,6 @@ public extension Templates {
                                     labelFrame: window.frameTagged(id),
                                     configuration: configuration,
                                     window: window,
-                                    fadeLabel: &fadeLabel,
                                     labelPressedWhenAlreadyPresented: &labelPressedWhenAlreadyPresented
                                 ) {
                                     labelPressUUID
@@ -150,6 +149,8 @@ public extension Templates {
                                     dragPosition
                                 } present: { present in
                                     model.present = present
+                                } fadeLabel: { fade in
+                                    fadeLabel = fade
                                 }
                             }
                             .onEnded { value in
@@ -161,10 +162,11 @@ public extension Templates {
                                     labelFrame: window.frameTagged(id),
                                     configuration: configuration,
                                     window: window,
-                                    fadeLabel: &fadeLabel,
                                     labelPressedWhenAlreadyPresented: &labelPressedWhenAlreadyPresented
                                 ) { present in
                                     model.present = present
+                                } fadeLabel: { fade in
+                                    fadeLabel = fade
                                 }
                             }
                     )
@@ -303,11 +305,11 @@ public extension Templates {
             labelFrame: CGRect,
             configuration: MenuConfiguration,
             window: UIWindow?,
-            fadeLabel: inout Bool,
             labelPressedWhenAlreadyPresented: inout Bool,
             getCurrentLabelPressUUID: @escaping (() -> UUID?),
             getDragPosition: @escaping (() -> CGPoint?),
-            present: @escaping ((Bool) -> Void)
+            present: @escaping ((Bool) -> Void),
+            fadeLabel: @escaping ((Bool) -> Void)
         ) {
             if model.present == false {
                 /// The menu is not yet presented.
@@ -327,7 +329,8 @@ public extension Templates {
                 }
 
                 withAnimation(configuration.labelFadeAnimation) {
-                    fadeLabel = labelFrame.contains(location)
+                    let shouldFade = labelFrame.contains(location)
+                    fadeLabel(shouldFade)
                 }
             } else if labelPressUUID == nil {
                 /// The menu was already presented.
@@ -363,9 +366,9 @@ public extension Templates {
             labelFrame: CGRect,
             configuration: MenuConfiguration,
             window: UIWindow?,
-            fadeLabel: inout Bool,
             labelPressedWhenAlreadyPresented: inout Bool,
-            present: @escaping ((Bool) -> Void)
+            present: @escaping ((Bool) -> Void),
+            fadeLabel: @escaping ((Bool) -> Void)
         ) {
             withAnimation {
                 model.scale = 1
@@ -394,7 +397,7 @@ public extension Templates {
                         present(true)
                     } else {
                         withAnimation(configuration.labelFadeAnimation) {
-                            fadeLabel = false
+                            fadeLabel(false)
                         }
                     }
                 } else {

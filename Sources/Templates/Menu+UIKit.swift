@@ -42,7 +42,7 @@ public extension Templates {
         public let sourceView: UIView
 
         /// Fade the origin label.
-        var fadeLabel = false
+        var fadeLabel: ((Bool) -> Void)?
 
         // MARK: - UIKit properties
 
@@ -53,11 +53,13 @@ public extension Templates {
         public init(
             sourceView: UIView,
             configuration: MenuConfiguration = .init(),
-            @ViewBuilder content: @escaping () -> TupleView<Views>
+            @ViewBuilder content: @escaping () -> TupleView<Views>,
+            fadeLabel: ((Bool) -> Void)? = nil
         ) {
             self.sourceView = sourceView
             self.configuration = configuration
             self.content = content()
+            self.fadeLabel = fadeLabel
             super.init()
 
             addGestureRecognizer()
@@ -84,7 +86,6 @@ public extension Templates {
                     labelFrame: sourceView.windowFrame(),
                     configuration: configuration,
                     window: sourceView.window,
-                    fadeLabel: &fadeLabel,
                     labelPressedWhenAlreadyPresented: &labelPressedWhenAlreadyPresented
                 ) { [weak self] in
                     self?.labelPressUUID
@@ -92,6 +93,8 @@ public extension Templates {
                     self?.dragPosition
                 } present: { [weak self] present in
                     self?.updatePresent(present)
+                } fadeLabel: { [weak self] fade in
+                    self?.fadeLabel?(fade)
                 }
             } else {
                 MenuModel.onDragEnded(
@@ -102,10 +105,11 @@ public extension Templates {
                     labelFrame: sourceView.windowFrame(),
                     configuration: configuration,
                     window: sourceView.window,
-                    fadeLabel: &fadeLabel,
                     labelPressedWhenAlreadyPresented: &labelPressedWhenAlreadyPresented
                 ) { [weak self] present in
                     self?.updatePresent(present)
+                } fadeLabel: { [weak self] fade in
+                    self?.fadeLabel?(fade)
                 }
             }
         }
@@ -126,9 +130,11 @@ public extension Templates {
             {
                 presentPopover()
                 popover?.present(in: window)
+                fadeLabel?(true)
             } else {
                 popover?.dismiss()
                 popover = nil
+                fadeLabel?(false)
             }
         }
 
@@ -169,6 +175,7 @@ public extension Templates {
              */
             popover.context.onAutoDismiss = { [weak self] in
                 self?.model.present = false
+                self?.fadeLabel?(false)
             }
 
             self.popover = popover
@@ -176,15 +183,20 @@ public extension Templates {
     }
 }
 
+/// Control menu state externally.
 public extension Templates.UIKitMenu {
+    
+    /// Whether the menu is currently presented or not.
     var isPresented: Bool {
         model.present
     }
 
+    /// Present the menu.
     func present() {
         updatePresent(true)
     }
 
+    /// Dismiss the menu.
     func dismiss() {
         updatePresent(false)
     }
