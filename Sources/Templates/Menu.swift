@@ -440,6 +440,7 @@ public extension Templates {
                         image
                     }
                 }
+                .accessibilityElement(children: .combine) /// Merge text and image into a single element.
                 .frame(maxWidth: .infinity)
                 .padding(EdgeInsets(top: 14, leading: 18, bottom: 14, trailing: 18))
                 .background(pressed ? Templates.buttonHighlightColor : Color.clear) /// Add highlight effect when pressed.

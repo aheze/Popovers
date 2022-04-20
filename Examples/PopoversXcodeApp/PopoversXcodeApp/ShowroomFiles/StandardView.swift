@@ -35,10 +35,19 @@ struct StandardView: View {
                 )
             }
         ) {
-            Templates.Container {
+            Templates.Container(
+                arrowSide: .bottom(.mostClockwise),
+                backgroundColor: .green
+            ) {
                 Text("This is a pretty standard-looking popover with an arrow.")
+                    .foregroundColor(.white)
             }
             .frame(maxWidth: 300)
         }
     }
 }
+
+
+
+
+
