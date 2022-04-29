@@ -12,8 +12,8 @@ public extension Templates {
     /// A set of attributes for the popover menu.
     struct MenuConfiguration {
         public var holdDelay = CGFloat(0.2) /// The duration of a long press to activate the menu.
-        public var presentationAnimation = Animation.spring(response: 0.4, dampingFraction: 0.7, blendDuration: 1)
-        public var dismissalAnimation = Animation.spring(response: 0.5, dampingFraction: 0.9, blendDuration: 1)
+        public var presentationAnimation = Animation.spring(response: 0.3, dampingFraction: 0.7, blendDuration: 1)
+        public var dismissalAnimation = Animation.spring(response: 0.4, dampingFraction: 0.9, blendDuration: 1)
         public var labelFadeAnimation = Animation.default /// The animation used when calling the `fadeLabel`.
         public var clipContent = true /// Replicate the system's default clipping animation.
         public var sourceFrameInset = UIEdgeInsets(top: -8, left: -8, bottom: -8, right: -8)
@@ -33,8 +33,8 @@ public extension Templates {
         /// Create the default attributes for the popover menu.
         public init(
             holdDelay: CGFloat = CGFloat(0.2),
-            presentationAnimation: Animation = .spring(response: 0.4, dampingFraction: 0.7, blendDuration: 1),
-            dismissalAnimation: Animation = .spring(response: 0.5, dampingFraction: 0.9, blendDuration: 1),
+            presentationAnimation: Animation = .spring(response: 0.3, dampingFraction: 0.7, blendDuration: 1),
+            dismissalAnimation: Animation = .spring(response: 0.4, dampingFraction: 0.9, blendDuration: 1),
             labelFadeAnimation: Animation = .easeOut,
             sourceFrameInset: UIEdgeInsets = .init(top: -8, left: -8, bottom: -8, right: -8),
             originAnchor: Popover.Attributes.Position.Anchor = .bottom,
@@ -302,7 +302,7 @@ public extension Templates {
                 .frame(width: configuration.width)
                 .fixedSize() /// Hug the width of the inner content.
                 .modifier(ClippedBackgroundModifier(context: context, configuration: configuration, expanded: expanded)) /// Clip the content if desired.
-                .scaleEffect(expanded ? 1 : 0.1, anchor: configuration.scaleAnchor?.unitPoint ?? model.getScaleAnchor(from: context))
+                .scaleEffect(expanded ? 1 : 0.2, anchor: configuration.scaleAnchor?.unitPoint ?? model.getScaleAnchor(from: context))
                 .scaleEffect(model.scale, anchor: configuration.scaleAnchor?.unitPoint ?? model.getScaleAnchor(from: context))
                 .simultaneousGesture(
                     DragGesture(minimumDistance: 0, coordinateSpace: .global)

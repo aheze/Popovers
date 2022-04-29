@@ -57,7 +57,7 @@ public extension View {
                             size(newValue)
                         }
                     }
-                    .onValueChange(of: transaction) { _, _ in
+                    .onValueChange(of: transaction?.animation) { _, _ in
                         DispatchQueue.main.async {
                             size(geometry.size)
                         }
@@ -65,12 +65,6 @@ public extension View {
             }
             .hidden()
         )
-    }
-}
-
-extension Transaction: Equatable {
-    public static func == (lhs: Transaction, rhs: Transaction) -> Bool {
-        lhs.animation == rhs.animation
     }
 }
 
