@@ -928,6 +928,16 @@ All contributions are welcome. Just [fork](https://github.com/aheze/Popovers/for
 ### Need Help?
 Open an [issue](https://github.com/aheze/Popovers/issues) or join the [Discord server](https://discord.com/invite/Pmq8fYcus2). You can also ping me on [Twitter](https://twitter.com/aheze0). Or read the source code — there's lots of comments.
 
+### Apps Using Popovers
+
+[Find](http://getfind.app/) is an app that lets you find text in real life. Popovers is currently used for the search bar settings and the camera message view — download to check it out!
+
+<a href="http://getfind.app">
+  <img src="https://getfind.app/assets/SocialPreview.png" height="300" alt="Find App">
+</a>
+
+If you have an app that uses Popovers, just make a PR or [message me](https://twitter.com/aheze0).
+
 ## License
 
 ```
