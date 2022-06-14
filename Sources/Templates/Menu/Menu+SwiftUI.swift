@@ -18,16 +18,13 @@ public extension Templates {
         @State var id = UUID()
 
         /// View model for the menu buttons. Should be `StateObject` to avoid getting recreated by SwiftUI, but this works on iOS 13.
-        @ObservedObject var model = MenuModel()
+        @ObservedObject var model: MenuModel
 
         /// View model for controlling menu gestures.
-        @ObservedObject var gestureModel = MenuGestureModel()
+        @ObservedObject var gestureModel: MenuGestureModel
 
         /// Allow presenting from an external view via `$present`.
         @Binding var overridePresent: Bool
-
-        /// Attributes that determine what the menu looks like.
-        public let configuration: MenuConfiguration
 
         /// The menu buttons.
         public let content: () -> Content
@@ -51,7 +48,9 @@ public extension Templates {
 
             var configuration = MenuConfiguration()
             buildConfiguration(&configuration)
-            self.configuration = configuration
+
+            model = MenuModel(configuration: configuration)
+            gestureModel = MenuGestureModel()
             self.content = content
             self.label = label
         }
@@ -69,9 +68,9 @@ public extension Templates {
                                     newDragLocation: value.location,
                                     model: model,
                                     labelFrame: window.frameTagged(id),
-                                    configuration: configuration,
                                     window: window
                                 ) { present in
+                                    print("chane.\(present)")
                                     model.present = present
                                 } fadeLabel: { fade in
                                     fadeLabel = fade
@@ -82,9 +81,9 @@ public extension Templates {
                                     newDragLocation: value.location,
                                     model: model,
                                     labelFrame: window.frameTagged(id),
-                                    configuration: configuration,
                                     window: window
                                 ) { present in
+                                    print("End.\(present)")
                                     model.present = present
                                 } fadeLabel: { fade in
                                     fadeLabel = fade
@@ -93,7 +92,7 @@ public extension Templates {
                     )
                     .onValueChange(of: model.present) { _, present in
                         if !present {
-                            withAnimation(configuration.labelFadeAnimation) {
+                            withAnimation(model.configuration.labelFadeAnimation) {
                                 fadeLabel = false
                                 model.selectedItemID = nil
                                 model.hoveringItemID = nil
@@ -104,7 +103,7 @@ public extension Templates {
                     .onValueChange(of: overridePresent) { _, present in
                         if present != model.present {
                             model.present = present
-                            withAnimation(configuration.labelFadeAnimation) {
+                            withAnimation(model.configuration.labelFadeAnimation) {
                                 fadeLabel = present
                             }
                         }
@@ -112,25 +111,29 @@ public extension Templates {
                     .popover(
                         present: $model.present,
                         attributes: {
-                            $0.position = .absolute(originAnchor: configuration.originAnchor, popoverAnchor: configuration.popoverAnchor)
+                            $0.position = .absolute(
+                                originAnchor: model.configuration.originAnchor,
+                                popoverAnchor: model.configuration.popoverAnchor
+                            )
                             $0.rubberBandingMode = .none
                             $0.dismissal.excludedFrames = {
                                 [
                                     window.frameTagged(id),
                                 ]
-                                    + configuration.excludedFrames()
+                                    + model.configuration.excludedFrames()
                             }
-                            $0.sourceFrameInset = configuration.sourceFrameInset
+                            $0.sourceFrameInset = model.configuration.sourceFrameInset
                         }
                     ) {
                         MenuView(
                             model: model,
-                            present: { model.present = $0 },
-                            configuration: configuration,
+                            present: {
+                                print("Done \($0)")
+                                model.present = $0 },
                             content: content
                         )
                     } background: {
-                        configuration.backgroundColor
+                        model.configuration.backgroundColor
                     }
             }
         }

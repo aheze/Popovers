@@ -59,8 +59,18 @@ class PopoverModel: ObservableObject {
 
     /// Removes a `Popover` from this model.
     func remove(_ popover: Popover) {
-        popovers.removeAll { candidate in
-            candidate == popover
+        popovers.removeAll { $0 == popover }
+    }
+
+    /**
+     Remove all popovers, or optionally the ones tagged with a `tag` that you supply.
+     - parameter tag: If this isn't nil, only remove popovers tagged with this.
+     */
+    func removeAllPopovers(with tag: AnyHashable? = nil) {
+        if let tag = tag {
+            popovers.removeAll(where: { $0.attributes.tag == tag })
+        } else {
+            popovers.removeAll()
         }
     }
 
@@ -74,7 +84,11 @@ class PopoverModel: ObservableObject {
      - parameter tag: The tag of the popover to look for.
      */
     func popover(tagged tag: AnyHashable) -> Popover? {
-        return popovers.first(where: { $0.attributes.tag == tag })
+        let matchingPopovers = popovers.filter { $0.attributes.tag == tag }
+        if matchingPopovers.count > 1 {
+            print("[Popovers] - Warning - There are \(matchingPopovers.count) popovers tagged '\(tag)'. Tags should be unique. Try dismissing all existing popovers first.")
+        }
+        return matchingPopovers.first
     }
 
     /**

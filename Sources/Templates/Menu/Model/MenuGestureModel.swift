@@ -9,6 +9,8 @@
 import SwiftUI
 
 extension Templates {
+    /// Model for managing gestures that started on the source label.
+    /// Gestures that started on the popover itself are handled by `MenuView`.
     class MenuGestureModel: ObservableObject {
         /// If the user is pressing down on the label, this will be a unique `UUID`.
         @Published var labelPressUUID: UUID?
@@ -27,12 +29,14 @@ extension Templates {
             newDragLocation: CGPoint,
             model: MenuModel,
             labelFrame: CGRect,
-            configuration: MenuConfiguration,
             window: UIWindow?,
             present: @escaping ((Bool) -> Void),
             fadeLabel: @escaping ((Bool) -> Void)
         ) {
             dragLocation = newDragLocation
+
+            /// Reference this here instead of repeating `model.configuration` over and over again.
+            let configuration = model.configuration
 
             if model.present == false {
                 /// The menu is not yet presented.
@@ -85,7 +89,6 @@ extension Templates {
             newDragLocation: CGPoint,
             model: MenuModel,
             labelFrame: CGRect,
-            configuration: MenuConfiguration,
             window: UIWindow?,
             present: @escaping ((Bool) -> Void),
             fadeLabel: @escaping ((Bool) -> Void)
@@ -118,7 +121,7 @@ extension Templates {
                     if labelFrame.contains(newDragLocation) {
                         present(true)
                     } else {
-                        withAnimation(configuration.labelFadeAnimation) {
+                        withAnimation(model.configuration.labelFadeAnimation) {
                             fadeLabel(false)
                         }
                     }
@@ -128,7 +131,7 @@ extension Templates {
                     model.hoveringItemID = nil
 
                     /// The user lifted their finger on a button.
-                    if selectedItemID != nil {
+                    if selectedItemID != nil, model.configuration.dismissAfterSelecting {
                         present(false)
                     }
                 }

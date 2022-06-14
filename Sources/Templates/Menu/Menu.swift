@@ -28,6 +28,7 @@ public extension Templates {
         public var backgroundColor = Color.clear /// A color that is overlaid over the entire screen, just underneath the menu.
         public var scaleRange = CGFloat(40) ... CGFloat(90) /// For rubber banding - the range at which rubber banding should be applied.
         public var minimumScale = CGFloat(0.7) /// For rubber banding - the scale the the popover should shrink to when rubber banding.
+        public var dismissAfterSelecting = true /// Dismiss the menu after selecting an item.
 
         /// Create the default attributes for the popover menu.
         public init(
@@ -46,7 +47,8 @@ public extension Templates {
             shadow: Shadow = .system,
             backgroundColor: Color = .clear,
             scaleRange: ClosedRange<CGFloat> = 30 ... 80,
-            minimumScale: CGFloat = 0.85
+            minimumScale: CGFloat = 0.85,
+            dismissAfterSelecting: Bool = true
         ) {
             self.holdDelay = holdDelay
             self.presentationAnimation = presentationAnimation
@@ -64,6 +66,7 @@ public extension Templates {
             self.backgroundColor = backgroundColor
             self.scaleRange = scaleRange
             self.minimumScale = minimumScale
+            self.dismissAfterSelecting = dismissAfterSelecting
         }
     }
 
@@ -71,7 +74,6 @@ public extension Templates {
     internal struct MenuView<Content: View>: View {
         @ObservedObject var model: MenuModel
         let present: (Bool) -> Void
-        let configuration: MenuConfiguration
 
         /// The menu buttons.
         var content: Content
@@ -82,16 +84,17 @@ public extension Templates {
         init(
             model: MenuModel,
             present: @escaping (Bool) -> Void,
-            configuration: MenuConfiguration,
             @ViewBuilder content: () -> Content
         ) {
             self.model = model
             self.present = present
-            self.configuration = configuration
             self.content = content()
         }
 
         var body: some View {
+            /// Reference this here instead of repeating `model.configuration` over and over again.
+            let configuration = model.configuration
+
             PopoverReader { context in
                 content
 
@@ -107,6 +110,7 @@ public extension Templates {
                     .scaleEffect(expanded ? 1 : 0.2, anchor: configuration.scaleAnchor?.unitPoint ?? model.getScaleAnchor(from: context))
                     .scaleEffect(model.scale, anchor: configuration.scaleAnchor?.unitPoint ?? model.getScaleAnchor(from: context))
                     .simultaneousGesture(
+                        /// Handle gestures that started on the popover.
                         DragGesture(minimumDistance: 0, coordinateSpace: .global)
                             .onChanged { value in
                                 model.hoveringItemID = model.getItemID(from: value.location)
@@ -126,6 +130,8 @@ public extension Templates {
                                     }
                                 }
                             }
+
+                            /// Clicked (tap down, then lift) on a a selection
                             .onEnded { value in
                                 withAnimation {
                                     model.scale = 1
@@ -134,7 +140,8 @@ public extension Templates {
                                 let activeIndex = model.getItemID(from: value.location)
                                 model.selectedItemID = activeIndex
                                 model.hoveringItemID = nil
-                                if activeIndex != nil {
+
+                                if activeIndex != nil, model.configuration.dismissAfterSelecting {
                                     present(false)
                                 }
                             }
@@ -150,7 +157,7 @@ public extension Templates {
                             }
 
                             /// Clear frames once the menu is done presenting.
-                            model.frames = []
+                            model.frames = [:]
                         }
                         context.attributes.onContextChange = { context in
                             model.menuFrame = context.frame
@@ -184,16 +191,8 @@ public extension Templates {
 
                     /// Don't set frames when dismissing.
                     guard model.present else { return }
-                    let itemFrame = MenuItemFrame(itemID: itemID, frame: frame)
 
-                    /// If there's already a frame with the same ID, change it.
-                    let existingFrameIndex = model.frames.firstIndex { $0.itemID == itemID }
-                    if let existingFrameIndex = existingFrameIndex {
-                        model.frames[existingFrameIndex].frame = frame
-                    } else {
-                        /// Newest, most up-to-date frames are at the end.
-                        model.frames.append(itemFrame)
-                    }
+                    model.frames[itemID] = frame
                 }
                 .onValueChange(of: model.selectedItemID) { _, newValue in
                     if newValue == itemID {

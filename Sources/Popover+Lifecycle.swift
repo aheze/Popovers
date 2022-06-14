@@ -151,6 +151,22 @@ public extension UIResponder {
     func dismiss(_ popover: Popover) {
         popover.dismiss()
     }
+
+    /**
+     Get a currently-presented popover with a tag. Returns `nil` if no popover with the tag was found.
+     - parameter tag: The tag of the popover to look for.
+     */
+    func popover(tagged tag: AnyHashable) -> Popover? {
+        return popoverModel.popover(tagged: tag)
+    }
+
+    /**
+     Remove all popovers, or optionally the ones tagged with a `tag` that you supply.
+     - parameter tag: If this isn't nil, only remove popovers tagged with this.
+     */
+    func dismissAllPopovers(with tag: AnyHashable? = nil) {
+        popoverModel.removeAllPopovers(with: tag)
+    }
 }
 
 public extension UIViewController {

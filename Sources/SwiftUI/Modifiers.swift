@@ -135,10 +135,10 @@ struct PopoverModifier: ViewModifier {
  */
 struct MultiPopoverModifier: ViewModifier {
     /// The current selection. Present the popover when this equals `tag.`
-    @Binding var selection: String?
+    @Binding var selection: AnyHashable?
 
     /// The popover's tag.
-    let tag: String
+    let tag: AnyHashable
 
     /// Build the attributes.
     let buildAttributes: (inout Popover.Attributes) -> Void
@@ -157,8 +157,8 @@ struct MultiPopoverModifier: ViewModifier {
 
     /// Create a popover. Use `.popover(selection:tag:attributes:view)` to access.
     init<Content: View>(
-        selection: Binding<String?>,
-        tag: String,
+        selection: Binding<AnyHashable?>,
+        tag: AnyHashable,
         buildAttributes: @escaping ((inout Popover.Attributes) -> Void),
         @ViewBuilder view: @escaping () -> Content
     ) {
@@ -171,8 +171,8 @@ struct MultiPopoverModifier: ViewModifier {
 
     /// Create a popover with a background. Use `.popover(selection:tag:attributes:view:background:)` to access.
     init<MainContent: View, BackgroundContent: View>(
-        selection: Binding<String?>,
-        tag: String,
+        selection: Binding<AnyHashable?>,
+        tag: AnyHashable,
         buildAttributes: @escaping ((inout Popover.Attributes) -> Void),
         @ViewBuilder view: @escaping () -> MainContent,
         @ViewBuilder background: @escaping () -> BackgroundContent
@@ -327,8 +327,8 @@ public extension View {
      - parameter view: The popover's view.
      */
     func popover<Content: View>(
-        selection: Binding<String?>,
-        tag: String,
+        selection: Binding<AnyHashable?>,
+        tag: AnyHashable,
         attributes buildAttributes: @escaping ((inout Popover.Attributes) -> Void) = { _ in },
         @ViewBuilder view: @escaping () -> Content
     ) -> some View {
@@ -351,8 +351,8 @@ public extension View {
      - parameter background: The popover's background.
      */
     func popover<MainContent: View, BackgroundContent: View>(
-        selection: Binding<String?>,
-        tag: String,
+        selection: Binding<AnyHashable?>,
+        tag: AnyHashable,
         attributes buildAttributes: @escaping ((inout Popover.Attributes) -> Void) = { _ in },
         @ViewBuilder view: @escaping () -> MainContent,
         @ViewBuilder background: @escaping () -> BackgroundContent

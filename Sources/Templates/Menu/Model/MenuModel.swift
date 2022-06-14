@@ -9,13 +9,9 @@
 import SwiftUI
 
 extension Templates {
-    /// Stores a menu item with its frame.
-    struct MenuItemFrame {
-        var itemID: UUID
-        var frame: CGRect
-    }
-
     class MenuModel: ObservableObject {
+        var configuration: MenuConfiguration
+        
         /// Whether to show the popover or not.
         @Published var present = false
 
@@ -29,19 +25,21 @@ extension Templates {
         @Published var selectedItemID: UUID?
 
         /// The frames of the menu buttons, relative to the window.
-        /// Ideally this would be a dictionary, but there's a possibility of changing `itemID`s.
-        /// So, instead just append frames to this array - the newest ones will be at the end.
-        @Published var frames = [MenuItemFrame]()
-        
+        @Published var frames = [UUID: CGRect]()
+
         /// The frame of the menu in global coordinates.
         @Published var menuFrame = CGRect.zero
+        
+        init(configuration: MenuConfiguration) {
+            self.configuration = configuration
+        }
 
         /// Get the menu button ID that intersects the drag gesture's touch location.
         func getItemID(from location: CGPoint) -> UUID? {
             /// Newest, most up-to-date frames are at the end.
-            for itemFrame in frames.reversed() {
-                if itemFrame.frame.contains(location) {
-                    return itemFrame.itemID
+            for frame in frames {
+                if frame.value.contains(location) {
+                    return frame.key
                 }
             }
             return nil

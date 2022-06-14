@@ -15,13 +15,10 @@ public extension Templates {
         // MARK: - Menu properties
 
         /// View model for the menu buttons.
-        var model = MenuModel()
+        var model: MenuModel
 
         /// View model for controlling menu gestures.
-        var gestureModel = MenuGestureModel()
-
-        /// Attributes that determine what the menu looks like.
-        public let configuration: MenuConfiguration
+        var gestureModel: MenuGestureModel
 
         /// The menu buttons.
         public let content: Content
@@ -51,8 +48,9 @@ public extension Templates {
 
             var configuration = MenuConfiguration()
             buildConfiguration(&configuration)
-            self.configuration = configuration
 
+            model = MenuModel(configuration: configuration)
+            gestureModel = MenuGestureModel()
             self.content = content()
             self.fadeLabel = fadeLabel
             super.init()
@@ -76,7 +74,6 @@ public extension Templates {
                     newDragLocation: location,
                     model: model,
                     labelFrame: sourceView.windowFrame(),
-                    configuration: configuration,
                     window: sourceView.window
                 ) { [weak self] present in
                     self?.updatePresent(present)
@@ -88,7 +85,6 @@ public extension Templates {
                     newDragLocation: location,
                     model: model,
                     labelFrame: sourceView.windowFrame(),
-                    configuration: configuration,
                     window: sourceView.window
                 ) { [weak self] present in
                     self?.updatePresent(present)
@@ -124,33 +120,33 @@ public extension Templates {
 
         /// Present the menu popover.
         func presentPopover() {
+            let configuration = model.configuration
             var popover = Popover { [weak self] in
                 if let self = self {
                     MenuView(
-                        model: self.model,
-                        present: { [weak self] present in
-                            self?.updatePresent(present)
-                        },
-                        configuration: self.configuration
-                    ) {
+                        model: self.model
+                    ) { [weak self] present in
+                        self?.updatePresent(present)
+                    } content: {
                         self.content
                     }
                 }
-            } background: { [weak self] in
-                if let self = self {
-                    self.configuration.backgroundColor
-                }
+            } background: {
+                configuration.backgroundColor
             }
 
             popover.attributes.sourceFrame = { [weak sourceView] in sourceView.windowFrame() }
-            popover.attributes.position = .absolute(originAnchor: configuration.originAnchor, popoverAnchor: configuration.popoverAnchor)
+            popover.attributes.position = .absolute(
+                originAnchor: configuration.originAnchor,
+                popoverAnchor: configuration.popoverAnchor
+            )
             popover.attributes.rubberBandingMode = .none
             popover.attributes.dismissal.excludedFrames = { [weak self] in
                 guard let self = self else { return [] }
                 return [
                     self.sourceView.windowFrame(),
                 ]
-                    + self.configuration.excludedFrames()
+                    + configuration.excludedFrames()
             }
             popover.attributes.sourceFrameInset = configuration.sourceFrameInset
 
