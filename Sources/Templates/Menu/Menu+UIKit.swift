@@ -11,32 +11,20 @@ import SwiftUI
 
 public extension Templates {
     /// A built-from-scratch version of the system menu, for UIKit.
-    class UIKitMenu: NSObject {
+    class UIKitMenu<Content: View>: NSObject {
         // MARK: - Menu properties
-
-        /// A unique ID for the menu (to support multiple menus in the same screen).
-        var id = UUID()
-
-        /// If the user is pressing down on the label, this will be a unique `UUID`.
-        var labelPressUUID: UUID?
-
-        /**
-         If the label was pressed/dragged when the menu was already presented.
-         In this case, dismiss the menu if the user lifts their finger on the label.
-         */
-        var labelPressedWhenAlreadyPresented = false
-
-        /// The current position of the user's finger.
-        var dragLocation: CGPoint?
 
         /// View model for the menu buttons.
         var model = MenuModel()
+
+        /// View model for controlling menu gestures.
+        var gestureModel = MenuGestureModel()
 
         /// Attributes that determine what the menu looks like.
         public let configuration: MenuConfiguration
 
         /// The menu buttons.
-        public let content: [AnyView]
+        public let content: Content
 
         /// The origin label.
         public let sourceView: UIView
@@ -53,30 +41,7 @@ public extension Templates {
          A built-from-scratch version of the system menu, for UIKit.
          This initializer lets you pass in a multiple menu items.
          */
-        public init<Contents>(
-            sourceView: UIView,
-            configuration buildConfiguration: @escaping ((inout MenuConfiguration) -> Void) = { _ in },
-            @ViewBuilder content: @escaping () -> TupleView<Contents>,
-            fadeLabel: ((Bool) -> Void)? = nil
-        ) {
-            self.sourceView = sourceView
-
-            var configuration = MenuConfiguration()
-            buildConfiguration(&configuration)
-            self.configuration = configuration
-
-            self.content = ViewExtractor.getViews(from: content)
-            self.fadeLabel = fadeLabel
-            super.init()
-
-            addGestureRecognizer()
-        }
-
-        /**
-         A built-from-scratch version of the system menu, for UIKit.
-         This initializer lets you pass in a single menu item.
-         */
-        public init<Content: View>(
+        public init(
             sourceView: UIView,
             configuration buildConfiguration: @escaping ((inout MenuConfiguration) -> Void) = { _ in },
             @ViewBuilder content: @escaping () -> Content,
@@ -88,7 +53,7 @@ public extension Templates {
             buildConfiguration(&configuration)
             self.configuration = configuration
 
-            self.content = [AnyView(content())]
+            self.content = content()
             self.fadeLabel = fadeLabel
             super.init()
 
@@ -105,37 +70,26 @@ public extension Templates {
 
         @objc func dragged(_ gestureRecognizer: UILongPressGestureRecognizer) {
             let location = gestureRecognizer.location(in: sourceView.window)
-            dragLocation = location
 
             if gestureRecognizer.state == .began || gestureRecognizer.state == .changed {
-                MenuModel.onDragChanged(
-                    location: location,
+                gestureModel.onDragChanged(
+                    newDragLocation: location,
                     model: model,
-                    id: id,
-                    labelPressUUID: &labelPressUUID,
                     labelFrame: sourceView.windowFrame(),
                     configuration: configuration,
-                    window: sourceView.window,
-                    labelPressedWhenAlreadyPresented: &labelPressedWhenAlreadyPresented
-                ) { [weak self] in
-                    self?.labelPressUUID
-                } getDragLocation: { [weak self] in
-                    self?.dragLocation
-                } present: { [weak self] present in
+                    window: sourceView.window
+                ) { [weak self] present in
                     self?.updatePresent(present)
                 } fadeLabel: { [weak self] fade in
                     self?.fadeLabel?(fade)
                 }
             } else {
-                MenuModel.onDragEnded(
-                    location: location,
+                gestureModel.onDragEnded(
+                    newDragLocation: location,
                     model: model,
-                    id: id,
-                    labelPressUUID: &labelPressUUID,
                     labelFrame: sourceView.windowFrame(),
                     configuration: configuration,
-                    window: sourceView.window,
-                    labelPressedWhenAlreadyPresented: &labelPressedWhenAlreadyPresented
+                    window: sourceView.window
                 ) { [weak self] present in
                     self?.updatePresent(present)
                 } fadeLabel: { [weak self] fade in
@@ -177,9 +131,10 @@ public extension Templates {
                         present: { [weak self] present in
                             self?.updatePresent(present)
                         },
-                        configuration: self.configuration,
-                        content: self.content
-                    )
+                        configuration: self.configuration
+                    ) {
+                        self.content
+                    }
                 }
             } background: { [weak self] in
                 if let self = self {
@@ -193,7 +148,7 @@ public extension Templates {
             popover.attributes.dismissal.excludedFrames = { [weak self] in
                 guard let self = self else { return [] }
                 return [
-                    self.sourceView.windowFrame()
+                    self.sourceView.windowFrame(),
                 ]
                     + self.configuration.excludedFrames()
             }
