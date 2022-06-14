@@ -41,4 +41,36 @@ public extension Templates {
             }
         }
     }
+    
+    /// A horizontal stack that adds separators
+    struct DividedHStack<Content: View>: View {
+        var content: Content
+
+        public init(@ViewBuilder content: () -> Content) {
+            self.content = content()
+        }
+
+        public var body: some View {
+            _VariadicView.Tree(DividedHStackLayout()) {
+                content
+            }
+        }
+    }
+
+    struct DividedHStackLayout: _VariadicView_UnaryViewRoot {
+        @ViewBuilder
+        public func body(children: _VariadicView.Children) -> some View {
+            let last = children.last?.id
+
+            HStack(spacing: 0) {
+                ForEach(children) { child in
+                    child
+
+                    if child.id != last {
+                        Divider()
+                    }
+                }
+            }
+        }
+    }
 }

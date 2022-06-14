@@ -150,7 +150,7 @@ public extension Templates {
                             }
 
                             /// Clear frames once the menu is done presenting.
-                            model.frames = [:]
+                            model.frames = []
                         }
                         context.attributes.onContextChange = { context in
                             model.menuFrame = context.frame
@@ -181,7 +181,19 @@ public extension Templates {
 
                 /// Read the frame of the menu item.
                 .frameReader { frame in
-                    model.frames[itemID] = frame
+
+                    /// Don't set frames when dismissing.
+                    guard model.present else { return }
+                    let itemFrame = MenuItemFrame(itemID: itemID, frame: frame)
+
+                    /// If there's already a frame with the same ID, change it.
+                    let existingFrameIndex = model.frames.firstIndex { $0.itemID == itemID }
+                    if let existingFrameIndex = existingFrameIndex {
+                        model.frames[existingFrameIndex].frame = frame
+                    } else {
+                        /// Newest, most up-to-date frames are at the end.
+                        model.frames.append(itemFrame)
+                    }
                 }
                 .onValueChange(of: model.selectedItemID) { _, newValue in
                     if newValue == itemID {

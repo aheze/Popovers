@@ -90,9 +90,8 @@ extension Templates {
             present: @escaping ((Bool) -> Void),
             fadeLabel: @escaping ((Bool) -> Void)
         ) {
-            
             dragLocation = newDragLocation
-            
+
             withAnimation {
                 model.scale = 1
             }
