@@ -29,6 +29,7 @@ public extension Templates {
         public var scaleRange = CGFloat(40) ... CGFloat(90) /// For rubber banding - the range at which rubber banding should be applied.
         public var minimumScale = CGFloat(0.7) /// For rubber banding - the scale the the popover should shrink to when rubber banding.
         public var dismissAfterSelecting = true /// Dismiss the menu after selecting an item.
+        public var onLiftWithoutSelecting: (() -> Void)? = {} /// Called when the user lifts their finger either outside the menu, or in between menu items.
 
         /// Create the default attributes for the popover menu.
         public init(
@@ -48,7 +49,8 @@ public extension Templates {
             backgroundColor: Color = .clear,
             scaleRange: ClosedRange<CGFloat> = 30 ... 80,
             minimumScale: CGFloat = 0.85,
-            dismissAfterSelecting: Bool = true
+            dismissAfterSelecting: Bool = true,
+            onLiftWithoutSelecting: (() -> Void)? = {}
         ) {
             self.holdDelay = holdDelay
             self.presentationAnimation = presentationAnimation
@@ -67,6 +69,7 @@ public extension Templates {
             self.scaleRange = scaleRange
             self.minimumScale = minimumScale
             self.dismissAfterSelecting = dismissAfterSelecting
+            self.onLiftWithoutSelecting = onLiftWithoutSelecting
         }
     }
 
@@ -137,11 +140,15 @@ public extension Templates {
                                     model.scale = 1
                                 }
 
-                                let activeIndex = model.getItemID(from: value.location)
-                                model.selectedItemID = activeIndex
+                                let selectedItemID = model.getItemID(from: value.location)
+                                model.selectedItemID = selectedItemID
                                 model.hoveringItemID = nil
 
-                                if activeIndex != nil, model.configuration.dismissAfterSelecting {
+                                if selectedItemID == nil {
+                                    /// The user lifted their finger outside an item target.
+                                    model.configuration.onLiftWithoutSelecting?()
+                                } else if model.configuration.dismissAfterSelecting {
+                                    /// Dismiss if the user lifted up their finger on an item.
                                     present(false)
                                 }
                             }

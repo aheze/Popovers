@@ -130,8 +130,11 @@ extension Templates {
                     model.selectedItemID = selectedItemID
                     model.hoveringItemID = nil
 
-                    /// The user lifted their finger on a button.
-                    if selectedItemID != nil, model.configuration.dismissAfterSelecting {
+                    /// The user lifted their finger outside an item target.
+                    if selectedItemID == nil {
+                        model.configuration.onLiftWithoutSelecting?()
+                    } else if model.configuration.dismissAfterSelecting {
+                        /// Dismiss if the user lifted up their finger on an item.
                         present(false)
                     }
                 }
