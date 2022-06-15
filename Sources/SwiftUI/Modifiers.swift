@@ -45,8 +45,6 @@ struct PopoverModifier: ViewModifier {
         self.buildAttributes = buildAttributes
         self.view = AnyView(view())
         background = AnyView(Color.clear)
-        
-        
     }
 
     /// Create a popover with a background. Use `.popover(present:attributes:view:background:)` to access.
@@ -60,8 +58,6 @@ struct PopoverModifier: ViewModifier {
         self.buildAttributes = buildAttributes
         self.view = AnyView(view())
         self.background = AnyView(background())
-        
-        print("init:: \(present)")
     }
 
     func body(content: Content) -> some View {
