@@ -70,7 +70,6 @@ public extension Templates {
                                     labelFrame: window.frameTagged(id),
                                     window: window
                                 ) { present in
-                                    print("chane.\(present)")
                                     model.present = present
                                 } fadeLabel: { fade in
                                     fadeLabel = fade
@@ -83,7 +82,6 @@ public extension Templates {
                                     labelFrame: window.frameTagged(id),
                                     window: window
                                 ) { present in
-                                    print("End.\(present)")
                                     model.present = present
                                 } fadeLabel: { fade in
                                     fadeLabel = fade
@@ -127,9 +125,7 @@ public extension Templates {
                     ) {
                         MenuView(
                             model: model,
-                            present: {
-                                print("Done \($0)")
-                                model.present = $0 },
+                            present: { model.present = $0 },
                             content: content
                         )
                     } background: {
