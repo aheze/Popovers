@@ -21,11 +21,20 @@ class PopoverGestureContainer: UIView {
         autoresizingMask = [.flexibleWidth, .flexibleHeight]
     }
 
+    /// If this is nil, the view hasn't been laid out yet.
+    var previousBounds: CGRect?
+
     override func layoutSubviews() {
         super.layoutSubviews()
 
-        /// Orientation or screen bounds changed, so update popover frames.
-        popoverModel.updateFramesAfterBoundsChange()
+        /// Only update frames on a bounds change.
+        if let previousBounds = previousBounds, previousBounds != bounds {
+            /// Orientation or screen bounds changed, so update popover frames.
+            popoverModel.updateFramesAfterBoundsChange()
+        }
+
+        /// Store the bounds for later.
+        previousBounds = bounds
     }
 
     override func didMoveToWindow() {
@@ -67,9 +76,11 @@ class PopoverGestureContainer: UIView {
 
         /// The current popovers' frames
         let popoverFrames = popovers.map { $0.context.frame }
+        print("frames: \(popoverFrames)")
 
         /// Dismiss a popover, knowing that its frame does not contain the touch.
         func dismissPopoverIfNecessary(popoverToDismiss: Popover) {
+            print("doismiss now")
             if
                 popoverToDismiss.attributes.dismissal.mode.contains(.tapOutside), /// The popover can be automatically dismissed when tapped outside.
                 popoverToDismiss.attributes.dismissal.tapOutsideIncludesOtherPopovers || /// The popover can be dismissed even if the touch hit another popover, **or...**

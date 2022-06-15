@@ -56,19 +56,23 @@ struct PopoverContainerView: View {
 
                     /// Read the popover's size in the view.
                     .sizeReader(transaction: popover.context.transaction) { size in
-                        if let transaction = popover.context.transaction {
-                            /// When `popover.context.size` is nil, the popover was just presented.
-                            if popover.context.size == nil {
+
+                        if
+                            let transaction = popover.context.transaction,
+                            popover.context.size != nil
+                        {
+                            /// Otherwise, the popover is *replacing* a previous popover, so animate it.
+                            /// This could also be true when the screen bounds changed.
+                            withTransaction(transaction) {
                                 popover.updateFrame(with: size)
-                                popoverModel.refresh(with: transaction)
-                            } else {
-                                /// Otherwise, the popover is *replacing* a previous popover, so animate it.
-                                withTransaction(transaction) {
-                                    popover.updateFrame(with: size)
-                                    popoverModel.refresh(with: transaction)
-                                }
+                                popoverModel.reload()
                             }
+
                             popover.context.transaction = nil
+                        } else {
+                            /// When `popover.context.size` is nil or there is no transaction, the popover was just presented.
+                            popover.updateFrame(with: size)
+                            popoverModel.reload()
                         }
                     }
 
@@ -143,7 +147,7 @@ struct PopoverContainerView: View {
                         removal: popover.attributes.dismissal.transition ?? .opacity
                     )
                 )
-                
+
                 /// Clean up the container view.
                 .onDisappear {
                     popover.context.onDisappear?()

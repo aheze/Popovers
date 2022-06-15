@@ -40,7 +40,8 @@ class PopoverModel: ObservableObject {
     /**
      Refresh the popovers with a new transaction.
 
-     This is called when a popover's frame is being calculated.
+     This is called when the screen bounds changes - by setting a transaction for each popover,
+     the `PopoverContainerView` knows that it needs to animate a change (processed in `sizeReader`).
      */
     func refresh(with transaction: Transaction?) {
         /// Set each popovers's transaction to the new transaction to keep the smooth animation.
