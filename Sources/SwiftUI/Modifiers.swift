@@ -118,7 +118,6 @@ struct PopoverModifier: ViewModifier {
                         popover.present(in: window)
 
                     } else {
-                        print("present set t ofalase")
                         /// `$present` was set to `false`, dismiss the popover.
 
                         /// If there is still a popover, it means the client set `$present` to false.
