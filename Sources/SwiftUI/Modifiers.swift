@@ -45,6 +45,8 @@ struct PopoverModifier: ViewModifier {
         self.buildAttributes = buildAttributes
         self.view = AnyView(view())
         background = AnyView(Color.clear)
+        
+        
     }
 
     /// Create a popover with a background. Use `.popover(present:attributes:view:background:)` to access.
@@ -58,6 +60,8 @@ struct PopoverModifier: ViewModifier {
         self.buildAttributes = buildAttributes
         self.view = AnyView(view())
         self.background = AnyView(background())
+        
+        print("init:: \(present)")
     }
 
     func body(content: Content) -> some View {
@@ -118,6 +122,7 @@ struct PopoverModifier: ViewModifier {
                         popover.present(in: window)
 
                     } else {
+                        print("present set t ofalase")
                         /// `$present` was set to `false`, dismiss the popover.
 
                         /// If there is still a popover, it means the client set `$present` to false.

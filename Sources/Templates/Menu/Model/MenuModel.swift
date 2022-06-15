@@ -12,6 +12,9 @@ extension Templates {
     class MenuModel: ObservableObject {
         var configuration: MenuConfiguration
         
+        /// A unique ID for the menu (to support multiple menus in the same screen).
+        @Published var id = UUID()
+        
         /// Whether to show the popover or not.
         @Published var present = false
 

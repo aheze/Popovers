@@ -12,16 +12,14 @@ public extension Templates {
     /**
      A built-from-scratch version of the system menu.
      */
+    @available(iOS 14.0, *)
     struct Menu<Label: View, Content: View>: View {
-        /// A unique ID for the menu (to support multiple menus in the same screen).
-        /// Ideally this would be in `model`, but this *must* not change.
-        @State var id = UUID()
 
         /// View model for the menu buttons. Should be `StateObject` to avoid getting recreated by SwiftUI, but this works on iOS 13.
-        @ObservedObject var model: MenuModel
+        @StateObject var model: MenuModel
 
         /// View model for controlling menu gestures.
-        @ObservedObject var gestureModel: MenuGestureModel
+        @StateObject var gestureModel: MenuGestureModel
 
         /// Allow presenting from an external view via `$present`.
         @Binding var overridePresent: Bool
@@ -49,8 +47,8 @@ public extension Templates {
             var configuration = MenuConfiguration()
             buildConfiguration(&configuration)
 
-            model = MenuModel(configuration: configuration)
-            gestureModel = MenuGestureModel()
+            _model = StateObject(wrappedValue: MenuModel(configuration: configuration))
+            _gestureModel = StateObject(wrappedValue: MenuGestureModel())
             self.content = content
             self.label = label
         }
@@ -58,7 +56,7 @@ public extension Templates {
         public var body: some View {
             WindowReader { window in
                 label(fadeLabel)
-                    .frameTag(id)
+                    .frameTag(model.id)
                     .contentShape(Rectangle())
                     .simultaneousGesture(
                         DragGesture(minimumDistance: 0, coordinateSpace: .global)
@@ -67,7 +65,7 @@ public extension Templates {
                                 gestureModel.onDragChanged(
                                     newDragLocation: value.location,
                                     model: model,
-                                    labelFrame: window.frameTagged(id),
+                                    labelFrame: window.frameTagged(model.id),
                                     window: window
                                 ) { present in
                                     model.present = present
@@ -79,7 +77,7 @@ public extension Templates {
                                 gestureModel.onDragEnded(
                                     newDragLocation: value.location,
                                     model: model,
-                                    labelFrame: window.frameTagged(id),
+                                    labelFrame: window.frameTagged(model.id),
                                     window: window
                                 ) { present in
                                     model.present = present
@@ -116,7 +114,7 @@ public extension Templates {
                             $0.rubberBandingMode = .none
                             $0.dismissal.excludedFrames = {
                                 [
-                                    window.frameTagged(id),
+                                    window.frameTagged(model.id),
                                 ]
                                     + model.configuration.excludedFrames()
                             }
