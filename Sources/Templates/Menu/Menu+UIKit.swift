@@ -33,6 +33,7 @@ public extension Templates {
 
         var popover: Popover?
         var longPressGestureRecognizer: UILongPressGestureRecognizer!
+        var cancellables = Set<AnyCancellable>()
 
         /**
          A built-from-scratch version of the system menu, for UIKit.
@@ -121,13 +122,16 @@ public extension Templates {
         /// Present the menu popover.
         func presentPopover() {
             let configuration = model.configuration
+            model.$present
+                .dropFirst()
+                .sink { [weak self] present in
+                    self?.updatePresent(present)
+                }
+                .store(in: &cancellables)
+
             var popover = Popover { [weak self] in
                 if let self = self {
-                    MenuView(
-                        model: self.model
-                    ) { [weak self] present in
-                        self?.updatePresent(present)
-                    } content: {
+                    MenuView(model: self.model) {
                         self.content
                     }
                 }

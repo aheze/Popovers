@@ -28,6 +28,7 @@ public extension Templates {
         public var backgroundColor = Color.clear /// A color that is overlaid over the entire screen, just underneath the menu.
         public var scaleRange = CGFloat(40) ... CGFloat(90) /// For rubber banding - the range at which rubber banding should be applied.
         public var minimumScale = CGFloat(0.7) /// For rubber banding - the scale the the popover should shrink to when rubber banding.
+        public var useEntireMenuAsGestureHotspot: Bool = true /// Attach the gesture recognizer to the entire menu, for selection/dismissal. Set to false if using custom `MenuGestureHotspot`.
         public var dismissAfterSelecting = true /// Dismiss the menu after selecting an item.
         public var onLiftWithoutSelecting: (() -> Void)? = {} /// Called when the user lifts their finger either outside the menu, or in between menu items.
 
@@ -76,7 +77,6 @@ public extension Templates {
     /// The popover that gets presented.
     internal struct MenuView<Content: View>: View {
         @ObservedObject var model: MenuModel
-        let present: (Bool) -> Void
 
         /// The menu buttons.
         var content: Content
@@ -86,11 +86,9 @@ public extension Templates {
 
         init(
             model: MenuModel,
-            present: @escaping (Bool) -> Void,
             @ViewBuilder content: () -> Content
         ) {
             self.model = model
-            self.present = present
             self.content = content()
         }
 
@@ -112,47 +110,9 @@ public extension Templates {
                     .modifier(ClippedBackgroundModifier(context: context, configuration: configuration, expanded: expanded)) /// Clip the content if desired.
                     .scaleEffect(expanded ? 1 : 0.2, anchor: configuration.scaleAnchor?.unitPoint ?? model.getScaleAnchor(from: context))
                     .scaleEffect(model.scale, anchor: configuration.scaleAnchor?.unitPoint ?? model.getScaleAnchor(from: context))
-                    .simultaneousGesture(
-                        /// Handle gestures that started on the popover.
-                        DragGesture(minimumDistance: 0, coordinateSpace: .global)
-                            .onChanged { value in
-                                model.hoveringItemID = model.getItemID(from: value.location)
-
-                                /// Rubber-band the menu.
-                                withAnimation {
-                                    if let distance = model.getDistanceFromMenu(from: value.location) {
-                                        if configuration.scaleRange.contains(distance) {
-                                            let percentage = (distance - configuration.scaleRange.lowerBound) / (configuration.scaleRange.upperBound - configuration.scaleRange.lowerBound)
-                                            let scale = 1 - (1 - configuration.minimumScale) * percentage
-                                            model.scale = scale
-                                        } else if distance < configuration.scaleRange.lowerBound {
-                                            model.scale = 1
-                                        } else {
-                                            model.scale = configuration.minimumScale
-                                        }
-                                    }
-                                }
-                            }
-
-                            /// Clicked (tap down, then lift) on a a selection
-                            .onEnded { value in
-                                withAnimation {
-                                    model.scale = 1
-                                }
-
-                                let selectedItemID = model.getItemID(from: value.location)
-                                model.selectedItemID = selectedItemID
-                                model.hoveringItemID = nil
-
-                                if selectedItemID == nil {
-                                    /// The user lifted their finger outside an item target.
-                                    model.configuration.onLiftWithoutSelecting?()
-                                } else if model.configuration.dismissAfterSelecting {
-                                    /// Dismiss if the user lifted up their finger on an item.
-                                    present(false)
-                                }
-                            }
-                    )
+                    .if(model.configuration.useEntireMenuAsGestureHotspot) {
+                        $0.menuGesture(model: model) /// Attach a gesture hotspot to the entire view if necessary.
+                    }
                     .onAppear {
                         withAnimation(configuration.presentationAnimation) {
                             expanded = true
@@ -267,6 +227,20 @@ public extension Templates {
         }
     }
 
+    struct MenuGestureHotspot<Content: View>: View {
+        @EnvironmentObject var model: MenuModel
+        public let content: () -> Content
+
+        public init(@ViewBuilder content: @escaping () -> Content) {
+            self.content = content
+        }
+
+        public var body: some View {
+            content()
+                .menuGesture(model: model)
+        }
+    }
+
     /// Place this inside a Menu to separate content.
     struct MenuDivider: View {
         /// Place this inside a Menu to separate content.
@@ -309,6 +283,69 @@ public extension Templates {
             } else {
                 content
             }
+        }
+    }
+}
+
+extension View {
+    func menuGesture(model: Templates.MenuModel) -> some View {
+        let configuration = model.configuration
+
+        return simultaneousGesture(
+            /// Handle gestures that started on the popover.
+            DragGesture(minimumDistance: 0, coordinateSpace: .global)
+                .onChanged { value in
+                    model.hoveringItemID = model.getItemID(from: value.location)
+
+                    /// Rubber-band the menu.
+                    withAnimation {
+                        if let distance = model.getDistanceFromMenu(from: value.location) {
+                            if configuration.scaleRange.contains(distance) {
+                                let percentage = (distance - configuration.scaleRange.lowerBound) / (configuration.scaleRange.upperBound - configuration.scaleRange.lowerBound)
+                                let scale = 1 - (1 - configuration.minimumScale) * percentage
+                                model.scale = scale
+                            } else if distance < configuration.scaleRange.lowerBound {
+                                model.scale = 1
+                            } else {
+                                model.scale = configuration.minimumScale
+                            }
+                        }
+                    }
+                }
+
+                /// Clicked (tap down, then lift) on a a selection
+                .onEnded { value in
+                    withAnimation {
+                        model.scale = 1
+                    }
+
+                    let selectedItemID = model.getItemID(from: value.location)
+                    model.selectedItemID = selectedItemID
+                    model.hoveringItemID = nil
+
+                    if selectedItemID == nil {
+                        /// The user lifted their finger outside an item target.
+                        model.configuration.onLiftWithoutSelecting?()
+                    } else if model.configuration.dismissAfterSelecting {
+                        /// Dismiss if the user lifted up their finger on an item.
+                        model.present = false
+                    }
+                }
+        )
+    }
+}
+
+extension View {
+    /// Applies the given transform if the given condition evaluates to `true`.
+    /// - Parameters:
+    ///   - condition: The condition to evaluate.
+    ///   - transform: The transform to apply to the source `View`.
+    /// - Returns: Either the original `View` or the modified `View` if the condition is `true`.
+    @ViewBuilder func `if`<Content: View>(_ condition: @autoclosure () -> Bool, transform: (Self) -> Content) -> some View {
+        if condition() {
+            transform(self)
+        } else {
+            self
         }
     }
 }

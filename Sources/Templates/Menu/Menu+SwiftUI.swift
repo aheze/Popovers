@@ -123,7 +123,6 @@ public extension Templates {
                     ) {
                         MenuView(
                             model: model,
-                            present: { model.present = $0 },
                             content: content
                         )
                     } background: {
