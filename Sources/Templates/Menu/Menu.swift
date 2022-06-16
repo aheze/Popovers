@@ -144,7 +144,7 @@ public extension Templates {
 
         public init(
             _ action: @escaping (() -> Void),
-            label: @escaping (Bool) -> Content
+            @ViewBuilder label: @escaping (Bool) -> Content
         ) {
             self.action = action
             self.label = label
@@ -165,6 +165,7 @@ public extension Templates {
                     if newValue == itemID {
                         action()
                     }
+                    model.selectedItemID = nil
                 }
         }
     }
