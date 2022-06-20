@@ -35,7 +35,6 @@ struct PopoverContainerView: View {
                     /// Show the popover's main content view.
                     HStack(alignment: .top) {
                         popover.view
-                            .border(.green)
 
                             /// Have VoiceOver read the popover view first, before the dismiss button.
                             .accessibility(sortPriority: 1)
@@ -57,20 +56,25 @@ struct PopoverContainerView: View {
 
                     /// Read the popover's size in the view.
                     .sizeReader(transaction: popover.context.transaction) { size in
-                        print("size: \(size)")
-//                        guard size.height > 50 else { return}
 
                         if
                             let transaction = popover.context.transaction,
-                            popover.context.size != nil
+                            let existingSize = popover.context.size
                         {
-                            /// Otherwise, the popover is *replacing* a previous popover, so animate it.
-                            /// This could also be true when the screen bounds changed.
-                            withTransaction(transaction) {
+                            /// If the size is different during an existing transaction, this means
+                            /// the size is still not final and can change.
+                            /// So, update without an animation.
+                            if existingSize != size {
                                 popover.updateFrame(with: size)
                                 popoverModel.reload()
+                            } else {
+                                /// Otherwise, since the size is the same, the popover is *replacing* a previous popover - animate it.
+                                /// This could also be true when the screen bounds changed.
+                                withTransaction(transaction) {
+                                    popover.updateFrame(with: size)
+                                    popoverModel.reload()
+                                }
                             }
-
                             popover.context.transaction = nil
                         } else {
                             /// When `popover.context.size` is nil or there is no transaction, the popover was just presented.

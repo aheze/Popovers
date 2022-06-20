@@ -26,6 +26,9 @@ class UIKitMenuViewController: UIViewController {
                     self.activateButton.windowFrame(),
                 ]
             }
+            $0.popoverAnchor = .bottomRight
+            $0.scaleAnchor = .bottomRight
+            $0.originAnchor = .topRight
         }
     ) {
         Templates.DividedVStack {
