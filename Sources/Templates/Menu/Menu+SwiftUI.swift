@@ -14,7 +14,6 @@ public extension Templates {
      */
     @available(iOS 14.0, *)
     struct Menu<Label: View, Content: View>: View {
-
         /// View model for the menu buttons. Should be `StateObject` to avoid getting recreated by SwiftUI, but this works on iOS 13.
         @StateObject var model: MenuModel
 
@@ -23,6 +22,8 @@ public extension Templates {
 
         /// Allow presenting from an external view via `$present`.
         @Binding var overridePresent: Bool
+
+        var temporaryConfiguration: MenuConfiguration?
 
         /// The menu buttons.
         public let content: () -> Content
@@ -43,11 +44,7 @@ public extension Templates {
             @ViewBuilder label: @escaping (Bool) -> Label
         ) {
             _overridePresent = present
-
-            var configuration = MenuConfiguration()
-            buildConfiguration(&configuration)
-
-            _model = StateObject(wrappedValue: MenuModel(configuration: configuration))
+            _model = StateObject(wrappedValue: MenuModel(buildConfiguration: buildConfiguration))
             _gestureModel = StateObject(wrappedValue: MenuGestureModel())
             self.content = content
             self.label = label
@@ -107,6 +104,7 @@ public extension Templates {
                     .popover(
                         present: $model.present,
                         attributes: {
+                            print("getting attributes. \(model.configuration.originAnchor)")
                             $0.position = .absolute(
                                 originAnchor: model.configuration.originAnchor,
                                 popoverAnchor: model.configuration.popoverAnchor

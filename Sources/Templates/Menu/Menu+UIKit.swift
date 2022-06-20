@@ -46,18 +46,13 @@ public extension Templates {
             fadeLabel: ((Bool) -> Void)? = nil
         ) {
             self.sourceView = sourceView
-
-            var configuration = MenuConfiguration()
-            buildConfiguration(&configuration)
-
-            model = MenuModel(configuration: configuration)
+            model = MenuModel(buildConfiguration: buildConfiguration)
             gestureModel = MenuGestureModel()
             self.content = content()
             self.fadeLabel = fadeLabel
             super.init()
 
             addGestureRecognizer()
-
         }
 
         /// Set up the drag gesture recognizer (enable "pull-down" behavior).
@@ -106,7 +101,7 @@ public extension Templates {
          */
         func updatePresent(_ present: Bool) {
             model.present = present
-            
+
             if
                 present,
                 let window = sourceView.window
