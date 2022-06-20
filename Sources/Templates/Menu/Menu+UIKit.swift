@@ -57,6 +57,7 @@ public extension Templates {
             super.init()
 
             addGestureRecognizer()
+
         }
 
         /// Set up the drag gesture recognizer (enable "pull-down" behavior).
@@ -105,6 +106,7 @@ public extension Templates {
          */
         func updatePresent(_ present: Bool) {
             model.present = present
+            
             if
                 present,
                 let window = sourceView.window
@@ -122,12 +124,6 @@ public extension Templates {
         /// Present the menu popover.
         func presentPopover() {
             let configuration = model.configuration
-            model.$present
-                .dropFirst()
-                .sink { [weak self] present in
-                    self?.updatePresent(present)
-                }
-                .store(in: &cancellables)
 
             var popover = Popover { [weak self] in
                 if let self = self {

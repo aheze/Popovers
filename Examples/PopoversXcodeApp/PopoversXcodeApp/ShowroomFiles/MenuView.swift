@@ -15,14 +15,16 @@ struct MenuView: View {
 
     var body: some View {
         Templates.Menu {
-            Templates.MenuButton(title: "Change Icon To List", systemImage: "list.bullet") {
-                iconName = "list.bullet"
-            }
-            Templates.MenuButton(title: "Change Icon To Keyboard", systemImage: "keyboard") {
-                iconName = "keyboard"
-            }
-            Templates.MenuButton(title: "Change Icon To Bag", systemImage: "bag") {
-                iconName = "bag"
+            Templates.DividedVStack {
+                Templates.MenuButton(title: "Change Icon To List", systemImage: "list.bullet") {
+                    iconName = "list.bullet"
+                }
+                Templates.MenuButton(title: "Change Icon To Keyboard", systemImage: "keyboard") {
+                    iconName = "keyboard"
+                }
+                Templates.MenuButton(title: "Change Icon To Bag", systemImage: "bag") {
+                    iconName = "bag"
+                }
             }
         } label: { fade in
             ExampleShowroomRow(color: UIColor(hex: 0xFF00AB)) {

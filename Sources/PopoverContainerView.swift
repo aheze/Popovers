@@ -35,6 +35,7 @@ struct PopoverContainerView: View {
                     /// Show the popover's main content view.
                     HStack(alignment: .top) {
                         popover.view
+                            .border(.green)
 
                             /// Have VoiceOver read the popover view first, before the dismiss button.
                             .accessibility(sortPriority: 1)
@@ -56,6 +57,8 @@ struct PopoverContainerView: View {
 
                     /// Read the popover's size in the view.
                     .sizeReader(transaction: popover.context.transaction) { size in
+                        print("size: \(size)")
+//                        guard size.height > 50 else { return}
 
                         if
                             let transaction = popover.context.transaction,

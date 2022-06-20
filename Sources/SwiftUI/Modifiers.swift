@@ -156,13 +156,17 @@ struct MultiPopoverModifier: ViewModifier {
     @State var sourceFrame: CGRect?
 
     /// Create a popover. Use `.popover(selection:tag:attributes:view)` to access.
-    init<Content: View>(
-        selection: Binding<AnyHashable?>,
-        tag: AnyHashable,
+    init<Selection: Hashable, Content: View>(
+        selection: Binding<Selection?>,
+        tag: Selection,
         buildAttributes: @escaping ((inout Popover.Attributes) -> Void),
         @ViewBuilder view: @escaping () -> Content
     ) {
-        _selection = selection
+        _selection = Binding {
+            selection.wrappedValue
+        } set: { newValue in
+            selection.wrappedValue = newValue as? Selection
+        }
         self.tag = tag
         self.buildAttributes = buildAttributes
         self.view = AnyView(view())
@@ -170,14 +174,18 @@ struct MultiPopoverModifier: ViewModifier {
     }
 
     /// Create a popover with a background. Use `.popover(selection:tag:attributes:view:background:)` to access.
-    init<MainContent: View, BackgroundContent: View>(
-        selection: Binding<AnyHashable?>,
-        tag: AnyHashable,
+    init<Selection: Hashable, MainContent: View, BackgroundContent: View>(
+        selection: Binding<Selection?>,
+        tag: Selection,
         buildAttributes: @escaping ((inout Popover.Attributes) -> Void),
         @ViewBuilder view: @escaping () -> MainContent,
         @ViewBuilder background: @escaping () -> BackgroundContent
     ) {
-        _selection = selection
+        _selection = Binding {
+            selection.wrappedValue
+        } set: { newValue in
+            selection.wrappedValue = newValue as? Selection
+        }
         self.tag = tag
         self.buildAttributes = buildAttributes
         self.view = AnyView(view())
@@ -326,9 +334,9 @@ public extension View {
      - parameter attributes: The popover's attributes.
      - parameter view: The popover's view.
      */
-    func popover<Content: View>(
-        selection: Binding<AnyHashable?>,
-        tag: AnyHashable,
+    func popover<Selection: Hashable, Content: View>(
+        selection: Binding<Selection?>,
+        tag: Selection,
         attributes buildAttributes: @escaping ((inout Popover.Attributes) -> Void) = { _ in },
         @ViewBuilder view: @escaping () -> Content
     ) -> some View {
@@ -350,9 +358,9 @@ public extension View {
      - parameter view: The popover's view.
      - parameter background: The popover's background.
      */
-    func popover<MainContent: View, BackgroundContent: View>(
-        selection: Binding<AnyHashable?>,
-        tag: AnyHashable,
+    func popover<Selection: Hashable, MainContent: View, BackgroundContent: View>(
+        selection: Binding<Selection?>,
+        tag: Selection,
         attributes buildAttributes: @escaping ((inout Popover.Attributes) -> Void) = { _ in },
         @ViewBuilder view: @escaping () -> MainContent,
         @ViewBuilder background: @escaping () -> BackgroundContent

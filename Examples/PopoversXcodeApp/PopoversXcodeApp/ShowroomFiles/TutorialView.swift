@@ -156,35 +156,35 @@ struct TutorialViewPopover: View {
                             )
                             .cornerRadius(16)
                     }
-                    .background {
-                        Color.white.opacity(0.5)
-                            .cornerRadius(16)
-                            .padding(selection == "Step 2" ? -8 : 0)
-                    }
-                    .popover(
-                        selection: $selection,
-                        tag: "Step 2",
-                        attributes: {
-                            $0.position = .absolute(
-                                originAnchor: .right,
-                                popoverAnchor: .left
-                            )
-                        }
-                    ) {
-                        TutorialViewPopoverDetails(selection: $selection, step: 2)
-                            .zIndex(1)
-                    }
+//                    .background {
+//                        Color.white.opacity(0.5)
+//                            .cornerRadius(16)
+//                            .padding(selection == "Step 2" ? -8 : 0)
+//                    }
+//                    .popover(
+//                        selection: $selection,
+//                        tag: "Step 2",
+//                        attributes: {
+//                            $0.position = .absolute(
+//                                originAnchor: .right,
+//                                popoverAnchor: .left
+//                            )
+//                        }
+//                    ) {
+//                        TutorialViewPopoverDetails(selection: $selection, step: 2)
+//                            .zIndex(1)
+//                    }
 
                     Spacer()
                 }
             }
-            .clipped()
-            .opacity(selection == nil ? 0.6 : 1)
-
-            /// try to avoid scale effect
-            /// this time, I've added some offset to cancel it out
-            .scaleEffect(selection == nil ? 0.9 : 1, anchor: .bottom)
-            .allowsHitTesting(selection != nil)
+//            .clipped()
+//            .opacity(selection == nil ? 0.6 : 1)
+//
+//            /// try to avoid scale effect
+//            /// this time, I've added some offset to cancel it out
+//            .scaleEffect(selection == nil ? 0.9 : 1, anchor: .bottom)
+//            .allowsHitTesting(selection != nil)
         }
         .background(.regularMaterial)
         .cornerRadius(16)

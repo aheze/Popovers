@@ -28,14 +28,16 @@ class UIKitMenuViewController: UIViewController {
             }
         }
     ) {
-        Templates.MenuButton(title: "Change Icon To List", systemImage: "list.bullet") { [weak self] in
-            self?.label.text = "Present Menu (List)"
-        }
-        Templates.MenuButton(title: "Change Icon To Keyboard", systemImage: "keyboard") { [weak self] in
-            self?.label.text = "Present Menu (Keyboard)"
-        }
-        Templates.MenuButton(title: "Change Icon To Bag", systemImage: "bag") { [weak self] in
-            self?.label.text = "Present Menu (Bag)"
+        Templates.DividedVStack {
+            Templates.MenuButton(title: "Change Icon To List", systemImage: "list.bullet") { [weak self] in
+                self?.label.text = "Present Menu (List)"
+            }
+            Templates.MenuButton(title: "Change Icon To Keyboard", systemImage: "keyboard") { [weak self] in
+                self?.label.text = "Present Menu (Keyboard)"
+            }
+            Templates.MenuButton(title: "Change Icon To Bag", systemImage: "bag") { [weak self] in
+                self?.label.text = "Present Menu (Bag)"
+            }
         }
     } fadeLabel: { [weak self] fade in
         UIView.animate(withDuration: 0.15) {
@@ -49,14 +51,16 @@ class UIKitMenuViewController: UIViewController {
             $0.scaleAnchor = .topRight
         }
     ) {
-        Templates.MenuButton(title: "Change Icon To List", systemImage: "list.bullet") { [weak self] in
-            self?.label.text = "Present Menu (List)"
-        }
-        Templates.MenuButton(title: "Change Icon To Keyboard", systemImage: "keyboard") { [weak self] in
-            self?.label.text = "Present Menu (Keyboard)"
-        }
-        Templates.MenuButton(title: "Change Icon To Bag", systemImage: "bag") { [weak self] in
-            self?.label.text = "Present Menu (Bag)"
+        Templates.DividedVStack {
+            Templates.MenuButton(title: "Change Icon To List", systemImage: "list.bullet") { [weak self] in
+                self?.label.text = "Present Menu (List)"
+            }
+            Templates.MenuButton(title: "Change Icon To Keyboard", systemImage: "keyboard") { [weak self] in
+                self?.label.text = "Present Menu (Keyboard)"
+            }
+            Templates.MenuButton(title: "Change Icon To Bag", systemImage: "bag") { [weak self] in
+                self?.label.text = "Present Menu (Bag)"
+            }
         }
     } fadeLabel: { [weak self] fade in
         UIView.animate(withDuration: 0.15) {

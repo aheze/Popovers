@@ -11,7 +11,7 @@ import SwiftUI
 
 struct SelectionView: View {
     @State var present = false
-    @State var selection: String?
+    @State var selection: AnyHashable?
 
     var body: some View {
         ExampleRow(
@@ -57,7 +57,7 @@ struct SelectionView: View {
 }
 
 struct SelectionViewButton: View {
-    @Binding var selection: String?
+    @Binding var selection: AnyHashable?
     let tag: String
 
     var body: some View {
