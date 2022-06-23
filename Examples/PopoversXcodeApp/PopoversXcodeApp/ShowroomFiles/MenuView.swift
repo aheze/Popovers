@@ -12,6 +12,7 @@ import SwiftUI
 struct MenuView: View {
     @State var present = false
     @State var iconName = "list.bullet"
+    @State var buttonDisabled = true
 
     var body: some View {
         Templates.Menu {
@@ -25,6 +26,13 @@ struct MenuView: View {
                 Templates.MenuButton(title: "Change Icon To Bag", systemImage: "bag") {
                     iconName = "bag"
                 }
+                Templates.MenuButton(title: "Disabled button", systemImage: "xmark.circle") {
+                    iconName = "xmark.circle"
+                }
+                .disabled(buttonDisabled) /// `true` by default
+//                Templates.MenuButton(title: "Toggle") {
+//                    buttonDisabled.toggle()
+//                }
             }
         } label: { fade in
             ExampleShowroomRow(color: UIColor(hex: 0xFF00AB)) {

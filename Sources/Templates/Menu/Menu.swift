@@ -175,6 +175,7 @@ public extension Templates {
         public let text: Text?
         public let image: Image?
         public let action: () -> Void
+        private var disabled: Bool = false
 
         /// A wrapper for `PopoverMenuItem` that mimics the system menu button style (title + image)
         public init(
@@ -207,24 +208,42 @@ public extension Templates {
             self.image = image
             self.action = action
         }
+        
+        var baseButton: some View {
+            HStack {
+                if let text = text {
+                    text
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+
+                if let image = image {
+                    image
+                }
+            }
+            .accessibilityElement(children: .combine) /// Merge text and image into a single element.
+            .frame(maxWidth: .infinity)
+            .padding(EdgeInsets(top: 14, leading: 18, bottom: 14, trailing: 18))
+        }
 
         public var body: some View {
-            MenuItem(action) { pressed in
-                HStack {
-                    if let text = text {
-                        text
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                    }
-
-                    if let image = image {
-                        image
-                    }
-                }
-                .accessibilityElement(children: .combine) /// Merge text and image into a single element.
-                .frame(maxWidth: .infinity)
-                .padding(EdgeInsets(top: 14, leading: 18, bottom: 14, trailing: 18))
-                .background(pressed ? Templates.buttonHighlightColor : Color.clear) /// Add highlight effect when pressed.
+            /// Rendering outside of `MenuItem` when disabled because: 1) actions aren't run, 2) so tapping the disabled button won't dismiss the popover
+            if self.disabled {
+                baseButton
+                    .foregroundColor(.secondary) /// Add dimmed effect when disabled
+                    .opacity(0.9)
             }
+            else {
+                MenuItem(action) { pressed in
+                    baseButton
+                        .background(pressed ? Templates.buttonHighlightColor : Color.clear) /// Add highlight effect when pressed.
+                }
+            }
+        }
+      
+        public func disabled(_ disabled: Bool) -> Self {
+            var newView = self
+            newView.disabled = disabled
+            return newView
         }
     }
 
