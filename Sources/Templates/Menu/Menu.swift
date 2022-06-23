@@ -240,7 +240,7 @@ public extension Templates {
             }
         }
       
-        public func disabled(_ disabled: Bool) -> Self {
+        public func disabled(_ disabled: Bool = true) -> Self {
             var newView = self
             newView.disabled = disabled
             return newView
