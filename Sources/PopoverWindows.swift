@@ -6,6 +6,7 @@
 //  Copyright © 2022 A. Zheng. All rights reserved.
 //
 
+#if os(iOS)
 import SwiftUI
 
 /**
@@ -135,3 +136,4 @@ extension EnvironmentValues {
         static var defaultValue: UIWindow? = nil
     }
 }
+#endif
