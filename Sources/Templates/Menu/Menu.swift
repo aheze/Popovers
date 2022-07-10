@@ -226,13 +226,12 @@ public extension Templates {
         }
 
         public var body: some View {
-            /// Rendering outside of `MenuItem` when disabled because: 1) actions aren't run, 2) so tapping the disabled button won't dismiss the popover
+            /// Rendering outside of `MenuItem` when disabled because: 1) actions aren't run, 2) so tapping the disabled button won't dismiss the popover.
             if self.disabled {
                 baseButton
                     .foregroundColor(.secondary) /// Add dimmed effect when disabled
                     .opacity(0.9)
-            }
-            else {
+            } else {
                 MenuItem(action) { pressed in
                     baseButton
                         .background(pressed ? Templates.buttonHighlightColor : Color.clear) /// Add highlight effect when pressed.
@@ -240,6 +239,7 @@ public extension Templates {
             }
         }
       
+        /// Disable this menu button.
         public func disabled(_ disabled: Bool = true) -> Self {
             var newView = self
             newView.disabled = disabled
