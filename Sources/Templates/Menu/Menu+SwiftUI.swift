@@ -104,7 +104,6 @@ public extension Templates {
                     .popover(
                         present: $model.present,
                         attributes: {
-                            print("getting attributes. \(model.configuration.originAnchor)")
                             $0.position = .absolute(
                                 originAnchor: model.configuration.originAnchor,
                                 popoverAnchor: model.configuration.popoverAnchor
