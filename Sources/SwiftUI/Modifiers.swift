@@ -244,7 +244,7 @@ struct MultiPopoverModifier: ViewModifier {
                             if case .absolute = attributes.position {
                                 return sourceFrame ?? .zero
                             } else {
-                                return window.safeAreaLayoutGuide.layoutFrame
+                                return window.bounds
                             }
                         }
 

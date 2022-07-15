@@ -126,6 +126,9 @@ public extension Popover {
 
             /// Use the same `UIViewController` presenting the previous popover, so we animate the popover in the same container.
             newPopover.context.presentedPopoverContainer = oldContext.presentedPopoverContainer
+            
+            /// Set the popover as a replacement.
+            newPopover.context.isReplacement = true
 
             /// Use same ID so that SwiftUI animates the change.
             newPopover.context.id = oldContext.id

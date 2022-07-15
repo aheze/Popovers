@@ -394,6 +394,9 @@ public struct Popover: Identifiable {
         /// The currently selected anchor, if the popover has a `.relative` position.
         @Published public var selectedAnchor: Popover.Attributes.Position.Anchor?
 
+        /// If this is true, the popover is the replacement of another popover.
+        @Published public var isReplacement = false
+
         /// For animation syncing. If this is not nil, the popover is in the middle of a frame refresh.
         public var transaction: Transaction?
 
@@ -535,6 +538,7 @@ public extension Popover {
                 containerFrame: attributes.sourceFrame().inset(by: attributes.sourceFrameInset),
                 popoverSize: size ?? .zero
             )
+
             return popoverFrame
         }
     }

@@ -19,6 +19,9 @@ struct Playground: View {
         ) {
             Group {
                 UIKitMenuView()
+                SelectionView()
+            }
+            Group {
                 BasicView()
                 CustomizedView()
                 AbsolutePositioningView()
