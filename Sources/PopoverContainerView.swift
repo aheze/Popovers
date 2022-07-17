@@ -61,11 +61,10 @@ struct PopoverContainerView: View {
                             let transaction = popover.context.transaction,
                             let existingSize = popover.context.size
                         {
-                            
                             /// If the size is different during an existing transaction, this means
                             /// the size is still not final and can change.
                             /// So, update without an animation - but just make sure it's not replacing an existing one.
-                            if existingSize != size && !popover.context.isReplacement {
+                            if existingSize != size, !popover.context.isReplacement {
                                 popover.updateFrame(with: size)
                                 popoverModel.reload()
                             } else {
@@ -83,7 +82,6 @@ struct PopoverContainerView: View {
                             popoverModel.reload()
                         }
                     }
-
 
                     /// Offset the popover by the gesture's translation, if this current popover is the selected one.
                     .offset(popoverOffset(for: popover))
@@ -191,7 +189,7 @@ struct PopoverContainerView: View {
             width: frame.origin.x + ((selectedPopover == popover) ? selectedPopoverOffset.width : 0),
             height: frame.origin.y + ((selectedPopover == popover) ? selectedPopoverOffset.height : 0)
         )
-        print("off: \(offset)..... \(frame)")
+
         return offset
     }
 
