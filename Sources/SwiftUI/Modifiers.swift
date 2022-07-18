@@ -193,7 +193,7 @@ struct MultiPopoverModifier: ViewModifier {
     }
 
     func body(content: Content) -> some View {
-        WindowReader { window in
+        WindowReader { readWindow in
             content
 
                 /// Read the frame of the source view.
@@ -207,9 +207,17 @@ struct MultiPopoverModifier: ViewModifier {
                 .onValueChange(of: selection) { oldSelection, newSelection in
 
                     /// Make sure there is a window first.
-                    guard let window = window else {
-                        print("[Popovers] - No window was found when presenting popover. Please file a bug report (https://github.com/aheze/Popovers/issues).")
-                        return
+                    var window: UIWindow! = readWindow
+                    if window == nil {
+                        print("[Popovers] - No window was found when presenting popover, falling back to key window. Please file a bug report (https://github.com/aheze/Popovers/issues).")
+
+                        let keyWindow = UIApplication.shared.windows.first { $0.isKeyWindow }
+                        if let keyWindow = keyWindow {
+                            window = keyWindow
+                        } else {
+                            print("[Popovers] - Key window was not found either, skipping popover presentation.")
+                            return
+                        }
                     }
 
                     let model = window.popoverModel

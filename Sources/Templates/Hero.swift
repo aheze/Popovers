@@ -10,43 +10,53 @@ import SwiftUI
 
 public extension Templates {
     class Hero: ObservableObject {
-        @Published public var present: Bool?
+        public enum Selection {
+            case a
+            case b
+        }
+
+        @Published public var selection: Selection?
 
         public init() {}
-        
-        public func go() {
-            guard present == nil else { return }
-            present = false
+
+        public func transitionForwards() {
+            guard selection == nil else { return }
+            selection = .a
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
                 withAnimation {
-                    self.present = true
+                    self.selection = .b
                 }
             }
-            
+
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
-                self.present = nil
+                self.selection = nil
             }
         }
 
-        public func revert() {
-            guard present == nil else { return }
-            present = true
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.005) {
+        public func moveForwards() {
+            guard selection == nil else { return }
+            selection = .a
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
                 withAnimation {
-                    self.present = false
+                    self.selection = .b
                 }
-            }
-
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
-                self.present = nil
             }
         }
 
-        public func toggle() {
-            if present == nil {
-                go()
+        public func moveBackwards() {
+            guard selection == .b else { return }
+            selection = .a
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+                self.selection = nil
+            }
+        }
+
+        public func toggleMove() {
+            if selection == .none {
+                moveForwards()
             } else {
-                revert()
+                moveBackwards()
             }
         }
     }

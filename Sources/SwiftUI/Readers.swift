@@ -44,7 +44,6 @@ public struct WindowReader<Content: View>: View {
     public let view: (UIWindow?) -> Content
 
     /// The read window.
-//    @State var window: UIWindow?
     @StateObject var windowViewModel = WindowViewModel()
 
     /// Reads the `UIWindow` that hosts some SwiftUI content.
@@ -88,7 +87,6 @@ public struct WindowReader<Content: View>: View {
             super.didMoveToWindow()
 
             /// Set the window.
-
             self.windowViewModel.window = self.window
         }
     }
