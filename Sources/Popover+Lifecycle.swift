@@ -67,6 +67,12 @@ public extension Popover {
             window.addSubview(container)
         }
 
+        if attributes.source == .stayAboveWindows {
+            context.windowSublayersKeyValueObservationToken = window.layer.observe(\.sublayers) { _, _ in
+                window.bringSubviewToFront(container)
+            }
+        }
+
         /// Hang on to the container for future dismiss/replace actions.
         context.presentedPopoverContainer = container
     }
@@ -126,7 +132,7 @@ public extension Popover {
 
             /// Use the same `UIViewController` presenting the previous popover, so we animate the popover in the same container.
             newPopover.context.presentedPopoverContainer = oldContext.presentedPopoverContainer
-            
+
             /// Set the popover as a replacement.
             newPopover.context.isReplacement = true
 

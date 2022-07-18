@@ -88,6 +88,8 @@ public struct Popover: Identifiable {
         /// Inset the source frame by this.
         public var sourceFrameInset = UIEdgeInsets.zero
 
+        public var source = Source.stayAboveWindows
+
         /// Padding to prevent the popover from overflowing off the screen.
         public var screenEdgePadding = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
 
@@ -146,6 +148,11 @@ public struct Popover: Identifiable {
             self.onTapOutside = onTapOutside
             self.onDismiss = onDismiss
             self.onContextChange = onContextChange
+        }
+
+        public enum Source {
+            case aboveCurrentWindow
+            case stayAboveWindows
         }
 
         /**
@@ -441,6 +448,8 @@ public struct Popover: Identifiable {
 
         /// The `UIView` presenting this `Popover`, or `nil` if no popovers are currently being presented.
         internal var presentedPopoverContainer: UIView?
+
+        internal var windowSublayersKeyValueObservationToken: NSKeyValueObservation?
 
         /// The `PopoverModel` managing the `Popover`. Sourced from the `presentedPopoverViewController`.
         private var popoverModel: PopoverModel? {

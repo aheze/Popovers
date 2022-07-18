@@ -19,7 +19,6 @@ struct FrameTagModifier: ViewModifier {
     @State var frame = CGRect.zero
 
     func body(content: Content) -> some View {
-        let _ = print("fram etagged modii")
         WindowReader { window in
             content
                 .frameReader { frame in

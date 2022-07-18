@@ -22,15 +22,22 @@ public extension Templates {
                     self.present = true
                 }
             }
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+                self.present = nil
+            }
         }
 
         public func revert() {
-            guard present != nil else { return }
-            withAnimation {
-                present = false
+            guard present == nil else { return }
+            present = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.005) {
+                withAnimation {
+                    self.present = false
+                }
             }
 
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
                 self.present = nil
             }
         }

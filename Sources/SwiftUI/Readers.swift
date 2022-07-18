@@ -64,7 +64,7 @@ public struct WindowReader<Content: View>: View {
         @ObservedObject var windowViewModel: WindowViewModel
 
         func makeUIView(context _: Context) -> WindowHandler {
-            return WindowHandler(windowViewModel: windowViewModel)
+            return WindowHandler(windowViewModel: self.windowViewModel)
         }
 
         func updateUIView(_: WindowHandler, context _: Context) {}
@@ -87,15 +87,9 @@ public struct WindowReader<Content: View>: View {
         override func didMoveToWindow() {
             super.didMoveToWindow()
 
-            print("mpved to window \(window)! currentl: \(windowViewModel.window)")
-
             /// Set the window.
-//            windowViewModel.window = window
 
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                self.windowViewModel.window = self.window
-                self.windowViewModel.objectWillChange.send()
-            }
+            self.windowViewModel.window = self.window
         }
     }
 }
