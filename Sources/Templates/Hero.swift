@@ -22,7 +22,7 @@ public extension Templates {
         public func transitionForwards() {
             guard selection == nil else { return }
             selection = .a
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
                 withAnimation {
                     self.selection = .b
                 }
@@ -36,7 +36,7 @@ public extension Templates {
         public func moveForwards() {
             guard selection == nil else { return }
             selection = .a
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
                 withAnimation {
                     self.selection = .b
                 }
