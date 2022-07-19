@@ -57,7 +57,6 @@ struct PopoverContainerView: View {
                     /// Read the popover's size in the view.
                     .sizeReader(transaction: popover.context.transaction) { size in
 
-                        print("size: \(size). Existing? \(popover.context.size). Is replacement? \(popover.context.isReplacement)")
                         if
                             let transaction = popover.context.transaction,
                             let existingSize = popover.context.size
@@ -68,7 +67,6 @@ struct PopoverContainerView: View {
                             if existingSize != size, !popover.context.isReplacement {
                                 popover.updateFrame(with: size)
                                 popoverModel.reload()
-                                print("Reload instantly.")
                             } else {
                                 /// Otherwise, since the size is the same, the popover is *replacing* a previous popover - animate it.
                                 /// This could also be true when the screen bounds changed.
@@ -76,16 +74,12 @@ struct PopoverContainerView: View {
                                     popover.updateFrame(with: size)
                                     popoverModel.reload()
                                 }
-                                
-                                print("Reload with animation.")
                             }
                             popover.context.transaction = nil
                         } else {
-                            print("Reload instantly also.")
                             /// When `popover.context.size` is nil or there is no transaction, the popover was just presented.
                             popover.updateFrame(with: size)
                             popoverModel.reload()
-                            print("Reloaded!!!!!! \(popover.context.size)")
                         }
                     }
 
