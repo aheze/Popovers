@@ -37,6 +37,7 @@ public extension View {
                             rect(newValue)
                         }
                     }
+                
             }
             .hidden()
         )
