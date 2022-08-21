@@ -31,12 +31,14 @@ public extension View {
     func frameReader(in coordinateSpace: CoordinateSpace = .global, rect: @escaping (CGRect) -> Void) -> some View {
         return background(
             GeometryReader { geometry in
+                let frame = geometry.frame(in: coordinateSpace)
+
                 Color.clear
-                    .preference(key: ContentFrameReaderPreferenceKey.self, value: geometry.frame(in: coordinateSpace))
-                    .onPreferenceChange(ContentFrameReaderPreferenceKey.self) { newValue in
-                        DispatchQueue.main.async {
-                            rect(newValue)
-                        }
+                    .onValueChange(of: frame) { _, newValue in
+                        rect(newValue)
+                    }
+                    .onAppear {
+                        rect(frame)
                     }
             }
             .hidden()

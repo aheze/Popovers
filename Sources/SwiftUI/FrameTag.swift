@@ -23,6 +23,7 @@ struct FrameTagModifier: ViewModifier {
             content
                 .frameReader { frame in
                     self.frame = frame
+
                     if let window = window {
                         window.save(frame, for: tag)
                     }
