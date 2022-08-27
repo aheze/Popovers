@@ -16,6 +16,7 @@ public extension Templates {
         public var dismissalAnimation = Animation.spring(response: 0.4, dampingFraction: 0.9, blendDuration: 1)
         public var labelFadeAnimation = Animation.default /// The animation used when calling the `fadeLabel`.
         public var clipContent = true /// Replicate the system's default clipping animation.
+        public var clipAlignment = Alignment.top /// Which edge the clipping animation should be animate from.
         public var sourceFrameInset = UIEdgeInsets(top: -8, left: -8, bottom: -8, right: -8)
         public var originAnchor = Popover.Attributes.Position.Anchor.bottom /// The label's anchor.
         public var popoverAnchor = Popover.Attributes.Position.Anchor.top /// The menu's anchor.
@@ -38,6 +39,8 @@ public extension Templates {
             presentationAnimation: Animation = .spring(response: 0.3, dampingFraction: 0.7, blendDuration: 1),
             dismissalAnimation: Animation = .spring(response: 0.4, dampingFraction: 0.9, blendDuration: 1),
             labelFadeAnimation: Animation = .easeOut,
+            clipContent: Bool = true,
+            clipAlignment: Alignment = .top,
             sourceFrameInset: UIEdgeInsets = .init(top: -8, left: -8, bottom: -8, right: -8),
             originAnchor: Popover.Attributes.Position.Anchor = .bottom,
             popoverAnchor: Popover.Attributes.Position.Anchor = .top,
@@ -57,6 +60,8 @@ public extension Templates {
             self.presentationAnimation = presentationAnimation
             self.dismissalAnimation = dismissalAnimation
             self.labelFadeAnimation = labelFadeAnimation
+            self.clipContent = clipContent
+            self.clipAlignment = clipAlignment
             self.sourceFrameInset = sourceFrameInset
             self.originAnchor = originAnchor
             self.popoverAnchor = popoverAnchor
@@ -107,7 +112,13 @@ public extension Templates {
                     .contentShape(Rectangle())
                     .frame(width: configuration.width)
                     .fixedSize() /// Hug the width of the inner content.
-                    .modifier(ClippedBackgroundModifier(context: context, configuration: configuration, expanded: expanded)) /// Clip the content if desired.
+                    .modifier(
+                        ClippedBackgroundModifier(
+                            context: context,
+                            configuration: configuration,
+                            expanded: expanded
+                        )
+                    ) /// Clip the content if desired.
                     .scaleEffect(expanded ? 1 : 0.2, anchor: configuration.scaleAnchor?.unitPoint ?? model.getScaleAnchor(from: context))
                     .scaleEffect(model.scale, anchor: configuration.scaleAnchor?.unitPoint ?? model.getScaleAnchor(from: context))
                     .if(model.configuration.useEntireMenuAsGestureHotspot) {
@@ -208,7 +219,7 @@ public extension Templates {
             self.image = image
             self.action = action
         }
-        
+
         var baseButton: some View {
             HStack {
                 if let text = text {
@@ -238,7 +249,7 @@ public extension Templates {
                 }
             }
         }
-      
+
         /// Disable this menu button.
         public func disabled(_ disabled: Bool = true) -> Self {
             var newView = self
@@ -288,7 +299,7 @@ public extension Templates {
                             .overlay(
                                 RoundedRectangle(cornerRadius: configuration.cornerRadius)
                                     .frame(height: expanded ? nil : context.frame.height / 3),
-                                alignment: .top
+                                alignment: configuration.clipAlignment
                             )
                     )
 
@@ -298,7 +309,7 @@ public extension Templates {
                             .cornerRadius(configuration.cornerRadius)
                             .popoverShadow(shadow: configuration.shadow)
                             .frame(height: expanded ? nil : context.frame.height / 3),
-                        alignment: .top
+                        alignment: configuration.clipAlignment
                     )
             } else {
                 content
