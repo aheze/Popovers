@@ -11,16 +11,16 @@ import SwiftUI
 extension Templates {
     class MenuModel: ObservableObject {
         var buildConfiguration: ((inout MenuConfiguration) -> Void) = { _ in }
-        
+
         var configuration: MenuConfiguration {
             var configuration = MenuConfiguration()
             buildConfiguration(&configuration)
             return configuration
         }
-        
+
         /// A unique ID for the menu (to support multiple menus in the same screen).
         @Published var id = UUID()
-        
+
         /// Whether to show the popover or not.
         @Published var present = false
 
@@ -38,7 +38,7 @@ extension Templates {
 
         /// The frame of the menu in global coordinates.
         @Published var menuFrame = CGRect.zero
-        
+
         init(buildConfiguration: @escaping ((inout MenuConfiguration) -> Void) = { _ in }) {
             self.buildConfiguration = buildConfiguration
         }

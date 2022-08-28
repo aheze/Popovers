@@ -11,6 +11,7 @@ import SwiftUI
 public extension Templates {
     /// A set of attributes for the popover menu.
     struct MenuConfiguration {
+        public var hapticFeedbackEnabled = true
         public var holdDelay = CGFloat(0.2) /// The duration of a long press to activate the menu.
         public var presentationAnimation = Animation.spring(response: 0.3, dampingFraction: 0.7, blendDuration: 1)
         public var dismissalAnimation = Animation.spring(response: 0.4, dampingFraction: 0.9, blendDuration: 1)
@@ -35,6 +36,7 @@ public extension Templates {
 
         /// Create the default attributes for the popover menu.
         public init(
+            hapticFeedbackEnabled: Bool = true,
             holdDelay: CGFloat = CGFloat(0.2),
             presentationAnimation: Animation = .spring(response: 0.3, dampingFraction: 0.7, blendDuration: 1),
             dismissalAnimation: Animation = .spring(response: 0.4, dampingFraction: 0.9, blendDuration: 1),
@@ -56,6 +58,7 @@ public extension Templates {
             dismissAfterSelecting: Bool = true,
             onLiftWithoutSelecting: (() -> Void)? = {}
         ) {
+            self.hapticFeedbackEnabled = hapticFeedbackEnabled
             self.holdDelay = holdDelay
             self.presentationAnimation = presentationAnimation
             self.dismissalAnimation = dismissalAnimation
@@ -139,6 +142,14 @@ public extension Templates {
                         }
                         context.attributes.onContextChange = { context in
                             model.menuFrame = context.frame
+                        }
+                    }
+                    .onChange(of: model.hoveringItemID) { newValue in
+                        
+                        /// Play haptic feedback if enabled.
+                        if newValue != nil, configuration.hapticFeedbackEnabled {
+                            let generator = UISelectionFeedbackGenerator()
+                            generator.selectionChanged()
                         }
                     }
             }
