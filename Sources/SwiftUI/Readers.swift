@@ -86,8 +86,10 @@ public struct WindowReader<Content: View>: View {
         override func didMoveToWindow() {
             super.didMoveToWindow()
 
-            /// Set the window.
-            self.windowViewModel.window = self.window
+            DispatchQueue.main.async {
+                /// Set the window.
+                self.windowViewModel.window = self.window
+            }
         }
     }
 }
