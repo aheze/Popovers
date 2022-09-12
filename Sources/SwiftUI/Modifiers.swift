@@ -61,7 +61,7 @@ struct PopoverModifier: ViewModifier {
     }
 
     func body(content: Content) -> some View {
-        WindowReader { window in
+        WindowReader { readWindow in
             content
 
                 /// Read the frame of the source view.
@@ -73,9 +73,18 @@ struct PopoverModifier: ViewModifier {
                 .onValueChange(of: present) { oldValue, newValue in
 
                     /// Make sure there is a window first.
-                    guard let window = window else {
-                        print("[Popovers] - No window was found when presenting popover. Please file a bug report (https://github.com/aheze/Popovers/issues).")
-                        return
+                    var window: UIWindow! = readWindow
+                    if window == nil {
+                        print("[Popovers] - No window was found when presenting popover, falling back to key window. Please file a bug report (https://github.com/aheze/Popovers/issues).")
+
+                        if let keyWindow = UIApplication.shared.windows.first(where: \.isKeyWindow) {
+                            window = keyWindow
+                        } else {
+                            print("[Popovers] - Key window was not found either, skipping popover presentation.")
+                            self.present = false
+                            self.popover = nil /// Remove the reference to the popover.
+                            return
+                        }
                     }
 
                     /// `newValue` is true, so present the popover.
@@ -211,11 +220,12 @@ struct MultiPopoverModifier: ViewModifier {
                     if window == nil {
                         print("[Popovers] - No window was found when presenting popover, falling back to key window. Please file a bug report (https://github.com/aheze/Popovers/issues).")
 
-                        let keyWindow = UIApplication.shared.windows.first { $0.isKeyWindow }
-                        if let keyWindow = keyWindow {
+                        if let keyWindow = UIApplication.shared.windows.first(where: \.isKeyWindow) {
                             window = keyWindow
                         } else {
                             print("[Popovers] - Key window was not found either, skipping popover presentation.")
+                            self.selection = nil
+                            self.popover = nil /// Remove the reference to the popover.
                             return
                         }
                     }
