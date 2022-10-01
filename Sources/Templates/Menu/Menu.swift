@@ -145,7 +145,7 @@ public extension Templates {
                         }
                     }
                     .onChange(of: model.hoveringItemID) { newValue in
-                        
+
                         /// Play haptic feedback if enabled.
                         if newValue != nil, configuration.hapticFeedbackEnabled {
                             let generator = UISelectionFeedbackGenerator()
@@ -158,7 +158,7 @@ public extension Templates {
 
     /// A special button for use inside `PopoverMenu`s.
     struct MenuItem<Content: View>: View {
-        @State var itemID = UUID()
+        @State var itemID = MenuItemID(id: UUID(), date: Date())
         @EnvironmentObject var model: MenuModel
 
         public let action: () -> Void
@@ -181,12 +181,24 @@ public extension Templates {
                     /// Don't set frames when dismissing.
                     guard model.present else { return }
 
+                    let overlappingFrames = model.frames.filter { $0.value.insetBy(dx: 3, dy: 3).intersects(frame) }
+
+                    for overlappingFrame in overlappingFrames {
+                        if overlappingFrame.key.id != itemID.id {
+                            print("has overlapping.")
+                            model.frames[overlappingFrame.key] = nil
+                        }
+                    }
                     model.frames[itemID] = frame
                 }
                 .onValueChange(of: model.selectedItemID) { _, newValue in
                     if newValue == itemID {
                         action()
                     }
+                    model.selectedItemID = nil
+                }
+                .onDisappear {
+                    print("Dis.")
                     model.selectedItemID = nil
                 }
         }

@@ -9,6 +9,10 @@
 import SwiftUI
 
 extension Templates {
+    struct MenuItemID: Hashable {
+        var id: UUID
+        var date: Date
+    }
     class MenuModel: ObservableObject {
         var buildConfiguration: ((inout MenuConfiguration) -> Void) = { _ in }
 
@@ -28,13 +32,13 @@ extension Templates {
         @Published var scale = CGFloat(1)
 
         /// The index of the menu button that the user's finger hovers on.
-        @Published var hoveringItemID: UUID?
+        @Published var hoveringItemID: MenuItemID?
 
         /// The selected menu button if it exists.
-        @Published var selectedItemID: UUID?
+        @Published var selectedItemID: MenuItemID?
 
         /// The frames of the menu buttons, relative to the window.
-        @Published var frames = [UUID: CGRect]()
+        @Published var frames = [MenuItemID: CGRect]()
 
         /// The frame of the menu in global coordinates.
         @Published var menuFrame = CGRect.zero
@@ -44,13 +48,14 @@ extension Templates {
         }
 
         /// Get the menu button ID that intersects the drag gesture's touch location.
-        func getItemID(from location: CGPoint) -> UUID? {
-            /// Newest, most up-to-date frames are at the end.
-            for frame in frames {
-                if frame.value.contains(location) {
-                    return frame.key
-                }
+        func getItemID(from location: CGPoint) -> MenuItemID? {
+            let matchingFrames = frames.filter { $0.value.contains(location) }
+            
+            print("M: \(matchingFrames)")
+            for frame in matchingFrames {
+                return frame.key
             }
+//            print("None. \(location.y.rounded()) -> \(frames.map { $0.value.origin.y.rounded() })")
             return nil
         }
 
@@ -81,3 +86,30 @@ extension Templates {
         }
     }
 }
+
+// [DDAE256D-B7C0-486B-B6B7-C8B083DCE325: (174.0, 479.66666666666663, 240.0, 52.33333333333337),
+// 42C6EC1B-FAA0-444E-9491-E30853EFC902: (174.0, 322.0, 240.0, 52.333333333333314),
+// E4CE4864-23A4-4D47-AEC2-8D400EF20574: (174.0, 374.3333333333333, 240.0, 52.333333333333314),
+// 67B83DAF-A1D4-4D33-8F36-3DB03A2F7A49: (174.0, 427.0, 240.0, 52.333333333333314),
+// 8676FA7A-60C1-47D3-9EC6-291AC049EC9B: (174.0, 374.66666666666663, 240.0, 52.33333333333337),
+// CC392B97-3AE5-430B-8AC8-B2981DC1E39C: (174.0, 532.6666666666666, 240.0, 52.33333333333337),
+// 7E8D84EE-F96F-4A81-8F58-2D32DCBFCB78: (174.0, 480.0, 240.0, 52.33333333333326),
+// DD31FEF8-B515-4C46-AAC2-FEAD88170062: (174.0, 427.3333333333333, 240.0, 52.333333333333314),
+// 15E07B27-489B-49E0-9C2F-9577DD63312F: (174.0, 269.3333333333333, 240.0, 52.333333333333314)]
+
+// [
+//    15E07B27-489B-49E0-9C2F-9577DD63312F: (174.0, 269.3333333333333, 240.0, 52.333333333333314)
+//    42C6EC1B-FAA0-444E-9491-E30853EFC902: (174.0, 322.0, 240.0, 52.333333333333314),
+//    E4CE4864-23A4-4D47-AEC2-8D400EF20574: (174.0, 374.3333333333333, 240.0, 52.333333333333314),
+//    8676FA7A-60C1-47D3-9EC6-291AC049EC9B: (174.0, 374.66666666666663, 240.0, 52.33333333333337),
+//
+// 67B83DAF-A1D4-4D33-8F36-3DB03A2F7A49: (174.0, 427.0, 240.0, 52.333333333333314),
+//    DD31FEF8-B515-4C46-AAC2-FEAD88170062: (174.0, 427.3333333333333, 240.0, 52.333333333333314),
+//    DDAE256D-B7C0-486B-B6B7-C8B083DCE325: (174.0, 479.66666666666663, 240.0, 52.33333333333337),
+//
+//    7E8D84EE-F96F-4A81-8F58-2D32DCBFCB78: (174.0, 480.0, 240.0, 52.33333333333326),
+// CC392B97-3AE5-430B-8AC8-B2981DC1E39C: (174.0, 532.6666666666666, 240.0, 52.33333333333337),
+//
+//
+//
+// ]
