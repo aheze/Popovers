@@ -158,7 +158,7 @@ public extension Templates {
 
     /// A special button for use inside `PopoverMenu`s.
     struct MenuItem<Content: View>: View {
-        @State var itemID = MenuItemID(id: UUID(), date: Date())
+        @State var itemID = MenuItemID()
         @EnvironmentObject var model: MenuModel
 
         public let action: () -> Void
@@ -181,11 +181,15 @@ public extension Templates {
                     /// Don't set frames when dismissing.
                     guard model.present else { return }
 
+                    /**
+                     Remove overlapping Menu Items if they exist.
+                     I need to investigate this. This is possibly the result of a bug in the `@State var itemID`,
+                     For now, check if there's similar frames and remove them.
+                     */
                     let overlappingFrames = model.frames.filter { $0.value.insetBy(dx: 3, dy: 3).intersects(frame) }
 
                     for overlappingFrame in overlappingFrames {
-                        if overlappingFrame.key.id != itemID.id {
-                            print("has overlapping.")
+                        if overlappingFrame.key != itemID {
                             model.frames[overlappingFrame.key] = nil
                         }
                     }
@@ -198,7 +202,6 @@ public extension Templates {
                     model.selectedItemID = nil
                 }
                 .onDisappear {
-                    print("Dis.")
                     model.selectedItemID = nil
                 }
         }

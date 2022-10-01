@@ -9,10 +9,7 @@
 import SwiftUI
 
 extension Templates {
-    struct MenuItemID: Hashable {
-        var id: UUID
-        var date: Date
-    }
+    typealias MenuItemID = UUID
     class MenuModel: ObservableObject {
         var buildConfiguration: ((inout MenuConfiguration) -> Void) = { _ in }
 
@@ -51,11 +48,14 @@ extension Templates {
         func getItemID(from location: CGPoint) -> MenuItemID? {
             let matchingFrames = frames.filter { $0.value.contains(location) }
             
-            print("M: \(matchingFrames)")
-            for frame in matchingFrames {
+            if matchingFrames.count > 1 {
+                print("[Popovers] Multiple menu items have the same frame. Make sure items don't overlay. If you can't resolve this, please file a bug report (https://github.com/aheze/Popovers/issues).")
+            }
+            
+            if let frame = matchingFrames.first {
                 return frame.key
             }
-//            print("None. \(location.y.rounded()) -> \(frames.map { $0.value.origin.y.rounded() })")
+            
             return nil
         }
 
