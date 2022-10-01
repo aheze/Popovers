@@ -23,8 +23,6 @@ public extension Templates {
         /// Allow presenting from an external view via `$present`.
         @Binding var overridePresent: Bool
 
-        var temporaryConfiguration: MenuConfiguration?
-
         /// The menu buttons.
         public let content: () -> Content
 

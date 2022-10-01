@@ -14,15 +14,18 @@ public extension Templates {
     struct DividedVStack<Content: View>: View {
         var leadingMargin: CGFloat
         var trailingMargin: CGFloat
+        var color: UIColor?
         var content: Content
 
         public init(
             leadingMargin: CGFloat = 0,
             trailingMargin: CGFloat = 0,
+            color: UIColor? = nil,
             @ViewBuilder content: () -> Content
         ) {
             self.leadingMargin = leadingMargin
             self.trailingMargin = trailingMargin
+            self.color = color
             self.content = content()
         }
 
@@ -30,7 +33,8 @@ public extension Templates {
             _VariadicView.Tree(
                 DividedVStackLayout(
                     leadingMargin: leadingMargin,
-                    trailingMargin: trailingMargin
+                    trailingMargin: trailingMargin,
+                    color: color
                 )
             ) {
                 content
@@ -41,6 +45,8 @@ public extension Templates {
     struct DividedVStackLayout: _VariadicView_UnaryViewRoot {
         var leadingMargin: CGFloat
         var trailingMargin: CGFloat
+        var color: UIColor?
+
         @ViewBuilder
         public func body(children: _VariadicView.Children) -> some View {
             let last = children.last?.id
@@ -51,6 +57,12 @@ public extension Templates {
 
                     if child.id != last {
                         Divider()
+                            .opacity(color == nil ? 1 : 0)
+                            .overlay {
+                                if let color = color {
+                                    Color(uiColor: color)
+                                }
+                            }
                             .padding(.leading, leadingMargin)
                             .padding(.trailing, trailingMargin)
                     }
@@ -58,7 +70,7 @@ public extension Templates {
             }
         }
     }
-    
+
     /// A horizontal stack that adds separators
     struct DividedHStack<Content: View>: View {
         var topMargin: CGFloat
@@ -74,7 +86,6 @@ public extension Templates {
             self.bottomMargin = bottomMargin
             self.content = content()
         }
-
 
         public var body: some View {
             _VariadicView.Tree(
