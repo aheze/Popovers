@@ -105,6 +105,9 @@ public struct Popover: Identifiable {
         /// Prevent views underneath the popover from being pressed.
         public var blocksBackgroundTouches = false
 
+        /// Frames that won't be blocked when `blocksBackgroundTouches` is turned on.
+        public var blocksBackgroundTouchesAllowedFrames: () -> [CGRect] = { [] }
+
         /// Stores accessibility values.
         public var accessibility = Accessibility()
 
@@ -120,35 +123,7 @@ public struct Popover: Identifiable {
         /**
          Create the default attributes for a popover.
          */
-        public init(
-            tag: AnyHashable? = nil,
-            position: Popover.Attributes.Position = Position.absolute(originAnchor: .bottom, popoverAnchor: .top),
-            sourceFrame: @escaping (() -> CGRect) = { .zero },
-            sourceFrameInset: UIEdgeInsets = UIEdgeInsets.zero,
-            screenEdgePadding: UIEdgeInsets = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16),
-            presentation: Popover.Attributes.Presentation = Presentation(),
-            dismissal: Popover.Attributes.Dismissal = Dismissal(),
-            rubberBandingMode: Popover.Attributes.RubberBandingMode = [.xAxis, .yAxis],
-            blocksBackgroundTouches: Bool = false,
-            accessibility: Accessibility = Accessibility(),
-            onTapOutside: (() -> Void)? = nil,
-            onDismiss: (() -> Void)? = nil,
-            onContextChange: ((Popover.Context) -> Void)? = nil
-        ) {
-            self.tag = tag
-            self.position = position
-            self.sourceFrame = sourceFrame
-            self.sourceFrameInset = sourceFrameInset
-            self.screenEdgePadding = screenEdgePadding
-            self.presentation = presentation
-            self.dismissal = dismissal
-            self.rubberBandingMode = rubberBandingMode
-            self.blocksBackgroundTouches = blocksBackgroundTouches
-            self.accessibility = accessibility
-            self.onTapOutside = onTapOutside
-            self.onDismiss = onDismiss
-            self.onContextChange = onContextChange
-        }
+        public init() {}
 
         public enum Source {
             case aboveCurrentWindow
