@@ -9,8 +9,10 @@
 import SwiftUI
 
 /**
- Frame tags are used to store the frames
- */
+  Frame tags are used to store the frames.
+    **Warning:** this won't update the parent view, so is only valid for use inside a popover.
+    If you need to use frame later, use `frameReader` instead.
+  */
 
 /// Store a view's frame for later use.
 struct FrameTagModifier: ViewModifier {
