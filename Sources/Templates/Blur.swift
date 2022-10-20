@@ -19,11 +19,11 @@ public extension Templates {
             self.style = style
         }
 
-        public func makeUIView(context _: UIViewRepresentableContext<Self>) -> UIVisualEffectView {
+        public func makeUIView(context: Context) -> UIVisualEffectView {
             UIVisualEffectView()
         }
 
-        public func updateUIView(_ uiView: UIVisualEffectView, context _: UIViewRepresentableContext<Self>) {
+        public func updateUIView(_ uiView: UIVisualEffectView, context: Context) {
             uiView.effect = UIBlurEffect(style: style)
         }
     }
