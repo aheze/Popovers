@@ -52,10 +52,7 @@ public struct WindowReader<Content: View>: View {
     }
 
     public var body: some View {
-        view(windowViewModel.window)
-            .background(
-                WindowHandlerRepresentable(windowViewModel: windowViewModel)
-            )
+        view(UIApplication.shared.keyWindow) // TODO - Get the actual window to support iPadOS multiwindow
     }
 
     /// A wrapper view to read the parent window.
