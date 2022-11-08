@@ -919,21 +919,17 @@ Manage a popover's z-axis level by attaching [`.zIndex(_:)`](https://developer.a
 
 
 ## Community
-### Author
-Popovers is made by [aheze](https://github.com/aheze).
 
-### Contributing
-All contributions are welcome. Just [fork](https://github.com/aheze/Popovers/fork) the repo, then make a pull request.
-
-### Need Help?
-Open an [issue](https://github.com/aheze/Popovers/issues) or join the [Discord server](https://discord.com/invite/Pmq8fYcus2). You can also ping me on [Twitter](https://twitter.com/aheze0). Or read the source code — there's lots of comments.
+Author | Contributing | Need Help?
+--- | --- | ---
+Popovers is made by [aheze](https://github.com/aheze). | All contributions are welcome. Just [fork](https://github.com/aheze/Popovers/fork) the repo, then make a pull request. | Open an [issue](https://github.com/aheze/Popovers/issues) or join the [Discord server](https://discord.com/invite/Pmq8fYcus2). You can also ping me on [Twitter](https://twitter.com/aheze0). Or read the source code — there's lots of comments.
 
 ### Apps Using Popovers
 
-[Find](http://getfind.app/) is an app that lets you find text in real life. Popovers is currently used for the search bar settings and the camera message view — download to check it out!
+[Find](http://getfind.app) is an app that lets you find text in real life. Popovers is used for the quick tips and as a replacements for menus — download to check it out!
 
 <a href="http://getfind.app">
-  <img src="https://getfind.app/assets/SocialPreview.png" height="300" alt="Find App">
+  <img src="https://raw.githubusercontent.com/aheze/OpenFind/main/Assets/v3%20Thumbnail.jpg" height="300" alt="Find App">
 </a>
 
 If you have an app that uses Popovers, just make a PR or [message me](https://twitter.com/aheze0).
