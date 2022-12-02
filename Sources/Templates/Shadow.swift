@@ -29,5 +29,17 @@ public extension Templates {
             x: 0,
             y: 4
         )
+
+        public init(
+            color: Color = Color(.label.withAlphaComponent(0.3)),
+            radius: CGFloat = CGFloat(0),
+            x: CGFloat = CGFloat(0),
+            y: CGFloat = CGFloat(0)
+        ) {
+            self.color = color
+            self.radius = radius
+            self.x = x
+            self.y = y
+        }
     }
 }
