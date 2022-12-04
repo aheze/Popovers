@@ -6,6 +6,7 @@
 //  Copyright © 2022 A. Zheng. All rights reserved.
 //
 
+#if os(iOS)
 import Combine
 import SwiftUI
 
@@ -176,3 +177,4 @@ public extension Templates.UIKitMenu {
         updatePresent(false)
     }
 }
+#endif

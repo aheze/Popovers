@@ -6,6 +6,7 @@
 //  Copyright © 2022 A. Zheng. All rights reserved.
 //
 
+#if os(iOS)
 import SwiftUI
 
 /// A hosting view for `PopoverContainerView` with tap filtering.
@@ -163,3 +164,4 @@ class PopoverGestureContainer: UIView {
         fatalError("[Popovers] - Create this view programmatically.")
     }
 }
+#endif

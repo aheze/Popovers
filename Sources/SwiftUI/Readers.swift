@@ -6,6 +6,7 @@
 //  Copyright © 2022 A. Zheng. All rights reserved.
 //
 
+#if os(iOS)
 import SwiftUI
 
 /**
@@ -52,7 +53,7 @@ public struct WindowReader<Content: View>: View {
     }
 
     public var body: some View {
-        view(windowViewModel.window)
+        view(windowViewModel.window) // TODO: This is kind of hacky, there should be a better way
             .background(
                 WindowHandlerRepresentable(windowViewModel: windowViewModel)
             )
@@ -97,3 +98,5 @@ public struct WindowReader<Content: View>: View {
 class WindowViewModel: ObservableObject {
     @Published var window: UIWindow?
 }
+
+#endif

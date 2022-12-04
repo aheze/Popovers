@@ -6,6 +6,7 @@
 //  Copyright © 2022 A. Zheng. All rights reserved.
 //
 
+#if os(iOS)
 import SwiftUI
 
 /**
@@ -262,3 +263,4 @@ struct PopoverContainerView: View {
         return selectedPopoverOffset
     }
 }
+#endif
