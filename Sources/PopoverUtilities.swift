@@ -6,6 +6,7 @@
 //  Copyright © 2022 A. Zheng. All rights reserved.
 //
 
+#if os(iOS)
 import Combine
 import SwiftUI
 
@@ -215,106 +216,4 @@ public extension View {
     }
 }
 
-/**
- From https://github.com/boraseoksoon/Throttler
- Used to prevent too many frame updates (when scrolling or presenting a `NavigationLink` with animations).
-
- MIT License
-
- Copyright (c) 2021 Jang Seoksoon
-
- Permission is hereby granted, free of charge, to any person obtaining a copy
- of this software and associated documentation files (the "Software"), to deal
- in the Software without restriction, including without limitation the rights
- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- copies of the Software, and to permit persons to whom the Software is
- furnished to do so, subject to the following conditions:
-
- The above copyright notice and this permission notice shall be included in all
- copies or substantial portions of the Software.
-
- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- SOFTWARE.
- */
-public enum Throttler {
-    typealias WorkIdentifier = String
-
-    typealias Work = () -> Void
-    typealias Subject = PassthroughSubject<Work, Never>?
-    typealias Bag = Set<AnyCancellable>
-
-    private static var subjects: [WorkIdentifier: Subject] = [:]
-    private static var bags: [WorkIdentifier: Bag] = [:]
-
-    /// Throttle a work
-    ///
-    ///     var sec = 0
-    ///     for i in 0...1000000000 {
-    ///         Throttler.throttle {
-    ///             sec += 1
-    ///             Debug.log("your work done : \(i)")
-    ///         }
-    ///     }
-    ///
-    ///     Debug.log("done!")
-    ///
-    ///
-    ///     "your work done : 1"
-    ///     (after a delay)
-    ///     "your work done : x"
-    ///     (after a delay)
-    ///     "your work done : y"
-    ///     (after a delay)
-    ///     "your work done : z"
-    ///     ....
-    ///     ...
-    ///     ..
-    ///     .
-    ///     "your work done : 1000000000"
-    ///
-    ///     "done!"
-    ///
-    /// - Note: Pay special attention to the identifier parameter. the default identifier is \("Thread.callStackSymbols") to make api trailing closure for one liner for the sake of brevity. However, it is highly recommend that a developer should provide explicit identifier for their work to debounce. Also, please note that the default queue is global queue, it may cause thread explosion issue if not explicitly specified , so use at your own risk.
-    ///
-    /// - Parameters:
-    ///   - identifier: the identifier to group works to throttle. Throttler must have equivalent identifier to each work in a group to throttle.
-    ///   - queue: a queue to run a work on. dispatch global queue will be chosen by default if not specified.
-    ///   - delay: delay for throttle. time unit is second. given default is 1.0 sec.
-    ///   - shouldRunImmediately: a boolean type where true will run the first work immediately regardless.
-    ///   - shouldRunLatest: A Boolean value that indicates whether to publish the most recent element. If `false`, the publisher emits the first element received during the interval.
-    ///   - work: a work to run
-    /// - Returns: Void
-    public static func throttle(
-        identifier: String = "\(Thread.callStackSymbols)",
-        queue: DispatchQueue? = nil,
-        delay: DispatchQueue.SchedulerTimeType.Stride = .seconds(1),
-        shouldRunImmediately: Bool = true,
-        shouldRunLatest: Bool = true,
-        work: @escaping () -> Void
-    ) {
-        let isFirstRun = subjects[identifier] == nil ? true : false
-
-        if shouldRunImmediately, isFirstRun {
-            work()
-        }
-
-        if let _ = subjects[identifier] {
-            subjects[identifier]?!.send(work)
-        } else {
-            subjects[identifier] = PassthroughSubject<Work, Never>()
-            bags[identifier] = Bag()
-
-            let q = queue ?? .global()
-
-            subjects[identifier]?!
-                .throttle(for: delay, scheduler: q, latest: shouldRunLatest)
-                .sink(receiveValue: { $0() })
-                .store(in: &bags[identifier]!)
-        }
-    }
-}
+#endif
