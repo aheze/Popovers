@@ -21,6 +21,13 @@ public extension View {
             y: shadow.y
         )
     }
+
+    /// A convenient way to apply a nullable shadow.
+    @ViewBuilder func popoverShadowIfNeeded(shadow: Templates.Shadow?) -> some View {
+        if let shadow = shadow {
+            popoverShadow(shadow: shadow)
+        }
+    }
 }
 
 // MARK: - Arrow Positioning
