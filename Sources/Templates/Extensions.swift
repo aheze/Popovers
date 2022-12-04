@@ -23,16 +23,9 @@ public extension View {
     }
 
     /// A convenient way to apply a nullable shadow.
-    func popoverShadowIfNeeded(shadow: Templates.Shadow?) -> AnyView {
+    @ViewBuilder func popoverShadowIfNeeded(shadow: Templates.Shadow?) -> some View {
         if let shadow = shadow {
-            return AnyView(self.shadow(
-                color: shadow.color,
-                radius: shadow.radius,
-                x: shadow.x,
-                y: shadow.y
-            ))
-        } else {
-            return AnyView(self)
+            popoverShadow(shadow: shadow)
         }
     }
 }
