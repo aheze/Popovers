@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "3CBD874B27755E19005BBA48"
-               BuildableName = "PopoversXcodeApp.app"
-               BlueprintName = "PopoversXcodeApp"
-               ReferencedContainer = "container:PopoversXcodeApp.xcodeproj">
+               BuildableName = "PopoversExample.app"
+               BlueprintName = "PopoversExample"
+               ReferencedContainer = "container:PopoversExample.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -45,9 +45,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "3CBD874B27755E19005BBA48"
-            BuildableName = "PopoversXcodeApp.app"
-            BlueprintName = "PopoversXcodeApp"
-            ReferencedContainer = "container:PopoversXcodeApp.xcodeproj">
+            BuildableName = "PopoversExample.app"
+            BlueprintName = "PopoversExample"
+            ReferencedContainer = "container:PopoversExample.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -74,9 +74,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "3CBD874B27755E19005BBA48"
-            BuildableName = "PopoversXcodeApp.app"
-            BlueprintName = "PopoversXcodeApp"
-            ReferencedContainer = "container:PopoversXcodeApp.xcodeproj">
+            BuildableName = "PopoversExample.app"
+            BlueprintName = "PopoversExample"
+            ReferencedContainer = "container:PopoversExample.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

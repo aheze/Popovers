@@ -53,7 +53,7 @@
 		3C73924D27AF8496006A56E7 /* UIKitMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKitMenuView.swift; sourceTree = "<group>"; };
 		3C8521B527ACADB30020ECB8 /* InsideNavigationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsideNavigationView.swift; sourceTree = "<group>"; };
 		3CA34FAB279533E300AC36DF /* AccessibilityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessibilityView.swift; sourceTree = "<group>"; };
-		3CBD874C27755E19005BBA48 /* PopoversXcodeApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PopoversXcodeApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3CBD874C27755E19005BBA48 /* PopoversExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PopoversExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3CBD875D27755E45005BBA48 /* App.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
 		3CBD875F27755E50005BBA48 /* ContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		3CBD876027755E50005BBA48 /* UIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIKit.swift; sourceTree = "<group>"; };
@@ -115,7 +115,7 @@
 		3CBD874D27755E19005BBA48 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				3CBD874C27755E19005BBA48 /* PopoversXcodeApp.app */,
+				3CBD874C27755E19005BBA48 /* PopoversExample.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -200,9 +200,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		3CBD874B27755E19005BBA48 /* PopoversXcodeApp */ = {
+		3CBD874B27755E19005BBA48 /* PopoversExample */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 3CBD875A27755E1A005BBA48 /* Build configuration list for PBXNativeTarget "PopoversXcodeApp" */;
+			buildConfigurationList = 3CBD875A27755E1A005BBA48 /* Build configuration list for PBXNativeTarget "PopoversExample" */;
 			buildPhases = (
 				3CBD874827755E19005BBA48 /* Sources */,
 				3CBD874927755E19005BBA48 /* Frameworks */,
@@ -212,12 +212,12 @@
 			);
 			dependencies = (
 			);
-			name = PopoversXcodeApp;
+			name = PopoversExample;
 			packageProductDependencies = (
 				3CBD87A927756277005BBA48 /* Popovers */,
 			);
 			productName = PopoversXcodeApp;
-			productReference = 3CBD874C27755E19005BBA48 /* PopoversXcodeApp.app */;
+			productReference = 3CBD874C27755E19005BBA48 /* PopoversExample.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -237,7 +237,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 3CBD874727755E19005BBA48 /* Build configuration list for PBXProject "PopoversXcodeApp" */;
+			buildConfigurationList = 3CBD874727755E19005BBA48 /* Build configuration list for PBXProject "PopoversExample" */;
 			compatibilityVersion = "Xcode 13.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -253,7 +253,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				3CBD874B27755E19005BBA48 /* PopoversXcodeApp */,
+				3CBD874B27755E19005BBA48 /* PopoversExample */,
 			);
 		};
 /* End PBXProject section */
@@ -499,7 +499,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		3CBD874727755E19005BBA48 /* Build configuration list for PBXProject "PopoversXcodeApp" */ = {
+		3CBD874727755E19005BBA48 /* Build configuration list for PBXProject "PopoversExample" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				3CBD875827755E1A005BBA48 /* Debug */,
@@ -508,7 +508,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		3CBD875A27755E1A005BBA48 /* Build configuration list for PBXNativeTarget "PopoversXcodeApp" */ = {
+		3CBD875A27755E1A005BBA48 /* Build configuration list for PBXNativeTarget "PopoversExample" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				3CBD875B27755E1A005BBA48 /* Debug */,
