@@ -1,6 +1,6 @@
 //
 //  UIKitMenuView.swift
-//  PopoversXcodeApp
+//  PopoversExample
 //
 //  Created by A. Zheng (github.com/aheze) on 2/5/22.
 //  Copyright © 2022 A. Zheng. All rights reserved.
