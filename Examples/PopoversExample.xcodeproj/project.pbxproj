@@ -108,9 +108,9 @@
 			isa = PBXGroup;
 			children = (
 				3CBD876027755E50005BBA48 /* UIKit.swift */,
+				3CBD879A27755E5F005BBA48 /* PresentView.swift */,
 				3CBD879827755E5F005BBA48 /* ReplaceView.swift */,
 				3CBD879927755E5F005BBA48 /* DismissView.swift */,
-				3CBD879A27755E5F005BBA48 /* PresentView.swift */,
 			);
 			path = UIKit;
 			sourceTree = "<group>";
@@ -161,19 +161,19 @@
 			isa = PBXGroup;
 			children = (
 				3CBD876327755E50005BBA48 /* Playground.swift */,
-				3CBD876E27755E57005BBA48 /* CustomizedView.swift */,
-				3CBD876F27755E57005BBA48 /* NestedView.swift */,
-				3CBD877027755E57005BBA48 /* SelectionView.swift */,
 				3CBD877127755E57005BBA48 /* BasicView.swift */,
-				3CA34FAB279533E300AC36DF /* AccessibilityView.swift */,
-				3CBD877227755E57005BBA48 /* BackgroundView.swift */,
+				3CBD876E27755E57005BBA48 /* CustomizedView.swift */,
+				3CBD877627755E57005BBA48 /* AbsolutePositioningView.swift */,
 				3CBD877327755E57005BBA48 /* RelativePositioningView.swift */,
-				3CBD877427755E57005BBA48 /* PopoverReaderView.swift */,
+				3CBD877727755E57005BBA48 /* LifecycleView.swift */,
 				3CBD877827755E57005BBA48 /* DismissalView1.swift */,
 				3CBD877527755E57005BBA48 /* DismissalView2.swift */,
-				3CBD877627755E57005BBA48 /* AbsolutePositioningView.swift */,
-				3CBD877727755E57005BBA48 /* LifecycleView.swift */,
 				3CBD877927755E57005BBA48 /* FrameTaggedView.swift */,
+				3CBD877227755E57005BBA48 /* BackgroundView.swift */,
+				3CBD877427755E57005BBA48 /* PopoverReaderView.swift */,
+				3CBD876F27755E57005BBA48 /* NestedView.swift */,
+				3CBD877027755E57005BBA48 /* SelectionView.swift */,
+				3CA34FAB279533E300AC36DF /* AccessibilityView.swift */,
 			);
 			path = Playground;
 			sourceTree = "<group>";
@@ -182,15 +182,15 @@
 			isa = PBXGroup;
 			children = (
 				3CBD876427755E50005BBA48 /* Showroom.swift */,
-				CA6F682C2786F70700DF97E7 /* FormView.swift */,
-				3CBD878727755E5B005BBA48 /* TipView.swift */,
+				3CBD878E27755E5B005BBA48 /* MenuView.swift */,
+				3CBD878B27755E5B005BBA48 /* AlertView.swift */,
 				3CBD878827755E5B005BBA48 /* VideoView.swift */,
+				3CBD878727755E5B005BBA48 /* TipView.swift */,
+				3CBD878D27755E5B005BBA48 /* TutorialView.swift */,
 				3CBD878927755E5B005BBA48 /* ColorView.swift */,
 				3CBD878A27755E5B005BBA48 /* NotificationView.swift */,
-				3CBD878B27755E5B005BBA48 /* AlertView.swift */,
 				3CBD878C27755E5B005BBA48 /* StandardView.swift */,
-				3CBD878D27755E5B005BBA48 /* TutorialView.swift */,
-				3CBD878E27755E5B005BBA48 /* MenuView.swift */,
+				CA6F682C2786F70700DF97E7 /* FormView.swift */,
 			);
 			path = Showroom;
 			sourceTree = "<group>";

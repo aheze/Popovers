@@ -18,10 +18,6 @@ struct Playground: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
         ) {
             Group {
-                UIKitMenuView()
-                SelectionView()
-            }
-            Group {
                 BasicView()
                 CustomizedView()
                 AbsolutePositioningView()

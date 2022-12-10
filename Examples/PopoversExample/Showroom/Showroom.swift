@@ -18,7 +18,7 @@ struct Showroom: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.top, 12)
         ) {
-            Group {
+            VStack {
                 MenuView()
                 AlertView()
                 VideoView()

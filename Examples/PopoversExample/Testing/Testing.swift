@@ -17,7 +17,7 @@ struct Testing: View {
                 .foregroundColor(.secondary)
                 .frame(maxWidth: .infinity, alignment: .leading)
         ) {
-            Group {
+            VStack {
                 InsideNavigationView()
                 MenuComparisonView()
                 UIKitMenuView()
