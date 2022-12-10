@@ -53,10 +53,12 @@ public struct WindowReader<Content: View>: View {
     }
 
     public var body: some View {
-        view(windowViewModel.window) // TODO: This is kind of hacky, there should be a better way
+        view(windowViewModel.window)
+//            .id(windowViewModel.window)
             .background(
                 WindowHandlerRepresentable(windowViewModel: windowViewModel)
             )
+        
     }
 
     /// A wrapper view to read the parent window.

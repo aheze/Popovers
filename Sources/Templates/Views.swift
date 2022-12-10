@@ -59,11 +59,9 @@ public extension Templates {
                     if child.id != last {
                         Divider()
                             .opacity(color == nil ? 1 : 0)
-                            .overlay {
-                                if let color = color {
-                                    Color(uiColor: color)
-                                }
-                            }
+                            .overlay(
+                                color.map { Color($0) } ?? .clear /// If we drop iOS 14 support, we can use `.overlay {}` and add an `if-else` statement here.
+                            )
                             .padding(.leading, leadingMargin)
                             .padding(.trailing, trailingMargin)
                     }
