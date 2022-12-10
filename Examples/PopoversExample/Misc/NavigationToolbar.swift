@@ -1,5 +1,5 @@
 //
-//  ContentViewToolbar.swift
+//  NavigationToolbar.swift
 //  PopoversXcodeApp
 //
 //  Created by A. Zheng (github.com/aheze) on 12/23/21.
@@ -10,7 +10,7 @@ import Popovers
 import SwiftUI
 import WebKit
 
-struct ContentViewToolbar: ViewModifier {
+struct NavigationToolbar: ViewModifier {
     @State var presentInfo = false
     @State var presentDocumentation = false
 
@@ -64,13 +64,6 @@ struct ContentViewToolbar: ViewModifier {
                     }
                 }
             }
-    }
-}
-
-struct ContentViewToolbar_Previews: PreviewProvider {
-    static var previews: some View {
-        Text("Hello, world!")
-            .modifier(ContentViewToolbar())
     }
 }
 

@@ -36,7 +36,7 @@ struct ContentView: View {
             }
             .background(Color(uiColor: .secondarySystemBackground))
             .navigationTitle("Popovers")
-            .modifier(ContentViewToolbar())
+            .modifier(NavigationToolbar())
         }
         .navigationViewStyle(.stack)
     }
