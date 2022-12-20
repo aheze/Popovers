@@ -20,6 +20,7 @@ public extension Templates {
         public var clipContent = true /// Replicate the system's default clipping animation.
         public var clipAlignment = Alignment.top /// Which edge the clipping animation should be animate from.
         public var sourceFrameInset = UIEdgeInsets(top: -8, left: -8, bottom: -8, right: -8)
+        public var screenEdgePadding = UIEdgeInsets(top: 48, left: 16, bottom: 32, right: 16)
         public var originAnchor = Popover.Attributes.Position.Anchor.bottom /// The label's anchor.
         public var popoverAnchor = Popover.Attributes.Position.Anchor.top /// The menu's anchor.
         public var scaleAnchor: Popover.Attributes.Position.Anchor? /// If nil, the anchor will be automatically picked.
@@ -45,6 +46,7 @@ public extension Templates {
             clipContent: Bool = true,
             clipAlignment: Alignment = .top,
             sourceFrameInset: UIEdgeInsets = .init(top: -8, left: -8, bottom: -8, right: -8),
+            screenEdgePadding: UIEdgeInsets = .init(top: 48, left: 16, bottom: 32, right: 16),
             originAnchor: Popover.Attributes.Position.Anchor = .bottom,
             popoverAnchor: Popover.Attributes.Position.Anchor = .top,
             scaleAnchor: Popover.Attributes.Position.Anchor? = nil,
@@ -67,6 +69,7 @@ public extension Templates {
             self.clipContent = clipContent
             self.clipAlignment = clipAlignment
             self.sourceFrameInset = sourceFrameInset
+            self.screenEdgePadding = screenEdgePadding
             self.originAnchor = originAnchor
             self.popoverAnchor = popoverAnchor
             self.scaleAnchor = scaleAnchor

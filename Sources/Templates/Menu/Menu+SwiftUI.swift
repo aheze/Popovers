@@ -115,6 +115,7 @@ public extension Templates {
                                     + model.configuration.excludedFrames()
                             }
                             $0.sourceFrameInset = model.configuration.sourceFrameInset
+                            $0.screenEdgePadding = model.configuration.screenEdgePadding
                         }
                     ) {
                         MenuView(

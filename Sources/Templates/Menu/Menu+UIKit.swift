@@ -145,6 +145,7 @@ public extension Templates {
                     + configuration.excludedFrames()
             }
             popover.attributes.sourceFrameInset = configuration.sourceFrameInset
+            popover.attributes.screenEdgePadding = configuration.screenEdgePadding
 
             /**
              Make sure to set `model.present` back to false when the menu is dismissed.
