@@ -24,7 +24,7 @@ public extension Templates {
         /// The shadow's y offset.
         public var y = CGFloat(0)
     
-        public static let system = Self(
+        public static var system = Self(
             color: Color(.label.withAlphaComponent(0.25)),
             radius: 40,
             x: 0,
