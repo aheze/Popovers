@@ -14,7 +14,7 @@ public extension Templates {
      A built-from-scratch version of the system menu.
      */
     @available(iOS 14.0, *)
-    struct Menu<Label: View, Content: View>: View {
+    struct Menu<GeneratorLabel: View, Content: View>: View {
         /// View model for the menu buttons. Should be `StateObject` to avoid getting recreated by SwiftUI, but this works on iOS 13.
         @StateObject var model: MenuModel
 
@@ -28,7 +28,7 @@ public extension Templates {
         public let content: () -> Content
 
         /// The origin label.
-        public let label: (Bool) -> Label
+        public let label: (Bool) -> GeneratorLabel
 
         /// Fade the origin label.
         @State var fadeLabel = false
@@ -40,7 +40,7 @@ public extension Templates {
             present: Binding<Bool> = .constant(false),
             configuration buildConfiguration: @escaping ((inout MenuConfiguration) -> Void) = { _ in },
             @ViewBuilder content: @escaping () -> Content,
-            @ViewBuilder label: @escaping (Bool) -> Label
+            @ViewBuilder label: @escaping (Bool) -> GeneratorLabel
         ) {
             _overridePresent = present
             _model = StateObject(wrappedValue: MenuModel(buildConfiguration: buildConfiguration))
