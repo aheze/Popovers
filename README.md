@@ -10,7 +10,7 @@ A library to present popovers.
 - Highly customizable API that's super simple — just add `.popover`.
 - Drop-in replacement for iOS 14's `Menu` that works on iOS 13.
 - SwiftUI-based core for a lightweight structure. 0 dependencies.
-- It's 2022 — about time that popovers got interesting!
+- It's 2023 — about time that popovers got interesting!
 
 ## Showroom
 
