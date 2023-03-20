@@ -35,13 +35,13 @@ struct NavigationDestinationView: View {
         }
         .cornerRadius(10)
         .padding()
-        .background(Color(uiColor: .secondarySystemBackground))
+        .background(Color(.secondarySystemBackground))
         .navigationBarTitleDisplayMode(.inline)
         .navigationViewStyle(.stack)
         .popover(present: $present) {
             Text("Popovers should work when attached to `NavigationView`s without interfering with system animations.")
                 .padding()
-                .background(.background)
+                .background(Color(.systemBackground))
                 .cornerRadius(12)
                 .shadow(radius: 1)
                 .frame(maxWidth: 300)

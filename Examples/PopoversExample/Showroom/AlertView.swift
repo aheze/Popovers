@@ -86,7 +86,7 @@ struct AlertViewPopover: View {
             }
             .buttonStyle(Templates.AlertButtonStyle())
         }
-        .background(Color(uiColor: .systemBackground))
+        .background(Color(.systemBackground))
         .cornerRadius(16)
         .popoverShadow(shadow: .system)
         .frame(width: 260)

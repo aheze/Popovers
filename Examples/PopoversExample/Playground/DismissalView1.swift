@@ -90,7 +90,7 @@ struct DismissalPopover1: View {
         }
         .frame(maxWidth: 300)
         .padding()
-        .background(.background)
+        .background(Color(.systemBackground))
         .cornerRadius(12)
         .shadow(radius: 1)
         .scaleEffect(expanding ? 1.05 : 1)

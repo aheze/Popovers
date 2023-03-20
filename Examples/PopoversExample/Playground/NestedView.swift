@@ -36,7 +36,7 @@ struct NestedViewPopover: View {
             Text("You can stack popovers! Press me.")
                 .foregroundColor(Color(uiColor: UIColor(hex: 0x0081E8)))
                 .padding()
-                .background(.background)
+                .background(Color(.systemBackground))
                 .cornerRadius(12)
                 .shadow(radius: 1)
                 .popover(

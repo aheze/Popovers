@@ -48,7 +48,7 @@ struct SelectionView: View {
                 .frame(maxWidth: .infinity)
             }
             .padding()
-            .background(.background)
+            .background(Color(.systemBackground))
             .cornerRadius(12)
             .shadow(radius: 1)
             .frame(maxWidth: 300)
@@ -82,7 +82,7 @@ struct SelectionViewButton: View {
                 }
             }
             .padding()
-            .background(.background)
+            .background(Color(.systemBackground))
             .cornerRadius(12)
             .shadow(radius: 1)
             .zIndex(1)

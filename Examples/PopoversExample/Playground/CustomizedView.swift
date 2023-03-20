@@ -35,7 +35,7 @@ struct CustomizedView: View {
                 }
             }
             .padding()
-            .background(.background)
+            .background(Color(.systemBackground))
             .cornerRadius(12)
             .shadow(radius: 1)
             .frame(maxWidth: 300)

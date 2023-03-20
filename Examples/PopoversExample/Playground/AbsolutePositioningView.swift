@@ -49,7 +49,7 @@ struct AbsolutePositioningView: View {
                 }
             }
             .padding()
-            .background(.background)
+            .background(Color(.systemBackground))
             .cornerRadius(12)
             .shadow(radius: 1)
         }

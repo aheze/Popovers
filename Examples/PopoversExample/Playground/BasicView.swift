@@ -23,7 +23,7 @@ struct BasicView: View {
         .popover(present: $present) {
             Text("Hello! I'm a popover. You can dismiss me by tapping outside. Also, try dragging me to get a nice bounce.")
                 .padding()
-                .background(.background)
+                .background(Color(.systemBackground))
                 .cornerRadius(12)
                 .shadow(radius: 1)
                 .frame(maxWidth: 300)
