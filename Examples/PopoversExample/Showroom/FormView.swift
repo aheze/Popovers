@@ -64,11 +64,9 @@ private struct WarningAccessoryModifier: ViewModifier {
                         $0.sourceFrameInset.bottom = -26
                     }
                 ) {
-                    if let warning = warning {
-                        Templates.Container {
-                            Text(warning)
-                                .font(.caption)
-                        }
+                    Templates.Container {
+                        Text(warning)
+                            .font(.caption)
                     }
                 }
 
