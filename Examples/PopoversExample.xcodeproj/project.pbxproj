@@ -50,7 +50,6 @@
 
 /* Begin PBXFileReference section */
 		3C5DB8B7294530EF00017ADE /* Popovers */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Popovers; path = ..; sourceTree = "<group>"; };
-		3C6C745127822EE600E039F0 /* Popovers */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Popovers; path = ../..; sourceTree = "<group>"; };
 		3C73924D27AF8496006A56E7 /* UIKitMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKitMenuView.swift; sourceTree = "<group>"; };
 		3C8521B527ACADB30020ECB8 /* InsideNavigationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsideNavigationView.swift; sourceTree = "<group>"; };
 		3CA34FAB279533E300AC36DF /* AccessibilityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessibilityView.swift; sourceTree = "<group>"; };
@@ -128,7 +127,6 @@
 		3CBD874327755E19005BBA48 = {
 			isa = PBXGroup;
 			children = (
-				3C6C745127822EE600E039F0 /* Popovers */,
 				3C5DB8B7294530EF00017ADE /* Popovers */,
 				3CBD874E27755E19005BBA48 /* PopoversExample */,
 				3CBD874D27755E19005BBA48 /* Products */,
