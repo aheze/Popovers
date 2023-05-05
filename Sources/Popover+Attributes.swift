@@ -6,6 +6,7 @@
 //  Copyright © 2023 A. Zheng. All rights reserved.
 //
 
+#if os(iOS)
 import SwiftUI
 
 extension Popover {
@@ -304,3 +305,4 @@ extension Popover {
         }
     }
 }
+#endif
