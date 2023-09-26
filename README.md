@@ -932,6 +932,12 @@ Popovers is made by [aheze](https://github.com/aheze). | All contributions are w
   <img src="https://raw.githubusercontent.com/aheze/OpenFind/main/Assets/v3%20Thumbnail.jpg" height="300" alt="Find App">
 </a>
 
+[AnyTracker](https://apps.apple.com/app/anytracker-track-anything/id6450756953) is an app that tracks numbers, text and prices on websites. It uses Popovers to display sleek dialogs with a nice background blur.
+
+<a href="https://anytracker.org/">
+  <img src="https://raw.githubusercontent.com/shervinkoushan/AnyTracker-assets/main/Feature%20graphic.png" height="260" alt="AnyTracker">
+</a>
+
 If you have an app that uses Popovers, just make a PR or [message me](https://twitter.com/aheze0).
 
 ## License
