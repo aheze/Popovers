@@ -44,7 +44,7 @@ public extension Templates {
                         \
              rectangle  |
          */
-        public static var arrowSidePadding = CGFloat(2.8)
+        public static var arrowSidePadding = CGFloat(3.5)
 
         /// Path for the triangular arrow.
         public func arrowPath() -> Path {
