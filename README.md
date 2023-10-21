@@ -938,6 +938,16 @@ Popovers is made by [aheze](https://github.com/aheze). | All contributions are w
   <img src="https://raw.githubusercontent.com/shervinkoushan/AnyTracker-assets/main/Feature%20graphic.png" height="260" alt="AnyTracker">
 </a>
 
+<p>&nbsp;</p>
+
+[Track Attack!](https://apps.apple.com/us/app/track-attack/id1557802135) is the ultimate vehicle enthusiast app for the road and track. Modern UI. Dual front & rear cameras. GPS & sensor data. RPM and throttle. Heart rate with Apple Watch. Lap timing for the track & multi-waypoint routing for the road. Easily export and share video with data overlays. Track Attack uses Popovers to display the onboarding tutorial and in-app notifications.
+
+<a href="https://www.trackattack.app">
+  <img src="https://raw.githubusercontent.com/velocitylabs-ai/trackattack/bbfd440c42b4f0a1bbd70566aea3846b9a983c1c/assets/track-attack-porsche-logo.jpg" height="260" alt="TrackAttack">
+</a>
+
+<p>&nbsp;</p>
+
 If you have an app that uses Popovers, just make a PR or [message me](https://twitter.com/aheze0).
 
 ## License
