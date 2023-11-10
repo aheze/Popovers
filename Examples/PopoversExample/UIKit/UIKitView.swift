@@ -1,5 +1,5 @@
 //
-//  UIKit.swift
+//  UIKitView.swift
 //  PopoversExample
 //
 //  Created by A. Zheng (github.com/aheze) on 12/23/21.
@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-struct UIKit: View {
+struct UIKitView: View {
     var body: some View {
         Section(
             header:

@@ -27,7 +27,7 @@ struct ContentView: View {
                 ) {
                     Playground()
                     Showroom()
-                    UIKit()
+                    UIKitView()
                     Testing()
 
                     Color.clear.frame(height: 40)
