@@ -8,6 +8,7 @@
 
 #if os(iOS)
 import SwiftUI
+import Combine
 
 // MARK: - Shadows
 
@@ -349,4 +350,20 @@ extension ForEach: DynamicViewContentProvider where Content: View {
         return AnyView(content(data[dataIndex]))
     }
 }
+
+// MARK: Backport
+
+extension View {
+    /// A backwards compatible wrapper for iOS 14 `onChange`
+    @ViewBuilder func onChange<T: Equatable>(of value: T, do: @escaping (T) -> Void) -> some View {
+        if #available(iOS 14.0, *) {
+            self.onChange(of: value, perform: `do`)
+        } else {
+            self.onReceive(Just(value)) { (value) in
+                `do`(value)
+            }
+        }
+    }
+}
+
 #endif
