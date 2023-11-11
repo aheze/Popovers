@@ -46,6 +46,16 @@ public extension Templates {
          */
         public static var arrowSidePadding = CGFloat(2.8)
 
+        /**
+         A shape that has an arrow protruding.
+         - parameter arrowSide: The side of the rectangle to have the arrow.
+         - parameter cornerRadius: The shape's corner radius
+         */
+        public init(arrowSide: ArrowSide, cornerRadius: CGFloat) {
+            self.arrowSide = arrowSide
+            self.cornerRadius = cornerRadius
+        }
+
         /// Path for the triangular arrow.
         public func arrowPath() -> Path {
             let arrowHalfWidth = (BackgroundWithArrow.width / 2) * 0.6
