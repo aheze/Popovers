@@ -186,7 +186,7 @@ public extension UIViewController {
     }
 }
 
-extension UIView {
+public extension UIView {
     var popoverContainerView: PopoverGestureContainer? {
         if let container = self as? PopoverGestureContainer {
             return container

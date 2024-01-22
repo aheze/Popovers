@@ -10,7 +10,7 @@
 import SwiftUI
 
 /// A hosting view for `PopoverContainerView` with tap filtering.
-class PopoverGestureContainer: UIView {
+public class PopoverGestureContainer: UIView {
     /// A closure to be invoked when this view is inserted into a window's view hierarchy.
     var onMovedToWindow: (() -> Void)?
 
@@ -25,7 +25,7 @@ class PopoverGestureContainer: UIView {
     /// If this is nil, the view hasn't been laid out yet.
     var previousBounds: CGRect?
 
-    override func layoutSubviews() {
+    public override func layoutSubviews() {
         super.layoutSubviews()
 
         /// Only update frames on a bounds change.
@@ -40,7 +40,7 @@ class PopoverGestureContainer: UIView {
 
     private lazy var host: UIHostingController<AnyView> = UIHostingController(rootView: AnyView(PopoverContainerView(popoverModel: popoverModel)))
     
-    override func didMoveToWindow() {
+    public override func didMoveToWindow() {
         super.didMoveToWindow()
 
         /// There might not be a window yet, but that's fine. Just wait until there's actually a window.
@@ -68,7 +68,7 @@ class PopoverGestureContainer: UIView {
 
      The popover container view takes up the entire screen, so normally it would block all touches from going through. This method fixes that.
      */
-    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+    public override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
         /// Make sure the hit event was actually a touch and not a cursor hover or something else.
         guard event.map({ $0.type == .touches }) ?? true else { return nil }
 
@@ -150,7 +150,7 @@ class PopoverGestureContainer: UIView {
     }
 
     /// Dismiss all popovers if the accessibility escape gesture was performed.
-    override func accessibilityPerformEscape() -> Bool {
+    public override func accessibilityPerformEscape() -> Bool {
         for popover in popoverModel.popovers {
             popover.dismiss()
         }
