@@ -79,7 +79,7 @@ public extension Popover {
         internal var onDisappear: (() -> Void)?
         
         /// The `UIView` presenting this `Popover`, or `nil` if no popovers are currently being presented.
-        internal var presentedPopoverContainer: UIView?
+        public var presentedPopoverContainer: UIView?
         
         internal var windowSublayersKeyValueObservationToken: NSKeyValueObservation?
         
