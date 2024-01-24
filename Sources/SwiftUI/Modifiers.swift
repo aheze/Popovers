@@ -72,7 +72,9 @@ struct PopoverModifier: ViewModifier {
 
                 /// Detect a state change in `$present`.
                 .onChange(of: present) { [oldValue = present] newValue in
-
+                    
+                    guard oldValue != newValue else { return }
+                    
                     /// Make sure there is a window first.
                     var window: UIWindow! = readWindow
                     if window == nil {
