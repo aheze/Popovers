@@ -71,7 +71,7 @@ struct PopoverModifier: ViewModifier {
                 }
 
                 /// Detect a state change in `$present`.
-                .onValueChange(of: present) { oldValue, newValue in
+                .onChange(of: present) { [oldValue = present] newValue in
 
                     /// Make sure there is a window first.
                     var window: UIWindow! = readWindow
@@ -214,7 +214,7 @@ struct MultiPopoverModifier: ViewModifier {
                 }
 
                 /// `$selection` was changed, determine if the popover should be presented, animated, or dismissed.
-                .onValueChange(of: selection) { oldSelection, newSelection in
+                .onChange(of: selection) { [oldSelection = selection] newSelection in
 
                     /// Make sure there is a window first.
                     var window: UIWindow! = readWindow

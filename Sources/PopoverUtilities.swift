@@ -35,7 +35,7 @@ public extension View {
                 let frame = geometry.frame(in: coordinateSpace)
 
                 Color.clear
-                    .onValueChange(of: frame) { _, newValue in
+                    .onChange(of: frame) { newValue in
                         rect(newValue)
                     }
                     .onAppear {
@@ -61,7 +61,7 @@ public extension View {
                             size(newValue)
                         }
                     }
-                    .onValueChange(of: transaction?.animation) { _, _ in
+                    .onChange(of: transaction?.animation) { _ in
                         DispatchQueue.main.async {
                             size(geometry.size)
                         }
@@ -175,44 +175,6 @@ public extension UIEdgeInsets {
     /// Create equal insets on all 4 sides.
     init(_ inset: CGFloat) {
         self = UIEdgeInsets(top: inset, left: inset, bottom: inset, right: inset)
-    }
-}
-
-/// Detect changes in bindings (fallback of `.onChange` for iOS 13+). From https://stackoverflow.com/a/64402663/14351818
-struct ChangeObserver<Content: View, Value: Equatable>: View {
-    let content: Content
-    let value: Value
-    let action: (Value, Value) -> Void
-
-    init(value: Value, action: @escaping (Value, Value) -> Void, content: @escaping () -> Content) {
-        self.value = value
-        self.action = action
-        self.content = content()
-        _oldValue = State(initialValue: value)
-    }
-
-    @State private var oldValue: Value
-
-    var body: some View {
-        DispatchQueue.main.async {
-            if oldValue != value {
-                action(oldValue, value)
-                oldValue = value
-            }
-        }
-        return content
-    }
-}
-
-public extension View {
-    /// Detect changes in bindings (fallback of `.onChange` for iOS 13+).
-    func onValueChange<Value: Equatable>(
-        of value: Value,
-        perform action: @escaping (_ oldValue: Value, _ newValue: Value) -> Void
-    ) -> some View {
-        ChangeObserver(value: value, action: action) {
-            self
-        }
     }
 }
 

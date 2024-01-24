@@ -82,7 +82,7 @@ public extension Templates {
                                 }
                             }
                     )
-                    .onValueChange(of: model.present) { _, present in
+                    .onChange(of: model.present) { present in
                         if !present {
                             withAnimation(model.configuration.labelFadeAnimation) {
                                 fadeLabel = false
@@ -92,7 +92,7 @@ public extension Templates {
                             overridePresent = present
                         }
                     }
-                    .onValueChange(of: overridePresent) { _, present in
+                    .onChange(of: overridePresent) { present in
                         if present != model.present {
                             model.present = present
                             withAnimation(model.configuration.labelFadeAnimation) {
