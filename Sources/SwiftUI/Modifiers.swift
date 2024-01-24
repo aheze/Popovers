@@ -21,8 +21,6 @@ struct PopoverModifier: ViewModifier {
      */
     @Binding var present: Bool
 
-    @State private var foo = UUID()
-    
     /// Build the attributes.
     let buildAttributes: (inout Popover.Attributes) -> Void
 
