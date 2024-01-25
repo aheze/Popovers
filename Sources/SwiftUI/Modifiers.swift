@@ -218,6 +218,8 @@ struct MultiPopoverModifier: ViewModifier {
                 /// `$selection` was changed, determine if the popover should be presented, animated, or dismissed.
                 .onChange(of: selection) { [oldSelection = selection] newSelection in
 
+                    guard oldSelection != newSelection else { return }
+                    
                     /// Make sure there is a window first.
                     var window: UIWindow! = readWindow
                     if window == nil {
