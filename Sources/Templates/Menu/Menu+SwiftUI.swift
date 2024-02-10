@@ -13,7 +13,7 @@ public extension Templates {
     /**
      A built-from-scratch version of the system menu.
      */
-    @available(iOS 14.0, *)
+    @available(iOS 15.0, *)
     struct Menu<GeneratorLabel: View, Content: View>: View {
         /// View model for the menu buttons. Should be `StateObject` to avoid getting recreated by SwiftUI, but this works on iOS 13.
         @StateObject var model: MenuModel

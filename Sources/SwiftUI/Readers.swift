@@ -69,7 +69,7 @@ public struct WindowReader<Content: View>: View {
             return WindowHandler(windowViewModel: self.windowViewModel)
         }
 
-        func updateUIView(_: WindowHandler, context _: Context) {}
+        func updateUIView(_: WindowHandler, context _: Context) { }
     }
 
     private class WindowHandler: UIView {
