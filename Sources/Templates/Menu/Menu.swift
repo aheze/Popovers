@@ -199,7 +199,7 @@ public extension Templates {
                     }
                     model.frames[itemID] = frame
                 }
-                .onValueChange(of: model.selectedItemID) { _, newValue in
+                .onChange(of: model.selectedItemID) { newValue in
                     if newValue == itemID {
                         action()
                     }

@@ -71,8 +71,10 @@ struct PopoverModifier: ViewModifier {
                 }
 
                 /// Detect a state change in `$present`.
-                .onValueChange(of: present) { oldValue, newValue in
-
+                .onChange(of: present) { [oldValue = present] newValue in
+                    
+                    guard oldValue != newValue else { return }
+                    
                     /// Make sure there is a window first.
                     var window: UIWindow! = readWindow
                     if window == nil {
@@ -214,8 +216,10 @@ struct MultiPopoverModifier: ViewModifier {
                 }
 
                 /// `$selection` was changed, determine if the popover should be presented, animated, or dismissed.
-                .onValueChange(of: selection) { oldSelection, newSelection in
+                .onChange(of: selection) { [oldSelection = selection] newSelection in
 
+                    guard oldSelection != newSelection else { return }
+                    
                     /// Make sure there is a window first.
                     var window: UIWindow! = readWindow
                     if window == nil {

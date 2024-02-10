@@ -13,7 +13,7 @@ public extension Templates {
     /**
      A built-from-scratch version of the system menu.
      */
-    @available(iOS 14.0, *)
+    @available(iOS 15.0, *)
     struct Menu<GeneratorLabel: View, Content: View>: View {
         /// View model for the menu buttons. Should be `StateObject` to avoid getting recreated by SwiftUI, but this works on iOS 13.
         @StateObject var model: MenuModel
@@ -82,7 +82,7 @@ public extension Templates {
                                 }
                             }
                     )
-                    .onValueChange(of: model.present) { _, present in
+                    .onChange(of: model.present) { present in
                         if !present {
                             withAnimation(model.configuration.labelFadeAnimation) {
                                 fadeLabel = false
@@ -92,7 +92,7 @@ public extension Templates {
                             overridePresent = present
                         }
                     }
-                    .onValueChange(of: overridePresent) { _, present in
+                    .onChange(of: overridePresent) { present in
                         if present != model.present {
                             model.present = present
                             withAnimation(model.configuration.labelFadeAnimation) {
