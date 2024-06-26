@@ -24,7 +24,9 @@ public class PopoverGestureContainer: UIView {
 
     /// If this is nil, the view hasn't been laid out yet.
     var previousBounds: CGRect?
-
+    
+    private lazy var host: UIHostingController<AnyView> = UIHostingController(rootView: AnyView(PopoverContainerView(popoverModel: popoverModel)))
+    
     public override func layoutSubviews() {
         super.layoutSubviews()
 
@@ -45,15 +47,21 @@ public class PopoverGestureContainer: UIView {
         guard let window = window else { return }
 
         /// Create the SwiftUI view that contains all the popovers.
-        let popoverContainerView = PopoverContainerView(popoverModel: popoverModel)
-            .environment(\.window, window) /// Inject the window.
-
-        let hostingController = UIHostingController(rootView: popoverContainerView)
-        hostingController.view.frame = bounds
-        hostingController.view.backgroundColor = .clear
-        hostingController.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-
-        addSubview(hostingController.view)
+//        let popoverContainerView = PopoverContainerView(popoverModel: popoverModel)
+//            .environment(\.window, window) /// Inject the window.
+//
+//        let hostingController = UIHostingController(rootView: popoverContainerView)
+//        hostingController.view.frame = bounds
+//        hostingController.view.backgroundColor = .clear
+//        hostingController.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+//
+//        addSubview(hostingController.view)
+        host.rootView = AnyView(host.rootView.environment(\.window, window)) // Inject the window.
+        host.view.frame = bounds
+        host.view.backgroundColor = .clear
+        host.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        
+        addSubview(host.view)
 
         /// Ensure the view is laid out so that SwiftUI animations don't stutter.
         setNeedsLayout()

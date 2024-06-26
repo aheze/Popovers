@@ -16,7 +16,7 @@ import SwiftUI
  Each view model is scoped to a window, which retains the view model.
  Presenting or otherwise managing a popover automatically scopes interactions to the window of the current view hierarchy.
  */
-class PopoverModel: ObservableObject {
+public class PopoverModel: ObservableObject {
     /// The currently-presented popovers. The oldest are in front, the newest at the end.
     @Published var popovers = [Popover]()
 
