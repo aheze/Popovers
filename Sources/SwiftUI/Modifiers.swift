@@ -80,7 +80,7 @@ struct PopoverModifier: ViewModifier {
                     if window == nil {
                         print("[Popovers] - No window was found when presenting popover, falling back to key window. Please file a bug report (https://github.com/aheze/Popovers/issues).")
 
-                        if let keyWindow = UIApplication.shared.connectedScenes.compactMap({ $0 as? UIWindowScene }).flatMap({ $0.windows }).last({ $0.isKeyWindow }) {
+                        if let keyWindow = UIApplication.shared.connectedScenes.compactMap({ $0 as? UIWindowScene }).flatMap({ $0.windows }).last(where: { $0.isKeyWindow }) {
                             window = keyWindow
                         } else {
                             print("[Popovers] - Key window was not found either, skipping popover presentation.")
@@ -225,7 +225,7 @@ struct MultiPopoverModifier: ViewModifier {
                     if window == nil {
                         print("[Popovers] - No window was found when presenting popover, falling back to key window. Please file a bug report (https://github.com/aheze/Popovers/issues).")
 
-                        if let keyWindow = UIApplication.shared.connectedScenes.compactMap({ $0 as? UIWindowScene }).flatMap({ $0.windows }).last({ $0.isKeyWindow }) {
+                        if let keyWindow = UIApplication.shared.connectedScenes.compactMap({ $0 as? UIWindowScene }).flatMap({ $0.windows }).last(where: { $0.isKeyWindow }) {
                             window = keyWindow
                         } else {
                             print("[Popovers] - Key window was not found either, skipping popover presentation.")
