@@ -79,7 +79,7 @@ public extension Popover {
         internal var onDisappear: (() -> Void)?
         
         /// The `PopoverContainerViewController` presenting this `Popover`, or `nil` if the popover is currently not being presented.
-        internal var presentedPopoverViewController: PopoverContainerViewController?
+        public var presentedPopoverViewController: PopoverContainerViewController?
         
         internal var windowSublayersKeyValueObservationToken: NSKeyValueObservation?
         
