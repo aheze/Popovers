@@ -39,8 +39,10 @@ extension Popover {
         /// Inset the source frame by this.
         public var sourceFrameInset = UIEdgeInsets.zero
         
-        public var source = Source.stayAboveWindows
-        
+        // TODO: stayAboveWindows removed until needed
+//        public var source = Source.stayAboveWindows
+        public var source = Source.aboveCurrentWindow
+
         /// Padding to prevent the popover from overflowing off the screen.
         public var screenEdgePadding = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
         
