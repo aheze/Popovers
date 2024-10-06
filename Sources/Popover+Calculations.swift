@@ -20,7 +20,7 @@ public extension Popover {
 
     /// Calculate the popover's frame based on its size and position.
     func calculateFrame(from size: CGSize?) -> CGRect {
-        guard let window = context.presentedPopoverContainer?.window else { return .zero }
+        guard let window = context.presentedPopoverViewController?.view.window else { return .zero }
 
         switch attributes.position {
         case let .absolute(originAnchor, popoverAnchor):

@@ -53,7 +53,7 @@ public extension Popover {
         }
         
         public var window: UIWindow {
-            if let window = presentedPopoverContainer?.window {
+            if let window = presentedPopoverViewController?.view.window {
                 return window
             } else {
                 print("[Popovers] - This popover is not tied to a window. Please file a bug report (https://github.com/aheze/Popovers/issues).")
@@ -65,7 +65,7 @@ public extension Popover {
          The bounds of the window in which the `Popover` is being presented, or the `zero` frame if the popover has not been presented yet.
          */
         public var windowBounds: CGRect {
-            presentedPopoverContainer?.window?.bounds ?? .zero
+            presentedPopoverViewController?.view.window?.bounds ?? .zero
         }
         
         /**
@@ -78,14 +78,14 @@ public extension Popover {
         /// Invoked by the SwiftUI container view when the view has fully disappeared.
         internal var onDisappear: (() -> Void)?
         
-        /// The `UIView` presenting this `Popover`, or `nil` if no popovers are currently being presented.
-        public var presentedPopoverContainer: UIView?
+        /// The `PopoverContainerViewController` presenting this `Popover`, or `nil` if the popover is currently not being presented.
+        internal var presentedPopoverViewController: PopoverContainerViewController?
         
         internal var windowSublayersKeyValueObservationToken: NSKeyValueObservation?
         
         /// The `PopoverModel` managing the `Popover`. Sourced from the `presentedPopoverViewController`.
         private var popoverModel: PopoverModel? {
-            return presentedPopoverContainer?.popoverModel
+            return presentedPopoverViewController?.view.popoverModel
         }
         
         /// Create a context for the popover. You shouldn't need to use this - it's done automatically when you create a new popover.
