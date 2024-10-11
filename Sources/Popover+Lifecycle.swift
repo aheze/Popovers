@@ -15,7 +15,7 @@ public extension Popover {
     /**
      Present a popover in a window. It may be easier to use the `UIViewController.present(_:)` convenience method instead.
      */
-    internal func present(in window: UIWindow) {
+    internal func present(in window: UIWindow, forwardBaseTouchesTo: UIView?) {
         /// Create a transaction for the presentation animation.
         let transaction = Transaction(animation: attributes.presentation.animation)
 
@@ -36,6 +36,8 @@ public extension Popover {
         } else {
             popoverViewController = PopoverContainerViewController()
         }
+        
+        popoverViewController.forwardBaseTouchesTo = forwardBaseTouchesTo
         
         /// Hang on to the container for future dismiss/replace actions.
         context.presentedPopoverViewController = popoverViewController
@@ -179,13 +181,13 @@ public extension UIResponder {
     }
 }
 
-public extension UIViewController {
-    /// Present a `Popover` using this `UIViewController` as its presentation context.
-    func present(_ popover: Popover) {
-        guard let window = view.window else { return }
-        popover.present(in: window)
-    }
-}
+//public extension UIViewController {
+//    /// Present a `Popover` using this `UIViewController` as its presentation context.
+//    func present(_ popover: Popover) {
+//        guard let window = view.window else { return }
+//        popover.present(in: window)
+//    }
+//}
 
 extension UIApplication {
     var mainKeyWindow: UIWindow? {

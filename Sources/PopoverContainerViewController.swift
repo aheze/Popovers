@@ -11,7 +11,8 @@ import SwiftUI
 /**
  The View Controller that hosts `PopoverContainerView`. This is automatically managed.
  */
-public class PopoverContainerViewController: UIViewController {
+//public class PopoverContainerViewController: UIViewController {
+public class PopoverContainerViewController: HostingParentController {
     /// The `UIView` used to handle gesture interactions for popovers.
     private var popoverGestureContainerView: PopoverGestureContainer?
     
@@ -44,10 +45,9 @@ public class PopoverContainerViewController: UIViewController {
         previousBounds = view.bounds
     }
     
-    override public func loadView() {
-        /**
-         Instantiate the base `view`.
-         */
+    override public func viewDidLoad() {
+        super.viewDidLoad()
+//    override public func loadView() {
         popoverGestureContainerView = PopoverGestureContainer(windowAvailable: { [unowned self] window in
             /// Embed `PopoverContainerView` in a view controller.
             let popoverContainerView = PopoverContainerView(popoverModel: popoverModel)
@@ -64,9 +64,11 @@ public class PopoverContainerViewController: UIViewController {
             hostingController.didMove(toParent: self)
         })
         
-        view = popoverGestureContainerView
-        view.backgroundColor = .clear
-        view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        makeBackgroundsClear = false
+        if let popoverGestureContainerView {
+            popoverGestureContainerView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+            view.addSubview(popoverGestureContainerView)
+        }
     }
     
     override public func viewWillAppear(_ animated: Bool) {
@@ -176,6 +178,7 @@ public class PopoverContainerViewController: UIViewController {
                     } else {
 //                        return nil
                         return presentingViewGestureTarget?.hitTest(point, with: event)
+//                        return presentingViewGestureTarget?.superview?.hitTest(point, with: event)
                     }
                 }
                 
