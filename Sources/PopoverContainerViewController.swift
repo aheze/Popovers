@@ -158,7 +158,8 @@ public class PopoverContainerViewController: UIViewController {
                     if allowedFrames.contains(where: { $0.contains(point) }) {
                         dismissPopoverIfNecessary(popoverToDismiss: popover)
                         
-                        return nil
+//                        return nil
+                        return presentingViewGestureTarget?.hitTest(point, with: event) ?? super.hitTest(point, with: event)
                     } else {
                         /// Receive the touch and block it from going through.
                         return super.hitTest(point, with: event)
@@ -172,7 +173,8 @@ public class PopoverContainerViewController: UIViewController {
                         /// The touch hit an excluded view, so don't dismiss it.
                         return super.hitTest(point, with: event)
                     } else {
-                        return nil
+//                        return nil
+                        return presentingViewGestureTarget?.hitTest(point, with: event) ?? super.hitTest(point, with: event)
                     }
                 }
                 
