@@ -181,7 +181,8 @@ public class PopoverContainerViewController: UIViewController {
             }
             
             /// The touch did not hit any popover, so pass it through to the hit testing target.
-            return nil
+//            return nil
+            return presentingViewGestureTarget?.hitTest(point, with: event) ?? super.hitTest(point, with: event)
         }
     }
 }
