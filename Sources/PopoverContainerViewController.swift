@@ -56,7 +56,7 @@ public class PopoverContainerViewController: UIViewController {
             let hostingController = UIHostingController(rootView: popoverContainerView)
             hostingController.view.frame = view.bounds
             hostingController.view.backgroundColor = .clear
-            hostingController.view.backgroundColor = .purple
+            hostingController.view.backgroundColor = UIColor(cgColor: .init(red: 80, green: 4, blue: 90, alpha: 0.3))
             hostingController.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
             
             hostingController.willMove(toParent: self)
