@@ -48,9 +48,9 @@ public extension Popover {
                 model.add(self)
 
                 /// Stop VoiceOver from reading out background views if `blocksBackgroundTouches` is true.
-//                if attributes.blocksBackgroundTouches {
-//                    container.accessibilityViewIsModal = true
-//                }
+                if attributes.blocksBackgroundTouches {
+                    popoverViewController.view.accessibilityViewIsModal = true
+                }
 
                 /// Shift VoiceOver focus to the popover.
                 if attributes.accessibility.shiftFocus {

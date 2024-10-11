@@ -153,8 +153,16 @@ public class PopoverContainerViewController: UIViewController {
                 
                 /// If the popover has `blocksBackgroundTouches` set to true, stop underlying views from receiving the touch.
                 if popover.attributes.blocksBackgroundTouches {
-                    /// Receive the touch and block it from going through.
-                    return super.hitTest(point, with: event)
+                    let allowedFrames = popover.attributes.blocksBackgroundTouchesAllowedFrames()
+                    
+                    if allowedFrames.contains(where: { $0.contains(point) }) {
+                        dismissPopoverIfNecessary(popoverToDismiss: popover)
+                        
+                        return nil
+                    } else {
+                        /// Receive the touch and block it from going through.
+                        return super.hitTest(point, with: event)
+                    }
                 }
                 
                 /// Check if the touch hit an excluded view. If so, don't dismiss it.
@@ -162,7 +170,9 @@ public class PopoverContainerViewController: UIViewController {
                     let excludedFrames = popover.attributes.dismissal.excludedFrames()
                     if excludedFrames.contains(where: { $0.contains(point) }) {
                         /// The touch hit an excluded view, so don't dismiss it.
-                        continue
+                        return super.hitTest(point, with: event)
+                    } else {
+                        return nil
                     }
                 }
                 
@@ -171,7 +181,7 @@ public class PopoverContainerViewController: UIViewController {
             }
             
             /// The touch did not hit any popover, so pass it through to the hit testing target.
-            return presentingViewGestureTarget?.hitTest(point, with: event)
+            return nil
         }
     }
 }
