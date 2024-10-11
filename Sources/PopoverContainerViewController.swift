@@ -56,8 +56,10 @@ public class PopoverContainerViewController: UIViewController {
             let hostingController = UIHostingController(rootView: popoverContainerView)
             hostingController.view.frame = view.bounds
             hostingController.view.backgroundColor = .clear
+            hostingController.view.backgroundColor = .purple
             hostingController.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
             
+            hostingController.willMove(toParent: self)
             addChild(hostingController)
             view.addSubview(hostingController.view)
             hostingController.didMove(toParent: self)
@@ -159,7 +161,7 @@ public class PopoverContainerViewController: UIViewController {
                         dismissPopoverIfNecessary(popoverToDismiss: popover)
                         
 //                        return nil
-                        return presentingViewGestureTarget?.hitTest(point, with: event) ?? nil
+                        return presentingViewGestureTarget?.hitTest(point, with: event)
                     } else {
                         /// Receive the touch and block it from going through.
                         return super.hitTest(point, with: event)
@@ -174,7 +176,7 @@ public class PopoverContainerViewController: UIViewController {
                         return super.hitTest(point, with: event)
                     } else {
 //                        return nil
-                        return presentingViewGestureTarget?.hitTest(point, with: event) ?? nil
+                        return presentingViewGestureTarget?.hitTest(point, with: event)
                     }
                 }
                 
@@ -184,7 +186,7 @@ public class PopoverContainerViewController: UIViewController {
             
             /// The touch did not hit any popover, so pass it through to the hit testing target.
 //            return nil
-            return presentingViewGestureTarget?.hitTest(point, with: event) ?? nil
+            return presentingViewGestureTarget?.hitTest(point, with: event)
         }
     }
 }
