@@ -173,12 +173,15 @@ public class PopoverContainerViewController: HostingParentController {
                 if popover.attributes.dismissal.mode.contains(.tapOutside) {
                     let excludedFrames = popover.attributes.dismissal.excludedFrames()
                     if excludedFrames.contains(where: { $0.contains(point) }) {
-                        /// The touch hit an excluded view, so don't dismiss it.
-                        return super.hitTest(point, with: event)
-                    } else {
-//                        return nil
-                        return presentingViewGestureTarget?.hitTest(point, with: event)
-//                        return presentingViewGestureTarget?.superview?.hitTest(point, with: event)
+                        /**
+                         The touch hit an excluded view, so don't dismiss it.
+                         However, if the touch hit another popover, block it from passing through.
+                         */
+                        if popoverFrames.contains(where: { $0.contains(point) }) {
+                            return super.hitTest(point, with: event)
+                        } else {
+                            return nil
+                        }
                     }
                 }
                 
