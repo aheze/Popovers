@@ -34,7 +34,8 @@ public extension Popover {
         if let existingPopoverViewController = presentingViewController as? PopoverContainerViewController {
             popoverViewController = existingPopoverViewController
         } else {
-            popoverViewController = PopoverContainerViewController()
+//            popoverViewController = PopoverContainerViewController()
+            popoverViewController = PopoverContainerViewController.shared
         }
         
         popoverViewController.forwardBaseTouchesTo = forwardBaseTouchesTo

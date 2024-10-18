@@ -13,6 +13,8 @@ import SwiftUI
  */
 //public class PopoverContainerViewController: UIViewController {
 public class PopoverContainerViewController: HostingParentController {
+    static let shared = PopoverContainerViewController()
+    
     /// The `UIView` used to handle gesture interactions for popovers.
     private var popoverGestureContainerView: PopoverGestureContainer?
     
