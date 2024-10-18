@@ -17,6 +17,8 @@ import SwiftUI
  Presenting or otherwise managing a popover automatically scopes interactions to the window of the current view hierarchy.
  */
 public class PopoverModel: ObservableObject {
+    static let shared = PopoverModel()
+    
     /// The currently-presented popovers. The oldest are in front, the newest at the end.
     @Published var popovers = [Popover]()
 

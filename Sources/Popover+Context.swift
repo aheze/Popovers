@@ -35,7 +35,7 @@ public extension Popover {
         
         /// If this is true, the popover is the replacement of another popover.
         @Published public var isReplacement = false
-        
+
         /// For animation syncing. If this is not nil, the popover is in the middle of a frame refresh.
         public var transaction: Transaction?
         
