@@ -171,8 +171,9 @@ struct PopoverContainerView: View {
      Since the popover's top and left are set via the frame origin in `Popover.swift`, only apply padding to the bottom and right.
      */
     func edgeInsets(for popover: Popover) -> EdgeInsets {
-        let horizontalInsets = popover.attributes.screenEdgePadding.left + popover.attributes.screenEdgePadding.right
-        let verticalInsets = popover.attributes.screenEdgePadding.top + popover.attributes.screenEdgePadding.bottom
+        let screenEdgePadding = popover.attributes.screenEdgePadding()
+        let horizontalInsets = screenEdgePadding.left + screenEdgePadding.right
+        let verticalInsets = screenEdgePadding.top + screenEdgePadding.bottom
 
         return EdgeInsets(
             top: 0,
