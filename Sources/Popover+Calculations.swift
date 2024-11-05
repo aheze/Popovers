@@ -27,12 +27,13 @@ public extension Popover {
             var popoverFrame = attributes.position.absoluteFrame(
                 originAnchor: originAnchor,
                 popoverAnchor: popoverAnchor,
-                originFrame: attributes.sourceFrame().inset(by: attributes.sourceFrameInset),
+                originFrame: attributes.sourceFrame().inset(by: attributes.sourceFrameInset()),
                 popoverSize: size ?? .zero
             )
 
-            let screenEdgePadding = attributes.screenEdgePadding
+            let screenEdgePadding = attributes.screenEdgePadding()
 
+//            context.presentedPopoverViewController?.view.safeAreaInsets
             let safeWindowFrame = window.safeAreaLayoutGuide.layoutFrame
             let maxX = safeWindowFrame.maxX - screenEdgePadding.right
             let maxY = safeWindowFrame.maxY - screenEdgePadding.bottom
@@ -65,7 +66,7 @@ public extension Popover {
 
             let popoverFrame = attributes.position.relativeFrame(
                 selectedAnchor: context.selectedAnchor ?? popoverAnchors.first ?? .bottom,
-                containerFrame: attributes.sourceFrame().inset(by: attributes.sourceFrameInset),
+                containerFrame: attributes.sourceFrame().inset(by: attributes.sourceFrameInset()),
                 popoverSize: size ?? .zero
             )
 
@@ -105,7 +106,7 @@ public extension Popover {
         }
 
         if case let .relative(popoverAnchors) = attributes.position {
-            let frame = attributes.sourceFrame().inset(by: attributes.sourceFrameInset)
+            let frame = attributes.sourceFrame().inset(by: attributes.sourceFrameInset())
             let size = context.size ?? .zero
 
             let closestAnchor = attributes.position.relativeClosestAnchor(

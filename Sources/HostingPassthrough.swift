@@ -1,3 +1,4 @@
+#if os(iOS)
 // From: https://github.com/Priva28/HostingPassthrough/blob/24ca7febe0d37386b5ba02025376c2753367c46d/Sources/HostingPassthrough/HostingPassthrough.swift
 // created by christian privitelli on 10/01/2023
 
@@ -124,3 +125,4 @@ open class HostingParentView: UIView {
         }
     }
 }
+#endif

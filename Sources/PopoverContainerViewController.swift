@@ -1,4 +1,4 @@
-
+#if os(iOS)
 //  PopoverContainerViewController.swift
 //  Popovers
 //
@@ -47,6 +47,10 @@ public class PopoverContainerViewController: HostingParentController {
     
     override public func viewDidLoad() {
         super.viewDidLoad()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+        
 //    override public func loadView() {
         popoverGestureContainerView = PopoverGestureContainer(windowAvailable: { [unowned self] window in
             /// Embed `PopoverContainerView` in a view controller.
@@ -83,6 +87,14 @@ public class PopoverContainerViewController: HostingParentController {
         super.didMove(toParent: parent)
     }
     
+    @objc private func keyboardWillShow(notification: Notification) {
+        popoverModel.updateFramesAfterBoundsChange()
+    }
+    
+    @objc private func keyboardWillHide(notification: Notification) {
+        popoverModel.updateFramesAfterBoundsChange()
+    }
+
     private class PopoverGestureContainer: UIView {
         private let windowAvailable: (UIWindow) -> Void
         
@@ -195,3 +207,4 @@ public class PopoverContainerViewController: HostingParentController {
         }
     }
 }
+#endif

@@ -58,6 +58,7 @@ public struct Popover: Identifiable {
         context.attributes = attributes
         self.context = context
         self.view = AnyView(view().environmentObject(context))
+//        background = AnyView(Color.clear)
         background = AnyView(Color.clear)
     }
 
