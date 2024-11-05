@@ -57,7 +57,6 @@ struct PopoverContainerView: View {
 
                     /// Read the popover's size in the view.
                     .sizeReader(transaction: popover.context.transaction) { size in
-
                         if
                             let transaction = popover.context.transaction,
                             let existingSize = popover.context.size
@@ -67,12 +66,14 @@ struct PopoverContainerView: View {
                             /// So, update without an animation - but just make sure it's not replacing an existing one.
                             if existingSize != size, !popover.context.isReplacement {
                                 popover.updateFrame(with: size)
+                                updatePopoverOffset(for: popover)
                                 popoverModel.reload()
                             } else {
                                 /// Otherwise, since the size is the same, the popover is *replacing* a previous popover - animate it.
                                 /// This could also be true when the screen bounds changed.
                                 withTransaction(transaction) {
                                     popover.updateFrame(with: size)
+                                    updatePopoverOffset(for: popover)
                                     popoverModel.reload()
                                 }
                             }
@@ -80,68 +81,76 @@ struct PopoverContainerView: View {
                         } else {
                             /// When `popover.context.size` is nil or there is no transaction, the popover was just presented.
                             popover.updateFrame(with: size)
+                            updatePopoverOffset(for: popover)
                             popoverModel.reload()
                         }
                     }
 
                     /// Offset the popover by the gesture's translation, if this current popover is the selected one.
-                    .offset(popoverOffset(for: popover))
+                    .modifier {
+                        if #available(iOS 17, *) {
+                            $0.offset(popover.context.offset)
+                        } else {
+                            $0.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+                        }
+                    }
+//                    .position(x: popover.context.offset.width + popover.context.staticFrame.midX, y: popover.context.offset.height + popover.context.staticFrame.midY)
                     /// Add the drag gesture.
-                    .simultaneousGesture(
-                        /// `minimumDistance: 2` is enough to allow scroll views to scroll, if one is contained in the popover.
-                        DragGesture(minimumDistance: Popovers.minimumDragDistance)
-                            .onChanged { value in
-
-                                func update() {
-                                    /// Apply the offset.
-                                    applyDraggingOffset(popover: popover, translation: value.translation)
-
-                                    /// Update the visual frame to account for the dragging offset.
-                                    popover.context.frame = CGRect(
-                                        origin: popover.context.staticFrame.origin + CGPoint(
-                                            x: selectedPopoverOffset.width,
-                                            y: selectedPopoverOffset.height
-                                        ),
-                                        size: popover.context.size ?? .zero
-                                    )
-                                }
-
-                                /// Select the popover for dragging.
-                                if selectedPopover == nil {
-                                    /// Apply an animation to make up for the `minimumDistance`.
-                                    withAnimation(.spring()) {
-                                        selectedPopover = popover
-                                        update()
-                                    }
-                                } else {
-                                    /// The user is already dragging, so update the frames immediately.
-                                    update()
-                                }
-                            }
-                            .onEnded { value in
-
-                                /// The expected dragging end point.
-                                let finalOrigin = CGPoint(
-                                    x: popover.context.staticFrame.origin.x + value.predictedEndTranslation.width,
-                                    y: popover.context.staticFrame.origin.y + value.predictedEndTranslation.height
-                                )
-
-                                /// Recalculate the popover's frame.
-                                withAnimation(.spring()) {
-                                    selectedPopoverOffset = .zero
-
-                                    /// Let the popover know that it finished dragging.
-                                    popover.positionChanged(to: finalOrigin)
-                                    popover.context.frame = popover.context.staticFrame
-                                }
-
-                                /// Unselect the popover.
-                                self.selectedPopover = nil
-                            },
-                        including: popover.attributes.rubberBandingMode.isEmpty
-                            ? .subviews /// Stop gesture and only allow those in the popover's view if dragging is not enabled.
-                            : (popoverModel.popoversDraggable ? .all : .subviews) /// Otherwise, allow dragging - but also check if `popoversDraggable` is true first.
-                    )
+//                    .simultaneousGesture(
+//                        /// `minimumDistance: 2` is enough to allow scroll views to scroll, if one is contained in the popover.
+//                        DragGesture(minimumDistance: Popovers.minimumDragDistance)
+//                            .onChanged { value in
+//
+//                                func update() {
+//                                    /// Apply the offset.
+//                                    applyDraggingOffset(popover: popover, translation: value.translation)
+//
+//                                    /// Update the visual frame to account for the dragging offset.
+//                                    popover.context.frame = CGRect(
+//                                        origin: popover.context.staticFrame.origin + CGPoint(
+//                                            x: selectedPopoverOffset.width,
+//                                            y: selectedPopoverOffset.height
+//                                        ),
+//                                        size: popover.context.size ?? .zero
+//                                    )
+//                                }
+//
+//                                /// Select the popover for dragging.
+//                                if selectedPopover == nil {
+//                                    /// Apply an animation to make up for the `minimumDistance`.
+//                                    withAnimation(.spring()) {
+//                                        selectedPopover = popover
+//                                        update()
+//                                    }
+//                                } else {
+//                                    /// The user is already dragging, so update the frames immediately.
+//                                    update()
+//                                }
+//                            }
+//                            .onEnded { value in
+//
+//                                /// The expected dragging end point.
+//                                let finalOrigin = CGPoint(
+//                                    x: popover.context.staticFrame.origin.x + value.predictedEndTranslation.width,
+//                                    y: popover.context.staticFrame.origin.y + value.predictedEndTranslation.height
+//                                )
+//
+//                                /// Recalculate the popover's frame.
+//                                withAnimation(.spring()) {
+//                                    selectedPopoverOffset = .zero
+//
+//                                    /// Let the popover know that it finished dragging.
+//                                    popover.positionChanged(to: finalOrigin)
+//                                    popover.context.frame = popover.context.staticFrame
+//                                }
+//
+//                                /// Unselect the popover.
+//                                self.selectedPopover = nil
+//                            },
+//                        including: popover.attributes.rubberBandingMode.isEmpty
+//                            ? .subviews /// Stop gesture and only allow those in the popover's view if dragging is not enabled.
+//                            : (popoverModel.popoversDraggable ? .all : .subviews) /// Otherwise, allow dragging - but also check if `popoversDraggable` is true first.
+//                    )
                     .padding(edgeInsets(for: popover)) /// Apply edge padding so that the popover doesn't overflow off the screen.
                 }
 
@@ -184,15 +193,21 @@ struct PopoverContainerView: View {
     }
 
     /// Get the offset of a popover in order to place it in its correct location.
-    func popoverOffset(for popover: Popover) -> CGSize {
-        guard popover.context.size != nil else { return .zero }
+    func updatePopoverOffset(for popover: Popover) {
+        guard popover.context.size != nil else {
+            popover.context.offset = .zero
+            return
+        }
         let frame = popover.context.staticFrame
         let offset = CGSize(
             width: frame.origin.x + ((selectedPopover == popover) ? selectedPopoverOffset.width : 0),
             height: frame.origin.y + ((selectedPopover == popover) ? selectedPopoverOffset.height : 0)
         )
-
-        return offset
+//        Task { @MainActor in
+//            try? await Task.sleep(nanoseconds: 1_000_000_000)
+            popover.context.offset = offset
+//            popoverModel.reload()
+//        }
     }
 
     // MARK: - Dragging
@@ -262,6 +277,22 @@ struct PopoverContainerView: View {
         }
 
         return selectedPopoverOffset
+    }
+}
+
+internal extension View {
+    /// Modify a view with a `ViewBuilder` closure.
+    ///
+    /// This represents a streamlining of the
+    /// [`modifier`](https://developer.apple.com/documentation/swiftui/view/modifier(_:))
+    /// \+ [`ViewModifier`](https://developer.apple.com/documentation/swiftui/viewmodifier)
+    /// pattern.
+    /// - Note: Useful only when you don't need to reuse the closure.
+    /// If you do, turn the closure into an extension! ♻️
+    func modifier<ModifiedContent: View>(
+        @ViewBuilder body: (_ content: Self) -> ModifiedContent
+    ) -> ModifiedContent {
+        body(self)
     }
 }
 #endif

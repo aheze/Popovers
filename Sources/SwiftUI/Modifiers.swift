@@ -48,7 +48,8 @@ struct PopoverModifier: ViewModifier {
         _present = present
         self.buildAttributes = buildAttributes
         self.view = AnyView(view())
-        background = AnyView(Color.clear)
+//        background = AnyView(Color.clear)
+        background = AnyView(Color.white.opacity(0.0000000001).allowsHitTesting(false))
     }
 
     /// Create a popover with a background. Use `.popover(present:attributes:view:background:)` to access.

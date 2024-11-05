@@ -21,6 +21,8 @@ public extension Popover {
         /// The popover's customizable properties.
         public var attributes = Attributes()
         
+        @Published internal var offset: CGSize = .zero
+        
         /// The popover's dynamic size, calculated from SwiftUI. If this is `nil`, the popover is not yet ready to be displayed.
         @Published public var size: CGSize?
         
