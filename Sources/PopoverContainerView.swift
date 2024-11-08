@@ -88,7 +88,7 @@ struct PopoverContainerView: View {
 
                     /// Offset the popover by the gesture's translation, if this current popover is the selected one.
                     .modifier {
-                        if #available(iOS 17, *) {
+                        if #available(iOS 18, *) {
                             $0.offset(popover.context.offset)
                         } else {
                             $0.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
