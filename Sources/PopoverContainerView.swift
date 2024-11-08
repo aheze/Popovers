@@ -94,63 +94,6 @@ struct PopoverContainerView: View {
                             $0.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
                         }
                     }
-//                    .position(x: popover.context.offset.width + popover.context.staticFrame.midX, y: popover.context.offset.height + popover.context.staticFrame.midY)
-                    /// Add the drag gesture.
-//                    .simultaneousGesture(
-//                        /// `minimumDistance: 2` is enough to allow scroll views to scroll, if one is contained in the popover.
-//                        DragGesture(minimumDistance: Popovers.minimumDragDistance)
-//                            .onChanged { value in
-//
-//                                func update() {
-//                                    /// Apply the offset.
-//                                    applyDraggingOffset(popover: popover, translation: value.translation)
-//
-//                                    /// Update the visual frame to account for the dragging offset.
-//                                    popover.context.frame = CGRect(
-//                                        origin: popover.context.staticFrame.origin + CGPoint(
-//                                            x: selectedPopoverOffset.width,
-//                                            y: selectedPopoverOffset.height
-//                                        ),
-//                                        size: popover.context.size ?? .zero
-//                                    )
-//                                }
-//
-//                                /// Select the popover for dragging.
-//                                if selectedPopover == nil {
-//                                    /// Apply an animation to make up for the `minimumDistance`.
-//                                    withAnimation(.spring()) {
-//                                        selectedPopover = popover
-//                                        update()
-//                                    }
-//                                } else {
-//                                    /// The user is already dragging, so update the frames immediately.
-//                                    update()
-//                                }
-//                            }
-//                            .onEnded { value in
-//
-//                                /// The expected dragging end point.
-//                                let finalOrigin = CGPoint(
-//                                    x: popover.context.staticFrame.origin.x + value.predictedEndTranslation.width,
-//                                    y: popover.context.staticFrame.origin.y + value.predictedEndTranslation.height
-//                                )
-//
-//                                /// Recalculate the popover's frame.
-//                                withAnimation(.spring()) {
-//                                    selectedPopoverOffset = .zero
-//
-//                                    /// Let the popover know that it finished dragging.
-//                                    popover.positionChanged(to: finalOrigin)
-//                                    popover.context.frame = popover.context.staticFrame
-//                                }
-//
-//                                /// Unselect the popover.
-//                                self.selectedPopover = nil
-//                            },
-//                        including: popover.attributes.rubberBandingMode.isEmpty
-//                            ? .subviews /// Stop gesture and only allow those in the popover's view if dragging is not enabled.
-//                            : (popoverModel.popoversDraggable ? .all : .subviews) /// Otherwise, allow dragging - but also check if `popoversDraggable` is true first.
-//                    )
                     .padding(edgeInsets(for: popover)) /// Apply edge padding so that the popover doesn't overflow off the screen.
                 }
 
@@ -203,11 +146,7 @@ struct PopoverContainerView: View {
             width: frame.origin.x + ((selectedPopover == popover) ? selectedPopoverOffset.width : 0),
             height: frame.origin.y + ((selectedPopover == popover) ? selectedPopoverOffset.height : 0)
         )
-//        Task { @MainActor in
-//            try? await Task.sleep(nanoseconds: 1_000_000_000)
-            popover.context.offset = offset
-//            popoverModel.reload()
-//        }
+        popover.context.offset = offset
     }
 
     // MARK: - Dragging
