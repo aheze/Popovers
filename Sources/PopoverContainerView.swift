@@ -87,13 +87,10 @@ struct PopoverContainerView: View {
                     }
 
                     /// Offset the popover by the gesture's translation, if this current popover is the selected one.
-                    .modifier {
-                        if #available(iOS 18, *) {
-                            $0.offset(popover.context.offset)
-                        } else {
-                            $0.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
-                        }
-                    }
+                    .offset(popover.context.offset)
+                    /// Force touch target refresh
+                    .id(popover.id.uuidString + popover.context.offset.debugDescription)
+                    
                     .padding(edgeInsets(for: popover)) /// Apply edge padding so that the popover doesn't overflow off the screen.
                 }
 
