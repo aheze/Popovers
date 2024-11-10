@@ -36,6 +36,8 @@ struct PopoverContainerView: View {
                     /// Show the popover's main content view.
                     HStack(alignment: .top) {
                         popover.view
+                        /// Force touch target refresh
+                            .id(popover.id.uuidString + popover.context.isOffsetInitialized.description)
 
                             /// Have VoiceOver read the popover view first, before the dismiss button.
                             .accessibility(sortPriority: 1)
@@ -84,12 +86,14 @@ struct PopoverContainerView: View {
                             updatePopoverOffset(for: popover)
                             popoverModel.reload()
                         }
+                        
+                        if size != .zero {
+                            popover.context.isOffsetInitialized = true
+                        }
                     }
 
                     /// Offset the popover by the gesture's translation, if this current popover is the selected one.
                     .offset(popover.context.offset)
-                    /// Force touch target refresh
-                    .id(popover.id.uuidString + popover.context.offset.debugDescription)
                     
                     .padding(edgeInsets(for: popover)) /// Apply edge padding so that the popover doesn't overflow off the screen.
                 }
