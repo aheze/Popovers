@@ -103,6 +103,12 @@ public extension Popover {
             dismiss()
             return
         }
+        if
+            attributes.changeLocationOnDismiss
+        {
+            context.staticFrame = context.frame
+            return
+        }
 
         if case let .relative(popoverAnchors) = attributes.position {
             let frame = attributes.sourceFrame().inset(by: attributes.sourceFrameInset)

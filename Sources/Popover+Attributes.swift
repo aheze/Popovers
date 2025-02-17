@@ -56,6 +56,9 @@ extension Popover {
         /// Prevent views underneath the popover from being pressed.
         public var blocksBackgroundTouches = false
         
+        /// Allows popover's location to be changed to its last location.
+        public var changeLocationOnDismiss = false
+        
         /// Frames that won't be blocked when `blocksBackgroundTouches` is turned on.
         public var blocksBackgroundTouchesAllowedFrames: () -> [CGRect] = { [] }
         
