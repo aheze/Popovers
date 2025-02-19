@@ -217,6 +217,9 @@ struct PopoverContainerView: View {
                 applyVerticalOffset(dragDown: true)
             } else if popover.attributes.dismissal.mode.contains(.dragUp) {
                 applyVerticalOffset(dragDown: false)
+            } else if popover.attributes.changeLocationOnDismiss {
+                /// Popover can be dragged to any position, so don't apply any rubber banding and directly set its translation.
+                selectedPopoverOffset = translation
             } else {
                 selectedPopoverOffset = applyRubberBanding(to: popover, translation: translation)
             }
