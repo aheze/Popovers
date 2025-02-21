@@ -44,7 +44,7 @@ public struct Popover: Identifiable {
             context.attributes = newValue
         }
     }
-
+    
     /**
      A popover.
      - parameter attributes: Customize the popover.
