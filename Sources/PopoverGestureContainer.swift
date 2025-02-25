@@ -37,6 +37,8 @@ class PopoverGestureContainer: UIView {
         /// Store the bounds for later.
         previousBounds = bounds
     }
+    
+    private lazy var host: UIHostingController<AnyView> = UIHostingController(rootView: AnyView(PopoverContainerView(popoverModel: popoverModel)))
 
     override func didMoveToWindow() {
         super.didMoveToWindow()
@@ -45,15 +47,13 @@ class PopoverGestureContainer: UIView {
         guard let window = window else { return }
 
         /// Create the SwiftUI view that contains all the popovers.
-        let popoverContainerView = PopoverContainerView(popoverModel: popoverModel)
-            .environment(\.window, window) /// Inject the window.
 
-        let hostingController = UIHostingController(rootView: popoverContainerView)
-        hostingController.view.frame = bounds
-        hostingController.view.backgroundColor = .clear
-        hostingController.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        host.rootView = AnyView(host.rootView.environment(\.window, window)) // Inject the window.
+        host.view.frame = bounds
+        host.view.backgroundColor = .clear
+        host.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
 
-        addSubview(hostingController.view)
+        addSubview(host.view)
 
         /// Ensure the view is laid out so that SwiftUI animations don't stutter.
         setNeedsLayout()
