@@ -16,9 +16,12 @@ import SwiftUI
  Each view model is scoped to a window, which retains the view model.
  Presenting or otherwise managing a popover automatically scopes interactions to the window of the current view hierarchy.
  */
-class PopoverModel: ObservableObject {
+public class PopoverModel: ObservableObject {
+    static let shared = PopoverModel()
+    
     /// The currently-presented popovers. The oldest are in front, the newest at the end.
-    @Published var popovers = [Popover]()
+//    @Published var popovers = [Popover]()
+    @Published var popover: Popover?
 
     /// Determines if the popovers can be dragged.
     @Published var popoversDraggable = true
@@ -46,9 +49,10 @@ class PopoverModel: ObservableObject {
      */
     func refresh(with transaction: Transaction?) {
         /// Set each popovers's transaction to the new transaction to keep the smooth animation.
-        for popover in popovers {
-            popover.context.transaction = transaction
-        }
+//        for popover in popovers {
+//            popover.context.transaction = transaction
+//        }
+        popover?.context.transaction = transaction
 
         /// Update all popovers.
         reload()
@@ -56,42 +60,47 @@ class PopoverModel: ObservableObject {
 
     /// Adds a `Popover` to this model.
     func add(_ popover: Popover) {
-        popovers.append(popover)
+        if self.popover == nil {
+            self.popover = popover
+        }
+//        popovers.append(popover)
     }
 
     /// Removes a `Popover` from this model.
-    func remove(_ popover: Popover) {
-        popovers.removeAll { $0 == popover }
-    }
+//    func remove(_ popover: Popover) {
+//        debugPrint("# remove(popover)")
+//        popovers.removeAll { $0 == popover }
+//    }
 
     /**
      Remove all popovers, or optionally the ones tagged with a `tag` that you supply.
      - parameter tag: If this isn't nil, only remove popovers tagged with this.
      */
-    func removeAllPopovers(with tag: AnyHashable? = nil) {
-        if let tag = tag {
-            popovers.removeAll(where: { $0.attributes.tag == tag })
-        } else {
-            popovers.removeAll()
-        }
-    }
+//    func removeAllPopovers(with tag: AnyHashable? = nil) {
+//        debugPrint("# removeAllPopovers")
+//        if let tag = tag {
+//            popovers.removeAll(where: { $0.attributes.tag == tag })
+//        } else {
+//            popovers.removeAll()
+//        }
+//    }
 
     /// Get the index in the for a popover. Returns `nil` if the popover is not in the array.
-    func index(of popover: Popover) -> Int? {
-        return popovers.firstIndex(of: popover)
-    }
+//    func index(of popover: Popover) -> Int? {
+//        return popovers.firstIndex(of: popover)
+//    }
 
     /**
      Get a currently-presented popover with a tag. Returns `nil` if no popover with the tag was found.
      - parameter tag: The tag of the popover to look for.
      */
-    func popover(tagged tag: AnyHashable) -> Popover? {
-        let matchingPopovers = popovers.filter { $0.attributes.tag == tag }
-        if matchingPopovers.count > 1 {
-            print("[Popovers] - Warning - There are \(matchingPopovers.count) popovers tagged '\(tag)'. Tags should be unique. Try dismissing all existing popovers first.")
-        }
-        return matchingPopovers.first
-    }
+//    func popover(tagged tag: AnyHashable) -> Popover? {
+//        let matchingPopovers = popovers.filter { $0.attributes.tag == tag }
+//        if matchingPopovers.count > 1 {
+//            print("[Popovers] - Warning - There are \(matchingPopovers.count) popovers tagged '\(tag)'. Tags should be unique. Try dismissing all existing popovers first.")
+//        }
+//        return matchingPopovers.first
+//    }
 
     /**
      Update all popover frames.
@@ -104,7 +113,10 @@ class PopoverModel: ObservableObject {
 
          For some reason, relative positioning + `.center` doesn't need the rotation animation to complete before having a size change.
          */
-        for popover in popovers {
+//        for popover in popovers {
+//            popover.updateFrame(with: popover.context.size)
+//        }
+        if let popover {
             popover.updateFrame(with: popover.context.size)
         }
 

@@ -31,7 +31,12 @@ struct FrameTagModifier: ViewModifier {
                         window.save(frame, for: tag)
                     }
                 }
-                .onValueChange(of: window) { _, newValue in
+                .task(id: window) { @MainActor in
+                    if let window = window {
+                        window.save(frame, for: tag)
+                    }
+                }
+                .onChange(of: window) { newValue in
                     if let window = window {
                         window.save(frame, for: tag)
                     }
