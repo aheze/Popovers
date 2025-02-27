@@ -51,7 +51,7 @@ struct PopoverModifier: ViewModifier {
 //        background = AnyView(Color.clear)
         background = AnyView(Color.white.opacity(0.0000000001).allowsHitTesting(false))
     }
-
+    
     /// Create a popover with a background. Use `.popover(present:attributes:view:background:)` to access.
     init<MainContent: View, BackgroundContent: View>(
         present: Binding<Bool>,
@@ -64,7 +64,7 @@ struct PopoverModifier: ViewModifier {
         self.view = AnyView(view())
         self.background = AnyView(background())
     }
-
+    
     func body(content: Content) -> some View {
         WindowReader { readWindow in
             content
@@ -80,9 +80,9 @@ struct PopoverModifier: ViewModifier {
 
                 /// Detect a state change in `$present`.
                 .onChange(of: present) { [oldValue = present] newValue in
-                    
                     guard oldValue != newValue else { return }
-                    
+                    popover?.context.isOffsetInitialized = false
+
                     /// Make sure there is a window first.
                     var window: UIWindow! = readWindow
                     if window == nil {
@@ -100,7 +100,7 @@ struct PopoverModifier: ViewModifier {
 
                     /// `newValue` is true, so present the popover.
                     if newValue {
-                        guard popover == nil else { return }
+//                        guard popover == nil else { return }
                         var attributes = Popover.Attributes()
 
                         /// Set the default source frame to the source view.
@@ -115,11 +115,25 @@ struct PopoverModifier: ViewModifier {
                         /// Build the attributes using the closure. If you supply a custom source frame, the default will be overridden.
                         buildAttributes(&attributes)
 
-                        let popover = Popover(
-                            attributes: attributes,
-                            view: { view },
-                            background: { background }
-                        )
+                        if popover != nil {
+                            popover?.attributes = attributes
+                        } else {
+                            self.popover = Popover(
+                                attributes: attributes,
+                                view: { view },
+                                background: { background }
+                            )
+                            /**
+                             Listen to the internal `onDismiss` callback.
+                             
+                             This is called just after the popover is removed from the model.
+                             */
+                            popover?.context.onAutoDismiss = {
+                                self.present = false
+                                //                            self.popover = nil /// Remove the reference to the popover.
+                            }
+
+                        }
 
                         /// Store a reference to the popover.
                         self.popover = popover
@@ -129,21 +143,20 @@ struct PopoverModifier: ViewModifier {
 
                          This is called just after the popover is removed from the model.
                          */
-                        popover.context.onAutoDismiss = {
-                            self.present = false
-                            self.popover = nil /// Remove the reference to the popover.
-                        }
+//                        popover?.context.onAutoDismiss = {
+//                            debugPrint("# auto dismiss", self.present)
+//                            self.present = false
+////                            self.popover = nil /// Remove the reference to the popover.
+//                        }
 
                         /// Present the popover.
-                        popover.present(in: window, forwardBaseTouchesTo: contentView?.superview)
+                        popover?.present(in: window, forwardBaseTouchesTo: contentView?.superview)
 
                     } else {
                         /// `$present` was set to `false`, dismiss the popover.
 
                         /// If there is still a popover, it means the client set `$present` to false.
-                        guard let popover = popover else { return }
-
-                        popover.dismiss()
+                        popover?.dismiss()
                     }
                 }
         }

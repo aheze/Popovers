@@ -61,6 +61,8 @@ public extension Popover {
             }
         }
 
+        context.presentationID = UUID()
+        
         if presentingViewController === popoverViewController {
             displayPopover()
         } else {
@@ -89,23 +91,23 @@ public extension Popover {
     func dismiss(transaction: Transaction? = nil) {
         guard let presentingViewController = context.presentedPopoverViewController else { return }
         
-        let model = presentingViewController.popoverModel
-        let dismissalTransaction = transaction ?? Transaction(animation: attributes.dismissal.animation)
+//        let model = presentingViewController.popoverModel
+//        let dismissalTransaction = transaction ?? Transaction(animation: attributes.dismissal.animation)
 
         /// Clean up the container view controller if no more popovers are visible.
         context.onDisappear = { [weak context] in
-            if model.popovers.isEmpty {
+//            if model.popovers.isEmpty {
                 presentingViewController.dismiss(animated: false)
-            }
+//            }
 
             /// If at least one popover has `blocksBackgroundTouches` set to true, stop VoiceOver from reading out background views
-            context?.presentedPopoverViewController?.view.accessibilityViewIsModal = model.popovers.contains { $0.attributes.blocksBackgroundTouches }
+//            context?.presentedPopoverViewController?.view.accessibilityViewIsModal = model.popovers.contains { $0.attributes.blocksBackgroundTouches }
         }
 
         /// Remove this popover from the view model, dismissing it.
-        withTransaction(dismissalTransaction) {
-            model.remove(self)
-        }
+//        withTransaction(dismissalTransaction) {
+//            model.remove(self)
+//        }
 
         /// Let the internal SwiftUI modifiers know that the popover was automatically dismissed.
         context.onAutoDismiss?()
@@ -117,47 +119,47 @@ public extension Popover {
     /**
      Replace this popover with another popover smoothly.
      */
-    func replace(with newPopover: Popover) {
-        guard let presentingViewController = context.presentedPopoverViewController else { return }
-
-        let model = presentingViewController.popoverModel
-
-        /// Get the index of the previous popover.
-        if let oldPopoverIndex = model.index(of: self) {
-            /// Get the old popover's context.
-            let oldContext = model.popovers[oldPopoverIndex].context
-
-            /// Create a new transaction for the replacing animation.
-            let transaction = Transaction(animation: newPopover.attributes.presentation.animation)
-
-            /// Inject the transaction into the new popover, so following frame calculations are animated smoothly.
-            newPopover.context.transaction = transaction
-
-            /// Use the same `UIViewController` presenting the previous popover, so we animate the popover in the same container.
-            newPopover.context.presentedPopoverViewController = oldContext.presentedPopoverViewController
-
-            /// Set the popover as a replacement.
-            newPopover.context.isReplacement = true
-
-            /// Use same ID so that SwiftUI animates the change.
-            newPopover.context.id = oldContext.id
-
-            withTransaction(transaction) {
-                /// Temporarily use the same size for a smooth animation.
-                newPopover.updateFrame(with: oldContext.size)
-
-                /// Replace the old popover with the new popover.
-                model.popovers[oldPopoverIndex] = newPopover
-            }
-        }
-    }
+//    func replace(with newPopover: Popover) {
+//        guard let presentingViewController = context.presentedPopoverViewController else { return }
+//
+//        let model = presentingViewController.popoverModel
+//
+//        /// Get the index of the previous popover.
+//        if let oldPopoverIndex = model.index(of: self) {
+//            /// Get the old popover's context.
+//            let oldContext = model.popovers[oldPopoverIndex].context
+//
+//            /// Create a new transaction for the replacing animation.
+//            let transaction = Transaction(animation: newPopover.attributes.presentation.animation)
+//
+//            /// Inject the transaction into the new popover, so following frame calculations are animated smoothly.
+//            newPopover.context.transaction = transaction
+//
+//            /// Use the same `UIViewController` presenting the previous popover, so we animate the popover in the same container.
+//            newPopover.context.presentedPopoverViewController = oldContext.presentedPopoverViewController
+//
+//            /// Set the popover as a replacement.
+//            newPopover.context.isReplacement = true
+//
+//            /// Use same ID so that SwiftUI animates the change.
+//            newPopover.context.id = oldContext.id
+//
+//            withTransaction(transaction) {
+//                /// Temporarily use the same size for a smooth animation.
+//                newPopover.updateFrame(with: oldContext.size)
+//
+//                /// Replace the old popover with the new popover.
+//                model.popovers[oldPopoverIndex] = newPopover
+//            }
+//        }
+//    }
 }
 
 public extension UIResponder {
     /// Replace a popover with another popover. Convenience method for `Popover.replace(with:)`.
-    func replace(_ oldPopover: Popover, with newPopover: Popover) {
-        oldPopover.replace(with: newPopover)
-    }
+//    func replace(_ oldPopover: Popover, with newPopover: Popover) {
+//        oldPopover.replace(with: newPopover)
+//    }
 
     /// Dismiss a popover. Convenience method for `Popover.dismiss(transaction:)`.
     func dismiss(_ popover: Popover) {
@@ -168,17 +170,17 @@ public extension UIResponder {
      Get a currently-presented popover with a tag. Returns `nil` if no popover with the tag was found.
      - parameter tag: The tag of the popover to look for.
      */
-    func popover(tagged tag: AnyHashable) -> Popover? {
-        return popoverModel.popover(tagged: tag)
-    }
+//    func popover(tagged tag: AnyHashable) -> Popover? {
+//        return popoverModel.popover(tagged: tag)
+//    }
 
     /**
      Remove all popovers, or optionally the ones tagged with a `tag` that you supply.
      - parameter tag: If this isn't nil, only remove popovers tagged with this.
      */
-    func dismissAllPopovers(with tag: AnyHashable? = nil) {
-        popoverModel.removeAllPopovers(with: tag)
-    }
+//    func dismissAllPopovers(with tag: AnyHashable? = nil) {
+//        popoverModel.removeAllPopovers(with: tag)
+//    }
 }
 
 //public extension UIViewController {

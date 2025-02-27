@@ -9,125 +9,119 @@
 #if os(iOS)
 import SwiftUI
 
-/**
- The container view that shows the popovers. This is automatically managed.
- */
-struct PopoverContainerView: View {
-    /// The view model that stores the popovers.
-    @ObservedObject var popoverModel: PopoverModel
+struct PopoverInnerContainerView: View {
+    var popover: Popover
+    @ObservedObject var popoverContext: Popover.Context
+    var popoverModel: PopoverModel
 
     /// The currently-dragging popover.
     @State var selectedPopover: Popover? = nil
-
+    
     /// How much to offset the currently-dragging popover.
     @State var selectedPopoverOffset: CGSize = .zero
-
+    
     var body: some View {
-        /// Support multiple popovers without interfering with each other.
-        ZStack {
-            /// Loop over the popovers.
-            ForEach(popoverModel.popovers) { popover in
-
-                /// All frames are calculated from the origin at the top-left, so use `.topLeading`.
-                ZStack(alignment: .topLeading) {
-                    /// Show the popover's background.
-                    popover.background
-
-                    /// Show the popover's main content view.
-                    HStack(alignment: .top) {
-                        popover.view
-                        /// Force touch target refresh
-                            .id(popover.id.uuidString + popover.context.isOffsetInitialized.description)
-
-                            /// Have VoiceOver read the popover view first, before the dismiss button.
-                            .accessibility(sortPriority: 1)
-
-                        /// If VoiceOver is on and a `dismissButtonLabel` was set, show it.
-                        if
-                            UIAccessibility.isVoiceOverRunning,
-                            let dismissButtonLabel = popover.attributes.accessibility.dismissButtonLabel
-                        {
-                            Button {
-                                popover.dismiss()
-                            } label: {
-                                dismissButtonLabel
-                            }
-                        }
+        /// All frames are calculated from the origin at the top-left, so use `.topLeading`.
+        ZStack(alignment: .topLeading) {
+            /// Show the popover's background.
+            popover.background
+            
+            /// Show the popover's main content view.
+            HStack(alignment: .top) {
+                popover.view
+                /// Force touch target refresh
+                    .id(popover.id.uuidString + popover.context.isOffsetInitialized.description)
+                
+                /// Have VoiceOver read the popover view first, before the dismiss button.
+                    .accessibility(sortPriority: 1)
+                
+                /// If VoiceOver is on and a `dismissButtonLabel` was set, show it.
+                if
+                    UIAccessibility.isVoiceOverRunning,
+                    let dismissButtonLabel = popover.attributes.accessibility.dismissButtonLabel
+                {
+                    Button {
+                        popover.dismiss()
+                    } label: {
+                        dismissButtonLabel
                     }
-                    /// Hide the popover until its size has been calculated.
-                    .opacity(popover.context.size != nil ? 1 : 0)
-
-                    /// Read the popover's size in the view.
-                    .sizeReader(transaction: popover.context.transaction) { size in
-                        if
-                            let transaction = popover.context.transaction,
-                            let existingSize = popover.context.size
-                        {
-                            /// If the size is different during an existing transaction, this means
-                            /// the size is still not final and can change.
-                            /// So, update without an animation - but just make sure it's not replacing an existing one.
-                            if existingSize != size, !popover.context.isReplacement {
-                                popover.updateFrame(with: size)
-                                updatePopoverOffset(for: popover)
-                                popoverModel.reload()
-                            } else {
-                                /// Otherwise, since the size is the same, the popover is *replacing* a previous popover - animate it.
-                                /// This could also be true when the screen bounds changed.
-                                withTransaction(transaction) {
-                                    popover.updateFrame(with: size)
-                                    updatePopoverOffset(for: popover)
-                                    popoverModel.reload()
-                                }
-                            }
-                            popover.context.transaction = nil
-                        } else {
-                            /// When `popover.context.size` is nil or there is no transaction, the popover was just presented.
-                            popover.updateFrame(with: size)
-                            updatePopoverOffset(for: popover)
-                            popoverModel.reload()
-                        }
-                        
-                        if size != .zero {
-                            popover.context.isOffsetInitialized = true
-                        }
-                    }
-
-                    /// Offset the popover by the gesture's translation, if this current popover is the selected one.
-                    .offset(popover.context.offset)
-                    
-                    .padding(edgeInsets(for: popover)) /// Apply edge padding so that the popover doesn't overflow off the screen.
-                }
-
-                /// Ensure the popover container can use up all available space.
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-
-                /// Apply the presentation and dismissal transitions.
-                .transition(
-                    .asymmetric(
-                        insertion: popover.attributes.presentation.transition ?? .opacity,
-                        removal: popover.attributes.dismissal.transition ?? .opacity
-                    )
-                )
-
-                /// Clean up the container view.
-                .onDisappear {
-                    popover.context.onDisappear?()
                 }
             }
+            /// Hide the popover until its size has been calculated.
+            .opacity((popover.context.size != nil && popover.context.isOffsetInitialized) ? 1 : 0)
+            
+            /// Read the popover's size in the view.
+            .sizeReader(transaction: popover.context.transaction, presentationID: popover.context.presentationID) { size in
+                if
+                    let transaction = popover.context.transaction,
+                    let existingSize = popover.context.size
+                {
+                    /// If the size is different during an existing transaction, this means
+                    /// the size is still not final and can change.
+                    /// So, update without an animation - but just make sure it's not replacing an existing one.
+                    if existingSize != size, !popover.context.isReplacement {
+                        popover.updateFrame(with: size)
+                        updatePopoverOffset(for: popover)
+                        DispatchQueue.main.asyncAfter(deadline: .now()) {
+                            popoverModel.reload()
+                        }
+                    } else {
+                        /// Otherwise, since the size is the same, the popover is *replacing* a previous popover - animate it.
+                        /// This could also be true when the screen bounds changed.
+                        withTransaction(transaction) {
+                            popover.updateFrame(with: size)
+                            updatePopoverOffset(for: popover)
+                            DispatchQueue.main.asyncAfter(deadline: .now()) {
+                                popoverModel.reload()
+                            }
+                        }
+                    }
+                    popover.context.transaction = nil
+                } else {
+                    /// When `popover.context.size` is nil or there is no transaction, the popover was just presented.
+                    popover.updateFrame(with: size)
+                    updatePopoverOffset(for: popover)
+                    popoverModel.reload()
+                }
+                
+                if size != .zero {
+                    popover.context.isOffsetInitialized = true
+                }
+            }
+            
+            /// Offset the popover by the gesture's translation, if this current popover is the selected one.
+            .offset(popover.context.offset)
+            
+            .padding(edgeInsets(for: popover)) /// Apply edge padding so that the popover doesn't overflow off the screen.
         }
-        .edgesIgnoringSafeArea(.all) /// All calculations are done from the screen bounds.
+        
+        /// Ensure the popover container can use up all available space.
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        
+        /// Apply the presentation and dismissal transitions.
+        .transition(
+            .asymmetric(
+                insertion: popover.attributes.presentation.transition ?? .opacity,
+                removal: popover.attributes.dismissal.transition ?? .opacity
+            )
+        )
+        
+        /// Clean up the container view.
+        .onDisappear {
+            popover.context.onDisappear?()
+        }
     }
-
+    
     /**
      Apply edge padding to squish the available space, preventing screen overflow.
-
+     
      Since the popover's top and left are set via the frame origin in `Popover.swift`, only apply padding to the bottom and right.
      */
     func edgeInsets(for popover: Popover) -> EdgeInsets {
         let screenEdgePadding = popover.attributes.screenEdgePadding()
         let horizontalInsets = screenEdgePadding.left + screenEdgePadding.right
         let verticalInsets = screenEdgePadding.top + screenEdgePadding.bottom
-
+        
         return EdgeInsets(
             top: 0,
             leading: 0,
@@ -135,7 +129,7 @@ struct PopoverContainerView: View {
             trailing: horizontalInsets
         )
     }
-
+    
     /// Get the offset of a popover in order to place it in its correct location.
     func updatePopoverOffset(for popover: Popover) {
         guard popover.context.size != nil else {
@@ -149,13 +143,13 @@ struct PopoverContainerView: View {
         )
         popover.context.offset = offset
     }
-
+    
     // MARK: - Dragging
-
+    
     /// Apply the additional offset needed if a popover is dragged.
     func applyDraggingOffset(popover: Popover, translation: CGSize) {
         var selectedPopoverOffset = CGSize.zero
-
+        
         /// If `.dragDown` or `.dragUp` is in the popover's dismissal mode, then apply rubber banding.
         func applyVerticalOffset(dragDown: Bool) {
             let condition = dragDown ? translation.height <= 0 : translation.height >= 0
@@ -166,7 +160,7 @@ struct PopoverContainerView: View {
                 selectedPopoverOffset.height = translation.height
             }
         }
-
+        
         switch popover.attributes.position {
         case .absolute:
             if popover.attributes.dismissal.mode.contains(.dragDown) {
@@ -177,7 +171,7 @@ struct PopoverContainerView: View {
                 selectedPopoverOffset = applyRubberBanding(to: popover, translation: translation)
             }
         case let .relative(popoverAnchors):
-
+            
             /// There is only 1 anchor for the popovers, so it can't be dragged to a different position.
             if popoverAnchors.count <= 1 {
                 if popover.attributes.dismissal.mode.contains(.dragDown) {
@@ -192,10 +186,10 @@ struct PopoverContainerView: View {
                 selectedPopoverOffset = translation
             }
         }
-
+        
         self.selectedPopoverOffset = selectedPopoverOffset
     }
-
+    
     /// "Rubber-band" the popover's translation.
     func getRubberBanding(translation: CGSize) -> CGSize {
         var offset = CGSize.zero
@@ -203,20 +197,43 @@ struct PopoverContainerView: View {
         offset.height = pow(abs(translation.height), 0.7) * (translation.height > 0 ? 1 : -1)
         return offset
     }
-
+    
     /// Apply rubber banding to the selected popover's offset.
     func applyRubberBanding(to popover: Popover, translation: CGSize) -> CGSize {
         let offset = getRubberBanding(translation: translation)
         var selectedPopoverOffset = CGSize.zero
-
+        
         if popover.attributes.rubberBandingMode.contains(.xAxis) {
             selectedPopoverOffset.width = offset.width
         }
         if popover.attributes.rubberBandingMode.contains(.yAxis) {
             selectedPopoverOffset.height = offset.height
         }
-
+        
         return selectedPopoverOffset
+    }
+}
+
+/**
+ The container view that shows the popovers. This is automatically managed.
+ */
+struct PopoverContainerView: View {
+    /// The view model that stores the popovers.
+    @ObservedObject var popoverModel: PopoverModel
+
+    var body: some View {
+        /// Support multiple popovers without interfering with each other.
+        ZStack {
+            /// Loop over the popovers.
+            if let popover = popoverModel.popover {
+                PopoverInnerContainerView(
+                    popover: popover,
+                    popoverContext: popover.context,
+                    popoverModel: popoverModel
+                )
+            }
+        }
+        .edgesIgnoringSafeArea(.all) /// All calculations are done from the screen bounds.
     }
 }
 

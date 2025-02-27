@@ -38,7 +38,9 @@ public class PopoverContainerViewController: HostingParentController {
         /// Only update frames on a bounds change.
         if let previousBounds = previousBounds, previousBounds != view.bounds {
             /// Orientation or screen bounds changed, so update popover frames.
-            popoverModel.updateFramesAfterBoundsChange()
+            DispatchQueue.main.asyncAfter(deadline: .now()) { [weak self] in
+                self?.popoverModel.updateFramesAfterBoundsChange()
+            }
         }
         
         /// Store the bounds for later.
@@ -128,17 +130,19 @@ public class PopoverContainerViewController: HostingParentController {
             guard event.map({ $0.type == .touches }) ?? true else { return nil }
             
             /// Only loop through the popovers that are in this window.
-            let popovers = popoverModel.popovers
+//            let popovers = popoverModel.popovers
             
             /// The current popovers' frames
-            let popoverFrames = popovers.map { $0.context.frame }
-            
+//            let popoverFrames = popovers.map { $0.context.frame }
+            let popoverFrame = popoverModel.popover?.context.frame
+
             /// Dismiss a popover, knowing that its frame does not contain the touch.
             func dismissPopoverIfNecessary(popoverToDismiss: Popover) {
                 if
                     popoverToDismiss.attributes.dismissal.mode.contains(.tapOutside), /// The popover can be automatically dismissed when tapped outside.
                     popoverToDismiss.attributes.dismissal.tapOutsideIncludesOtherPopovers || /// The popover can be dismissed even if the touch hit another popover, **or...**
-                        !popoverFrames.contains(where: { $0.contains(point) }) /// ... no other popover frame contains the point (the touch landed outside)
+//                        !popoverFrames.contains(where: { $0.contains(point) }) /// ... no other popover frame contains the point (the touch landed outside)
+                        !(popoverFrame?.contains(point) ?? false) /// ... no other popover frame contains the point (the touch landed outside)
                 {
                     popoverToDismiss.dismiss()
                 }
@@ -146,18 +150,19 @@ public class PopoverContainerViewController: HostingParentController {
             
             /// Loop through the popovers and see if the touch hit it.
             /// `reversed` to start from the most recently presented popovers, working backwards.
-            for popover in popovers.reversed() {
+            if let popover = popoverModel.popover {
+            //            for popover in popovers.reversed() {
                 /// Check it the popover was hit.
                 if popover.context.frame.contains(point) {
                     /// Dismiss other popovers if they have `tapOutsideIncludesOtherPopovers` set to true.
-                    for popoverToDismiss in popovers {
-                        if
-                            popoverToDismiss != popover,
-                            !popoverToDismiss.context.frame.contains(point) /// The popover's frame doesn't contain the touch point.
-                        {
-                            dismissPopoverIfNecessary(popoverToDismiss: popoverToDismiss)
-                        }
-                    }
+//                    for popoverToDismiss in popovers {
+//                        if
+//                            popoverToDismiss != popover,
+//                            !popoverToDismiss.context.frame.contains(point) /// The popover's frame doesn't contain the touch point.
+//                        {
+//                            dismissPopoverIfNecessary(popoverToDismiss: popoverToDismiss)
+//                        }
+//                    }
                     
                     /// Receive the touch and block it from going through.
                     return super.hitTest(point, with: event)
@@ -189,7 +194,8 @@ public class PopoverContainerViewController: HostingParentController {
                          The touch hit an excluded view, so don't dismiss it.
                          However, if the touch hit another popover, block it from passing through.
                          */
-                        if popoverFrames.contains(where: { $0.contains(point) }) {
+//                        if popoverFrames.contains(where: { $0.contains(point) }) {
+                        if popoverFrame?.contains(point) ?? false {
                             return super.hitTest(point, with: event)
                         } else {
                             return nil

@@ -51,7 +51,8 @@ public extension View {
 
      From https://stackoverflow.com/a/66822461/14351818
      */
-    func sizeReader(transaction: Transaction? = nil, size: @escaping (CGSize) -> Void) -> some View {
+    @ViewBuilder
+    func sizeReader(transaction: Transaction? = nil, presentationID: UUID, size: @escaping (CGSize) -> Void) -> some View {
         return background(
             GeometryReader { geometry in
                 Color.clear
@@ -61,7 +62,12 @@ public extension View {
                             size(newValue)
                         }
                     }
-                    .onChange(of: transaction?.animation) { _ in
+//                    .onChange(of: transaction?.animation) { _ in
+//                        DispatchQueue.main.async {
+//                            size(geometry.size)
+//                        }
+//                    }
+                    .onChange(of: presentationID) { _ in
                         DispatchQueue.main.async {
                             size(geometry.size)
                         }

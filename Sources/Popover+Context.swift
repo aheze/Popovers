@@ -21,6 +21,7 @@ public extension Popover {
         /// The popover's customizable properties.
         public var attributes = Attributes()
         
+        @Published internal var presentationID = UUID()
         @Published internal var isOffsetInitialized = false
         @Published internal var offset: CGSize = .zero
 
